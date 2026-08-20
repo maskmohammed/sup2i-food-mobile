@@ -1,20 +1,26 @@
 // Smoke test du shell : bottom nav 5 onglets, thème appliqué, navigation.
-// Le shell est monté isolément (l'écran d'entrée de l'app est désormais Login).
+// Le shell est monté isolément (l'écran d'entrée de l'app est Login via AuthGate).
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sup2i_food_mobile/app/app_shell.dart';
+import 'package:sup2i_food_mobile/app/auth_scope.dart';
 import 'package:sup2i_food_mobile/core/theme/app_colors.dart';
 import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
+import 'package:sup2i_food_mobile/features/auth/application/auth_controller.dart';
+import 'package:sup2i_food_mobile/features/auth/data/mock_auth_repository.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
-Widget _wrap(Widget home) => MaterialApp(
-  theme: AppTheme.light,
-  locale: const Locale('fr'),
-  supportedLocales: AppLocalizations.supportedLocales,
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
-  home: home,
+Widget _wrap(Widget home) => AuthScope(
+  controller: AuthController(const MockAuthRepository(latency: Duration.zero)),
+  child: MaterialApp(
+    theme: AppTheme.light,
+    locale: const Locale('fr'),
+    supportedLocales: AppLocalizations.supportedLocales,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    home: home,
+  ),
 );
 
 void main() {

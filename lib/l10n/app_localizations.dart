@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../core/error/api_codes.dart';
+
 /// Localisation minimale maison (M1) — FR / AR / EN + direction RTL pour l'arabe.
 ///
 /// Volontairement sans dépendance (`flutter_localizations` / `intl` / `.arb`)
@@ -78,6 +80,28 @@ class AppLocalizations {
   String get loginPasswordRequired => _t('loginPasswordRequired');
   String get loginShowPassword => _t('loginShowPassword');
   String get loginHidePassword => _t('loginHidePassword');
+
+  // Profil.
+  String get profileLogout => _t('profileLogout');
+
+  /// Message utilisateur dérivé d'un `code` d'erreur API (jamais du `message`
+  /// serveur). Repli générique pour tout code non spécifiquement traité.
+  String errorMessage(String code) {
+    switch (code) {
+      case ApiCodes.unauthorized:
+        return _t('errUnauthorized');
+      case ApiCodes.accountBlocked:
+        return _t('errAccountBlocked');
+      case ApiCodes.accountSuspended:
+        return _t('errAccountSuspended');
+      case ApiCodes.rateLimited:
+        return _t('errRateLimited');
+      case ApiCodes.networkError:
+        return _t('errNetwork');
+      default:
+        return _t('errGeneric');
+    }
+  }
 }
 
 const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
@@ -108,6 +132,15 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'Entrez votre mot de passe.',
     'loginShowPassword': 'Afficher le mot de passe',
     'loginHidePassword': 'Masquer le mot de passe',
+    'profileLogout': 'Se déconnecter',
+    'errUnauthorized': 'E-mail ou mot de passe incorrect.',
+    'errAccountBlocked':
+        'Votre compte est bloqué. Contactez l\'administration.',
+    'errAccountSuspended':
+        'Votre compte est suspendu. Contactez l\'administration.',
+    'errRateLimited': 'Trop de tentatives. Réessayez dans un moment.',
+    'errNetwork': 'Connexion impossible. Vérifiez votre réseau.',
+    'errGeneric': 'Une erreur est survenue. Réessayez.',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -135,6 +168,14 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'Enter your password.',
     'loginShowPassword': 'Show password',
     'loginHidePassword': 'Hide password',
+    'profileLogout': 'Log out',
+    'errUnauthorized': 'Incorrect email or password.',
+    'errAccountBlocked': 'Your account is blocked. Contact the administration.',
+    'errAccountSuspended':
+        'Your account is suspended. Contact the administration.',
+    'errRateLimited': 'Too many attempts. Try again shortly.',
+    'errNetwork': 'Unable to connect. Check your network.',
+    'errGeneric': 'Something went wrong. Please try again.',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -162,6 +203,13 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'أدخل كلمة المرور.',
     'loginShowPassword': 'إظهار كلمة المرور',
     'loginHidePassword': 'إخفاء كلمة المرور',
+    'profileLogout': 'تسجيل الخروج',
+    'errUnauthorized': 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
+    'errAccountBlocked': 'حسابك محظور. يرجى التواصل مع الإدارة.',
+    'errAccountSuspended': 'حسابك موقوف. يرجى التواصل مع الإدارة.',
+    'errRateLimited': 'محاولات كثيرة جدًا. حاول مرة أخرى بعد قليل.',
+    'errNetwork': 'تعذّر الاتصال. تحقق من شبكتك.',
+    'errGeneric': 'حدث خطأ ما. حاول مرة أخرى.',
   },
 };
 

@@ -84,6 +84,13 @@ class AppLocalizations {
   // Profil.
   String get profileLogout => _t('profileLogout');
 
+  // Catalogue.
+  String get catalogueAll => _t('catalogueAll');
+  String get catalogueEmpty => _t('catalogueEmpty');
+  String get retry => _t('retry');
+  String get productUnavailable => _t('productUnavailable');
+  String get addToCartComingSoon => _t('addToCartComingSoon');
+
   /// Message utilisateur dérivé d'un `code` d'erreur API (jamais du `message`
   /// serveur). Repli générique pour tout code non spécifiquement traité.
   String errorMessage(String code) {
@@ -141,6 +148,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'errRateLimited': 'Trop de tentatives. Réessayez dans un moment.',
     'errNetwork': 'Connexion impossible. Vérifiez votre réseau.',
     'errGeneric': 'Une erreur est survenue. Réessayez.',
+    'catalogueAll': 'Tous',
+    'catalogueEmpty': 'Aucun produit disponible pour le moment.',
+    'retry': 'Réessayer',
+    'productUnavailable': 'Indisponible',
+    'addToCartComingSoon': 'Ajout au panier — à venir (M4).',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -176,6 +188,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'errRateLimited': 'Too many attempts. Try again shortly.',
     'errNetwork': 'Unable to connect. Check your network.',
     'errGeneric': 'Something went wrong. Please try again.',
+    'catalogueAll': 'All',
+    'catalogueEmpty': 'No products available right now.',
+    'retry': 'Retry',
+    'productUnavailable': 'Unavailable',
+    'addToCartComingSoon': 'Add to cart — coming soon (M4).',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -210,6 +227,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'errRateLimited': 'محاولات كثيرة جدًا. حاول مرة أخرى بعد قليل.',
     'errNetwork': 'تعذّر الاتصال. تحقق من شبكتك.',
     'errGeneric': 'حدث خطأ ما. حاول مرة أخرى.',
+    'catalogueAll': 'الكل',
+    'catalogueEmpty': 'لا توجد منتجات متاحة حاليًا.',
+    'retry': 'إعادة المحاولة',
+    'productUnavailable': 'غير متوفر',
+    'addToCartComingSoon': 'الإضافة إلى السلة — قريبًا (M4).',
   },
 };
 

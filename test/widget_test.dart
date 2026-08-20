@@ -26,6 +26,9 @@ Widget _wrap(Widget home) => AuthScope(
 void main() {
   testWidgets('Le shell affiche la bottom nav 5 onglets', (tester) async {
     await tester.pumpWidget(_wrap(const AppShell()));
+    // L'onglet Commander (catalogue) déclenche un chargement asynchrone :
+    // on le laisse se terminer pour éviter un timer en attente.
+    await tester.pumpAndSettle();
 
     expect(find.byType(NavigationBar), findsOneWidget);
     for (final label in const [

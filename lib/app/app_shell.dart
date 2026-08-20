@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../features/canteen/presentation/canteen_page.dart';
+import '../features/catalogue/presentation/catalogue_page.dart';
 import '../features/home/presentation/home_page.dart';
-import '../features/order/presentation/order_page.dart';
 import '../features/orders/presentation/orders_page.dart';
 import '../features/profile/presentation/profile_page.dart';
 import '../l10n/app_localizations.dart';
@@ -25,7 +25,7 @@ class _AppShellState extends State<AppShell> {
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
-    OrderPage(),
+    CataloguePage(),
     CanteenPage(),
     OrdersPage(),
     ProfilePage(),

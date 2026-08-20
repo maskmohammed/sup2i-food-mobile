@@ -7,6 +7,7 @@ import '../../../l10n/app_localizations.dart';
 import '../application/catalogue_controller.dart';
 import '../data/catalogue_repository.dart';
 import '../data/mock_catalogue_repository.dart';
+import 'product_detail_page.dart';
 import 'widgets/category_selector.dart';
 import 'widgets/product_card.dart';
 
@@ -91,6 +92,14 @@ class _CataloguePageState extends State<CataloguePage> {
                           final product = _controller.products[index];
                           return ProductCard(
                             product: product,
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => ProductDetailPage(
+                                  productId: product.id,
+                                  repository: widget.repository,
+                                ),
+                              ),
+                            ),
                             onAddToCart: product.available
                                 ? () => ScaffoldMessenger.of(context)
                                       .showSnackBar(

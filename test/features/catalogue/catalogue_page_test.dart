@@ -47,4 +47,14 @@ void main() {
 
     expect(find.text('Indisponible'), findsOneWidget);
   });
+
+  testWidgets('Tap sur une carte ouvre le détail produit', (tester) async {
+    await tester.pumpWidget(_wrap(_page));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Tacos Poulet XL'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Allergènes'), findsOneWidget);
+  });
 }

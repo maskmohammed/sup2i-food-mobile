@@ -9,9 +9,15 @@ import '../../domain/product.dart';
 /// Un produit indisponible est grisé + badge « Indisponible » (statut jamais
 /// signalé par la couleur seule).
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key, required this.product, this.onAddToCart});
+  const ProductCard({
+    super.key,
+    required this.product,
+    this.onTap,
+    this.onAddToCart,
+  });
 
   final Product product;
+  final VoidCallback? onTap;
   final VoidCallback? onAddToCart;
 
   @override
@@ -21,81 +27,84 @@ class ProductCard extends StatelessWidget {
 
     return Opacity(
       opacity: product.available ? 1 : 0.6,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.neutral0,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.border),
-        ),
+      child: Material(
+        color: AppColors.neutral0,
         clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            AspectRatio(
-              aspectRatio: 1.5,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Container(
-                    color: AppColors.neutral100,
-                    child: const Icon(
-                      Icons.restaurant_menu,
-                      color: AppColors.muted,
-                      size: 36,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.border),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AspectRatio(
+                aspectRatio: 1.5,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(
+                      color: AppColors.neutral100,
+                      child: const Icon(
+                        Icons.restaurant_menu,
+                        color: AppColors.muted,
+                        size: 36,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Icon(
-                      Icons.favorite_border,
-                      size: 20,
-                      color: AppColors.pink500,
-                    ),
-                  ),
-                  if (!product.available)
                     Positioned(
-                      left: 8,
                       top: 8,
-                      child: _Badge(label: loc.productUnavailable),
+                      right: 8,
+                      child: Icon(
+                        Icons.favorite_border,
+                        size: 20,
+                        color: AppColors.pink500,
+                      ),
                     ),
-                ],
+                    if (!product.available)
+                      Positioned(
+                        left: 8,
+                        top: 8,
+                        child: _Badge(label: loc.productUnavailable),
+                      ),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: text.bodyMedium,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          Money.format(product.priceCents),
-                          style: text.labelLarge?.copyWith(
-                            color: AppColors.navy900,
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: text.bodyMedium,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 4),
+                          Text(
+                            Money.format(product.priceCents),
+                            style: text.labelLarge?.copyWith(
+                              color: AppColors.navy900,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: product.available ? onAddToCart : null,
-                    icon: const Icon(Icons.add_circle),
-                    color: AppColors.pink600,
-                    tooltip: loc.addToCartComingSoon,
-                  ),
-                ],
+                    IconButton(
+                      onPressed: product.available ? onAddToCart : null,
+                      icon: const Icon(Icons.add_circle),
+                      color: AppColors.pink600,
+                      tooltip: loc.addToCartComingSoon,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

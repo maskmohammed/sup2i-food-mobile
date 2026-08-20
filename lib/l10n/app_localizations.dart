@@ -91,6 +91,12 @@ class AppLocalizations {
   String get productUnavailable => _t('productUnavailable');
   String get addToCartComingSoon => _t('addToCartComingSoon');
 
+  // Détail produit.
+  String get addToCart => _t('addToCart');
+  String get allergensLabel => _t('allergensLabel');
+  String get minutesSuffix => _t('minutesSuffix');
+  String get optionIncluded => _t('optionIncluded');
+
   /// Message utilisateur dérivé d'un `code` d'erreur API (jamais du `message`
   /// serveur). Repli générique pour tout code non spécifiquement traité.
   String errorMessage(String code) {
@@ -153,6 +159,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'retry': 'Réessayer',
     'productUnavailable': 'Indisponible',
     'addToCartComingSoon': 'Ajout au panier — à venir (M4).',
+    'addToCart': 'Ajouter au panier',
+    'allergensLabel': 'Allergènes',
+    'minutesSuffix': 'min',
+    'optionIncluded': 'Inclus',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -193,6 +203,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'retry': 'Retry',
     'productUnavailable': 'Unavailable',
     'addToCartComingSoon': 'Add to cart — coming soon (M4).',
+    'addToCart': 'Add to cart',
+    'allergensLabel': 'Allergens',
+    'minutesSuffix': 'min',
+    'optionIncluded': 'Included',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -232,6 +246,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'retry': 'إعادة المحاولة',
     'productUnavailable': 'غير متوفر',
     'addToCartComingSoon': 'الإضافة إلى السلة — قريبًا (M4).',
+    'addToCart': 'أضف إلى السلة',
+    'allergensLabel': 'مسببات الحساسية',
+    'minutesSuffix': 'دقيقة',
+    'optionIncluded': 'مشمول',
   },
 };
 

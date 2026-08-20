@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Plateformes de prévisualisation locale — non versionnées (charte : android/ios seulement)
+/web/
+/windows/

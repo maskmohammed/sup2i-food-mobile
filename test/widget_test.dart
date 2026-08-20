@@ -1,30 +1,50 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Smoke test du shell : bottom nav 5 onglets, thème appliqué, navigation.
+// Le shell est monté isolément (l'écran d'entrée de l'app est désormais Login).
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:sup2i_food_mobile/main.dart';
+import 'package:sup2i_food_mobile/app/app_shell.dart';
+import 'package:sup2i_food_mobile/core/theme/app_colors.dart';
+import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
+import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
+
+Widget _wrap(Widget home) => MaterialApp(
+  theme: AppTheme.light,
+  locale: const Locale('fr'),
+  supportedLocales: AppLocalizations.supportedLocales,
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  home: home,
+);
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Le shell affiche la bottom nav 5 onglets', (tester) async {
+    await tester.pumpWidget(_wrap(const AppShell()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.byType(NavigationBar), findsOneWidget);
+    for (final label in const [
+      'Accueil',
+      'Commander',
+      'Cantine',
+      'Commandes',
+      'Profil',
+    ]) {
+      expect(find.text(label), findsWidgets);
+    }
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    final theme = Theme.of(tester.element(find.byType(NavigationBar)));
+    expect(theme.useMaterial3, isTrue);
+    expect(theme.colorScheme.primary, AppColors.navy900);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('La sélection d\'un onglet change l\'écran affiché', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_wrap(const AppShell()));
+
+    await tester.tap(find.text('Cantine'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Cantine et Food Pass — à venir (M8).'), findsOneWidget);
   });
 }

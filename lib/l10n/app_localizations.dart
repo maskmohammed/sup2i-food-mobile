@@ -162,6 +162,14 @@ class AppLocalizations {
 
   /// Libellé localisé d'un statut de commande.
   String orderStatusLabel(OrderStatus status) => _t('status_${status.name}');
+
+  // Accueil.
+  String get homeWelcome => _t('homeWelcome');
+  String get homeSearchHint => _t('homeSearchHint');
+  String get homeFavorites => _t('homeFavorites');
+  String get homeCategories => _t('homeCategories');
+  String get homeProducts => _t('homeProducts');
+  String get seeMore => _t('seeMore');
 }
 
 const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
@@ -259,6 +267,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_expired': 'Expirée',
     'status_refunded': 'Remboursée',
     'status_noShow': 'Non retirée',
+    'homeWelcome': 'Bienvenue chez SUP2I FOOD',
+    'homeSearchHint': 'Rechercher des produits',
+    'homeFavorites': 'Nos coups de cœur',
+    'homeCategories': 'Nos catégories',
+    'homeProducts': 'Nos produits',
+    'seeMore': 'Voir plus',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -352,6 +366,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_expired': 'Expired',
     'status_refunded': 'Refunded',
     'status_noShow': 'No-show',
+    'homeWelcome': 'Welcome to SUP2I FOOD',
+    'homeSearchHint': 'Search products',
+    'homeFavorites': 'Our favourites',
+    'homeCategories': 'Categories',
+    'homeProducts': 'Products',
+    'seeMore': 'See more',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -443,6 +463,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_expired': 'منتهية',
     'status_refunded': 'مُستردة',
     'status_noShow': 'لم تُستلم',
+    'homeWelcome': 'مرحبًا بك في SUP2I FOOD',
+    'homeSearchHint': 'ابحث عن المنتجات',
+    'homeFavorites': 'مختاراتنا',
+    'homeCategories': 'الفئات',
+    'homeProducts': 'المنتجات',
+    'seeMore': 'عرض المزيد',
   },
 };
 

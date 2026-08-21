@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/cart_scope.dart';
+import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_loading_view.dart';
@@ -102,6 +103,7 @@ class _HomePageState extends State<HomePage> {
 
           final products = _controller.products;
           final favourites = products.take(3).toList();
+          final favorites = FavoritesScope.of(context);
 
           return ListView(
             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -128,6 +130,8 @@ class _HomePageState extends State<HomePage> {
                       width: 160,
                       child: ProductCard(
                         product: product,
+                        isFavorite: favorites.isFavorite(product.id),
+                        onFavoriteTap: () => favorites.toggle(product.id),
                         onTap: () => _openDetail(product),
                         onAddToCart: product.available
                             ? () => _addToCart(product, loc)
@@ -165,6 +169,8 @@ class _HomePageState extends State<HomePage> {
                   final product = products[index];
                   return ProductCard(
                     product: product,
+                    isFavorite: favorites.isFavorite(product.id),
+                    onFavoriteTap: () => favorites.toggle(product.id),
                     onTap: () => _openDetail(product),
                     onAddToCart: product.available
                         ? () => _addToCart(product, loc)

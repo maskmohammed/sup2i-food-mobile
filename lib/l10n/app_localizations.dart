@@ -204,6 +204,9 @@ class AppLocalizations {
   String get profilePreferences => _t('profilePreferences');
   String get profileLanguage => _t('profileLanguage');
   String get profileHelp => _t('profileHelp');
+  String get profileFavorites => _t('profileFavorites');
+  String get favoritesTitle => _t('favoritesTitle');
+  String get favoritesEmpty => _t('favoritesEmpty');
   String get comingSoon => _t('comingSoon');
 
   String prefCategoryLabel(NotificationCategory c) => _t('prefLabel_${c.name}');
@@ -368,6 +371,9 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'Marketing',
     'prefDesc_marketing': 'Actualités SUP2I FOOD',
     'comingSoon': 'Bientôt disponible',
+    'profileFavorites': 'Mes favoris',
+    'favoritesTitle': 'Mes favoris',
+    'favoritesEmpty': 'Aucun favori pour le moment.',
     'reservationConfirmedTitle': 'Réservation confirmée',
     'reservationSubtitle': 'Votre repas vous attend à la cantine.',
     'menuOfDay': 'Menu du jour',
@@ -523,6 +529,9 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'Marketing',
     'prefDesc_marketing': 'SUP2I FOOD news',
     'comingSoon': 'Coming soon',
+    'profileFavorites': 'My favourites',
+    'favoritesTitle': 'My favourites',
+    'favoritesEmpty': 'No favourites yet.',
     'reservationConfirmedTitle': 'Reservation confirmed',
     'reservationSubtitle': 'Your meal is waiting at the canteen.',
     'menuOfDay': 'Menu of the day',
@@ -676,6 +685,9 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'التسويق',
     'prefDesc_marketing': 'أخبار SUP2I FOOD',
     'comingSoon': 'قريبًا',
+    'profileFavorites': 'مفضّلاتي',
+    'favoritesTitle': 'مفضّلاتي',
+    'favoritesEmpty': 'لا توجد مفضّلات بعد.',
     'reservationConfirmedTitle': 'تم تأكيد الحجز',
     'reservationSubtitle': 'وجبتك بانتظارك في المقصف.',
     'menuOfDay': 'قائمة اليوم',

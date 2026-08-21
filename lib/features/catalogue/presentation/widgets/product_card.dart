@@ -14,11 +14,15 @@ class ProductCard extends StatelessWidget {
     required this.product,
     this.onTap,
     this.onAddToCart,
+    this.isFavorite = false,
+    this.onFavoriteTap,
   });
 
   final Product product;
   final VoidCallback? onTap;
   final VoidCallback? onAddToCart;
+  final bool isFavorite;
+  final VoidCallback? onFavoriteTap;
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +57,18 @@ class ProductCard extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Icon(
-                        Icons.favorite_border,
-                        size: 20,
-                        color: AppColors.pink500,
+                      top: 4,
+                      right: 4,
+                      child: GestureDetector(
+                        onTap: onFavoriteTap,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4),
+                          child: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            size: 22,
+                            color: AppColors.pink500,
+                          ),
+                        ),
                       ),
                     ),
                     if (!product.available)

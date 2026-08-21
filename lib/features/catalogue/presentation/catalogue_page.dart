@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/cart_scope.dart';
+import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
@@ -92,8 +93,11 @@ class _CataloguePageState extends State<CataloguePage> {
                         itemCount: _controller.products.length,
                         itemBuilder: (context, index) {
                           final product = _controller.products[index];
+                          final favorites = FavoritesScope.of(context);
                           return ProductCard(
                             product: product,
+                            isFavorite: favorites.isFavorite(product.id),
+                            onFavoriteTap: () => favorites.toggle(product.id),
                             onTap: () => Navigator.of(context).push(
                               MaterialPageRoute<void>(
                                 builder: (_) => ProductDetailPage(

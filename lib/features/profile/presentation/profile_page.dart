@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../canteen/presentation/food_pass_page.dart';
 import '../../canteen/presentation/subscription_page.dart';
+import '../../favorites/presentation/favorites_page.dart';
 import '../../notifications/presentation/notifications_page.dart';
 import '../../notifications/presentation/preferences_page.dart';
 
@@ -37,6 +38,11 @@ class ProfilePage extends StatelessWidget {
             idLabel: loc.profileIdLabel,
           ),
           const SizedBox(height: 16),
+          _Row(
+            icon: Icons.favorite_border,
+            label: loc.profileFavorites,
+            onTap: () => _push(context, const FavoritesPage()),
+          ),
           _Row(
             icon: Icons.notifications_none,
             label: loc.profileNotifications,

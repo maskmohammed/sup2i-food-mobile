@@ -8,6 +8,7 @@ import '../../../l10n/app_localizations.dart';
 import '../application/canteen_controller.dart';
 import '../data/canteen_repository.dart';
 import '../domain/canteen.dart';
+import 'loss_declaration_page.dart';
 
 /// Food Pass numérique : carte navy avec QR permanent, identité et statut
 /// (badge + libellé). Photo/état pilotés serveur ; la photo n'est jamais
@@ -128,6 +129,22 @@ class _FoodPassPageState extends State<FoodPassPage> {
                         Icons.qr_code_2,
                         size: 110,
                         color: AppColors.navy900,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: TextButton(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => LossDeclarationPage(
+                            repository: widget.repository,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        loc.declareLossButton,
+                        style: const TextStyle(color: AppColors.neutral0),
                       ),
                     ),
                   ),

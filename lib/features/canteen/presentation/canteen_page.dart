@@ -9,6 +9,7 @@ import '../application/canteen_controller.dart';
 import '../data/canteen_repository.dart';
 import '../domain/canteen.dart';
 import 'food_pass_page.dart';
+import 'reservation_confirmed_page.dart';
 import 'subscription_page.dart';
 
 /// Onglet Cantine : menu de la semaine + accès Food Pass et abonnement.
@@ -40,6 +41,28 @@ class _CanteenPageState extends State<CanteenPage> {
 
   void _push(Widget page) {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
+  }
+
+  Future<void> _reserve(String mealId) async {
+    final loc = AppLocalizations.of(context);
+    final reservation = await _controller.reserve(mealId);
+    if (!mounted) return;
+    if (reservation != null) {
+      _push(
+        ReservationConfirmedPage(
+          reservation: reservation,
+          repository: widget.repository,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            loc.errorMessage(_controller.errorCode ?? ApiCodes.internalError),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -101,7 +124,10 @@ class _CanteenPageState extends State<CanteenPage> {
                   childAspectRatio: 0.9,
                 ),
                 itemCount: menu.length,
-                itemBuilder: (context, index) => _MealCard(meal: menu[index]),
+                itemBuilder: (context, index) {
+                  final meal = menu[index];
+                  return _MealCard(meal: meal, onTap: () => _reserve(meal.id));
+                },
               ),
             ],
           );
@@ -152,53 +178,57 @@ class _ActionCard extends StatelessWidget {
 }
 
 class _MealCard extends StatelessWidget {
-  const _MealCard({required this.meal});
+  const _MealCard({required this.meal, this.onTap});
 
   final MealDay meal;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final TextTheme text = Theme.of(context).textTheme;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral0,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
-      ),
+    return Material(
+      color: AppColors.neutral0,
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: Container(
-              color: AppColors.neutral100,
-              child: const Icon(
-                Icons.lunch_dining,
-                size: 40,
-                color: AppColors.muted,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: AppColors.border),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Container(
+                color: AppColors.neutral100,
+                child: const Icon(
+                  Icons.lunch_dining,
+                  size: 40,
+                  color: AppColors.muted,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(meal.label, style: text.bodyMedium),
-                if (meal.description != null) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    meal.description!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: text.bodySmall?.copyWith(color: AppColors.muted),
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(meal.label, style: text.bodyMedium),
+                  if (meal.description != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      meal.description!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: text.bodySmall?.copyWith(color: AppColors.muted),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

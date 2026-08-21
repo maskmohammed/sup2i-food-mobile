@@ -204,6 +204,24 @@ class AppLocalizations {
 
   String prefCategoryLabel(NotificationCategory c) => _t('prefLabel_${c.name}');
   String prefCategoryDesc(NotificationCategory c) => _t('prefDesc_${c.name}');
+
+  // Réservation cantine.
+  String get reservationConfirmedTitle => _t('reservationConfirmedTitle');
+  String get reservationSubtitle => _t('reservationSubtitle');
+  String get menuOfDay => _t('menuOfDay');
+  String get cancelReservation => _t('cancelReservation');
+  String get backToCanteen => _t('backToCanteen');
+  String get cancelPossibleUntil => _t('cancelPossibleUntil');
+
+  // Perte du Food Pass.
+  String get lossTitle => _t('lossTitle');
+  String get lossIrreversibleTitle => _t('lossIrreversibleTitle');
+  String get lossIrreversibleBody => _t('lossIrreversibleBody');
+  String get lossReasonQuestion => _t('lossReasonQuestion');
+  String get confirmLoss => _t('confirmLoss');
+  String get declareLossButton => _t('declareLossButton');
+  String get lossDeclared => _t('lossDeclared');
+  String lossReasonLabel(LossReason r) => _t('lossReason_${r.name}');
 }
 
 const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
@@ -342,6 +360,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'Marketing',
     'prefDesc_marketing': 'Actualités SUP2I FOOD',
     'comingSoon': 'Bientôt disponible',
+    'reservationConfirmedTitle': 'Réservation confirmée',
+    'reservationSubtitle': 'Votre repas vous attend à la cantine.',
+    'menuOfDay': 'Menu du jour',
+    'cancelReservation': 'Annuler la réservation',
+    'backToCanteen': 'Retour à la cantine',
+    'cancelPossibleUntil': 'Annulation possible jusqu\'à',
+    'lossTitle': 'Perte de mon Food Pass',
+    'lossIrreversibleTitle': 'Action irréversible',
+    'lossIrreversibleBody':
+        'Votre ancien QR sera invalidé immédiatement. Abonnement, quota et historique sont conservés.',
+    'lossReasonQuestion': 'Pourquoi déclarez-vous la perte ?',
+    'confirmLoss': 'Confirmer la perte',
+    'declareLossButton': 'Déclarer la perte',
+    'lossDeclared': 'Perte déclarée',
+    'lossReason_damaged': 'Carte endommagée',
+    'lossReason_stolen': 'Carte volée',
+    'lossReason_lost': 'Carte perdue',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -476,6 +511,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'Marketing',
     'prefDesc_marketing': 'SUP2I FOOD news',
     'comingSoon': 'Coming soon',
+    'reservationConfirmedTitle': 'Reservation confirmed',
+    'reservationSubtitle': 'Your meal is waiting at the canteen.',
+    'menuOfDay': 'Menu of the day',
+    'cancelReservation': 'Cancel reservation',
+    'backToCanteen': 'Back to canteen',
+    'cancelPossibleUntil': 'Cancellation possible until',
+    'lossTitle': 'Report my Food Pass loss',
+    'lossIrreversibleTitle': 'Irreversible action',
+    'lossIrreversibleBody':
+        'Your old QR will be invalidated immediately. Subscription, quota and history are kept.',
+    'lossReasonQuestion': 'Why are you reporting the loss?',
+    'confirmLoss': 'Confirm loss',
+    'declareLossButton': 'Report loss',
+    'lossDeclared': 'Loss reported',
+    'lossReason_damaged': 'Damaged card',
+    'lossReason_stolen': 'Stolen card',
+    'lossReason_lost': 'Lost card',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -608,6 +660,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'التسويق',
     'prefDesc_marketing': 'أخبار SUP2I FOOD',
     'comingSoon': 'قريبًا',
+    'reservationConfirmedTitle': 'تم تأكيد الحجز',
+    'reservationSubtitle': 'وجبتك بانتظارك في المقصف.',
+    'menuOfDay': 'قائمة اليوم',
+    'cancelReservation': 'إلغاء الحجز',
+    'backToCanteen': 'العودة إلى المقصف',
+    'cancelPossibleUntil': 'الإلغاء ممكن حتى',
+    'lossTitle': 'الإبلاغ عن فقدان بطاقتي',
+    'lossIrreversibleTitle': 'إجراء لا رجعة فيه',
+    'lossIrreversibleBody':
+        'سيتم إبطال رمزك القديم فورًا. يتم الاحتفاظ بالاشتراك والحصة والسجل.',
+    'lossReasonQuestion': 'لماذا تبلّغ عن الفقدان؟',
+    'confirmLoss': 'تأكيد الفقدان',
+    'declareLossButton': 'الإبلاغ عن الفقدان',
+    'lossDeclared': 'تم الإبلاغ عن الفقدان',
+    'lossReason_damaged': 'بطاقة تالفة',
+    'lossReason_stolen': 'بطاقة مسروقة',
+    'lossReason_lost': 'بطاقة مفقودة',
   },
 };
 

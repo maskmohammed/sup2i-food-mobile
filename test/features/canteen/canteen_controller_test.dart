@@ -30,4 +30,12 @@ void main() {
     expect(c.foodPass!.status, FoodPassStatus.active);
     expect(c.foodPass!.studentName, 'Chnaf Yahya');
   });
+
+  test('reserve : retourne une réservation', () async {
+    final c = controller();
+    final reservation = await c.reserve('lundi');
+    expect(reservation, isNotNull);
+    expect(reservation!.cancelDeadlineLabel, '11h00');
+    expect(c.errorCode, isNull);
+  });
 }

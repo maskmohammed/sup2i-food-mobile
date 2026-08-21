@@ -48,4 +48,20 @@ class CanteenController extends ChangeNotifier {
 
   Future<void> loadFoodPass() =>
       _run(() async => _foodPass = await _repository.foodPass());
+
+  /// Réserve un repas. Retourne la réservation, ou `null` (avec [errorCode]).
+  Future<Reservation?> reserve(String mealId) async {
+    _errorCode = null;
+    try {
+      return await _repository.reserve(mealId);
+    } on ApiException catch (e) {
+      _errorCode = e.code;
+      notifyListeners();
+      return null;
+    } catch (_) {
+      _errorCode = ApiCodes.internalError;
+      notifyListeners();
+      return null;
+    }
+  }
 }

@@ -47,4 +47,28 @@ void main() {
     expect(find.text('Actif'), findsOneWidget);
     expect(find.text('8 / 12'), findsOneWidget);
   });
+
+  testWidgets('Réserver un plat → confirmation', (tester) async {
+    await tester.pumpWidget(_wrap(const CanteenPage(repository: _repo)));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Plat Lundi'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Réservation confirmée'), findsWidgets);
+    expect(find.text('Annuler la réservation'), findsOneWidget);
+    expect(find.text('Retour à la cantine'), findsOneWidget);
+  });
+
+  testWidgets('Food Pass → déclarer la perte', (tester) async {
+    await tester.pumpWidget(_wrap(const FoodPassPage(repository: _repo)));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Déclarer la perte'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Action irréversible'), findsOneWidget);
+    expect(find.text('Carte perdue'), findsOneWidget);
+    expect(find.text('Confirmer la perte'), findsOneWidget);
+  });
 }

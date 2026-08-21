@@ -1,10 +1,30 @@
 /// Plat d'un jour du menu cantine.
 class MealDay {
-  const MealDay({required this.label, this.description});
+  const MealDay({required this.id, required this.label, this.description});
 
+  final String id;
   final String label;
   final String? description;
 }
+
+/// Réservation de repas cantine (optionnelle). Fenêtre d'annulation = donnée
+/// serveur (jamais en dur).
+class Reservation {
+  const Reservation({
+    required this.id,
+    required this.mealLabel,
+    required this.dateLabel,
+    required this.cancelDeadlineLabel,
+  });
+
+  final String id;
+  final String mealLabel;
+  final String dateLabel;
+  final String cancelDeadlineLabel;
+}
+
+/// Motif de déclaration de perte du Food Pass.
+enum LossReason { damaged, stolen, lost }
 
 /// Abonnement cantine. **Activé par l'Administration** — le Mobile n'active
 /// jamais. Quota calculé serveur (renouvellement hebdomadaire).

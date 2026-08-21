@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/cart_scope.dart';
+import '../../../app/orders_scope.dart';
+import '../../../core/error/api_exception.dart';
 import '../../../core/format/money.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../orders/presentation/order_tracking_page.dart';
+import '../../orders/presentation/widgets/payment_method_sheet.dart';
 import '../application/cart_controller.dart';
 import '../data/slot_repository.dart';
 import '../domain/cart_line.dart';
@@ -17,6 +21,35 @@ class CartPage extends StatelessWidget {
 
   /// Passé à l'écran de créneaux (injectable pour les tests).
   final SlotRepository? slotRepository;
+
+  Future<void> _checkout(
+    BuildContext context,
+    CartController cart,
+    AppLocalizations loc,
+  ) async {
+    final method = await showPaymentMethodSheet(context);
+    if (method == null || !context.mounted) return;
+    final repo = OrdersScope.of(context);
+    try {
+      final order = await repo.createOrder(
+        lines: cart.lines,
+        slotLabel: cart.slot!.label,
+        paymentMethod: method,
+      );
+      cart.clear();
+      if (!context.mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (_) => OrderTrackingPage(orderId: order.id),
+        ),
+      );
+    } on ApiException catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.errorMessage(e.code))));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +93,7 @@ class CartPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: cart.slot == null
                           ? null
-                          : () => ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(loc.checkoutComingSoon)),
-                            ),
+                          : () => _checkout(context, cart, loc),
                       child: Text(loc.checkout),
                     ),
                   ),

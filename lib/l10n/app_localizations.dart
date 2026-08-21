@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/error/api_codes.dart';
+import '../features/orders/domain/order.dart';
 
 /// Localisation minimale maison (M1) — FR / AR / EN + direction RTL pour l'arabe.
 ///
@@ -130,10 +131,37 @@ class AppLocalizations {
         return _t('errRateLimited');
       case ApiCodes.networkError:
         return _t('errNetwork');
+      case ApiCodes.maxActiveOrdersReached:
+        return _t('errMaxOrders');
+      case ApiCodes.invalidOrderStatus:
+        return _t('errInvalidOrderStatus');
+      case ApiCodes.slotFull:
+        return _t('errSlotFull');
+      case ApiCodes.slotClosed:
+        return _t('errSlotClosed');
       default:
         return _t('errGeneric');
     }
   }
+
+  // Commandes / paiement / suivi.
+  String get paymentSheetTitle => _t('paymentSheetTitle');
+  String get paymentCash => _t('paymentCash');
+  String get paymentCardTpe => _t('paymentCardTpe');
+  String get paymentNote => _t('paymentNote');
+  String get confirmOrder => _t('confirmOrder');
+  String get orderNumberLabel => _t('orderNumberLabel');
+  String get presentAtCounter => _t('presentAtCounter');
+  String get yourQr => _t('yourQr');
+  String get cancelOrder => _t('cancelOrder');
+  String get tlPaymentConfirmed => _t('tlPaymentConfirmed');
+  String get tlOrderReceived => _t('tlOrderReceived');
+  String get tlPreparing => _t('tlPreparing');
+  String get tlOrderReady => _t('tlOrderReady');
+  String get ordersEmpty => _t('ordersEmpty');
+
+  /// Libellé localisé d'un statut de commande.
+  String orderStatusLabel(OrderStatus status) => _t('status_${status.name}');
 }
 
 const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
@@ -199,6 +227,38 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'slotAlmostFull': 'Presque complet',
     'slotFull': 'Complet',
     'slotClosed': 'Fermé',
+    'errMaxOrders': 'Vous avez atteint la limite de commandes actives.',
+    'errInvalidOrderStatus': 'Action impossible à ce stade de la commande.',
+    'errSlotFull': 'Ce créneau est complet.',
+    'errSlotClosed': 'Ce créneau est fermé.',
+    'paymentSheetTitle': 'Paiement',
+    'paymentCash': 'Espèces (au comptoir)',
+    'paymentCardTpe': 'Carte — TPE (au comptoir)',
+    'paymentNote':
+        'Le paiement s\'effectue au comptoir. L\'application ne confirme jamais le paiement.',
+    'confirmOrder': 'Confirmer la commande',
+    'orderNumberLabel': 'Numéro',
+    'presentAtCounter': 'Présentez ce numéro au comptoir',
+    'yourQr': 'Votre QR',
+    'cancelOrder': 'Annuler la commande',
+    'tlPaymentConfirmed': 'Paiement confirmé',
+    'tlOrderReceived': 'Commande reçue',
+    'tlPreparing': 'En préparation',
+    'tlOrderReady': 'Votre commande est prête',
+    'ordersEmpty': 'Aucune commande pour le moment.',
+    'status_draft': 'Brouillon',
+    'status_created': 'Créée',
+    'status_awaitingPayment': 'En attente de paiement',
+    'status_paid': 'Payée',
+    'status_queued': 'En file',
+    'status_preparing': 'En préparation',
+    'status_ready': 'Prête',
+    'status_collected': 'Retirée',
+    'status_completed': 'Terminée',
+    'status_cancelled': 'Annulée',
+    'status_expired': 'Expirée',
+    'status_refunded': 'Remboursée',
+    'status_noShow': 'Non retirée',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -260,6 +320,38 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'slotAlmostFull': 'Almost full',
     'slotFull': 'Full',
     'slotClosed': 'Closed',
+    'errMaxOrders': 'You have reached the active orders limit.',
+    'errInvalidOrderStatus': 'This action is not possible at this stage.',
+    'errSlotFull': 'This slot is full.',
+    'errSlotClosed': 'This slot is closed.',
+    'paymentSheetTitle': 'Payment',
+    'paymentCash': 'Cash (at counter)',
+    'paymentCardTpe': 'Card — POS (at counter)',
+    'paymentNote':
+        'Payment is made at the counter. The app never confirms payment.',
+    'confirmOrder': 'Confirm order',
+    'orderNumberLabel': 'Number',
+    'presentAtCounter': 'Show this number at the counter',
+    'yourQr': 'Your QR',
+    'cancelOrder': 'Cancel order',
+    'tlPaymentConfirmed': 'Payment confirmed',
+    'tlOrderReceived': 'Order received',
+    'tlPreparing': 'Preparing',
+    'tlOrderReady': 'Your order is ready',
+    'ordersEmpty': 'No orders yet.',
+    'status_draft': 'Draft',
+    'status_created': 'Created',
+    'status_awaitingPayment': 'Awaiting payment',
+    'status_paid': 'Paid',
+    'status_queued': 'Queued',
+    'status_preparing': 'Preparing',
+    'status_ready': 'Ready',
+    'status_collected': 'Collected',
+    'status_completed': 'Completed',
+    'status_cancelled': 'Cancelled',
+    'status_expired': 'Expired',
+    'status_refunded': 'Refunded',
+    'status_noShow': 'No-show',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -320,6 +412,37 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'slotAlmostFull': 'شبه ممتلئ',
     'slotFull': 'ممتلئ',
     'slotClosed': 'مغلق',
+    'errMaxOrders': 'لقد بلغت الحد الأقصى للطلبات النشطة.',
+    'errInvalidOrderStatus': 'لا يمكن تنفيذ هذا الإجراء في هذه المرحلة.',
+    'errSlotFull': 'هذا الموعد ممتلئ.',
+    'errSlotClosed': 'هذا الموعد مغلق.',
+    'paymentSheetTitle': 'الدفع',
+    'paymentCash': 'نقدًا (عند الكاونتر)',
+    'paymentCardTpe': 'بطاقة — TPE (عند الكاونتر)',
+    'paymentNote': 'يتم الدفع عند الكاونتر. لا يؤكّد التطبيق الدفع أبدًا.',
+    'confirmOrder': 'تأكيد الطلب',
+    'orderNumberLabel': 'الرقم',
+    'presentAtCounter': 'اعرض هذا الرقم عند الكاونتر',
+    'yourQr': 'رمز الاستلام',
+    'cancelOrder': 'إلغاء الطلب',
+    'tlPaymentConfirmed': 'تم تأكيد الدفع',
+    'tlOrderReceived': 'تم استلام الطلب',
+    'tlPreparing': 'قيد التحضير',
+    'tlOrderReady': 'طلبك جاهز',
+    'ordersEmpty': 'لا توجد طلبات بعد.',
+    'status_draft': 'مسودة',
+    'status_created': 'أُنشئت',
+    'status_awaitingPayment': 'بانتظار الدفع',
+    'status_paid': 'مدفوعة',
+    'status_queued': 'في الطابور',
+    'status_preparing': 'قيد التحضير',
+    'status_ready': 'جاهزة',
+    'status_collected': 'مُستلمة',
+    'status_completed': 'مكتملة',
+    'status_cancelled': 'ملغاة',
+    'status_expired': 'منتهية',
+    'status_refunded': 'مُستردة',
+    'status_noShow': 'لم تُستلم',
   },
 };
 

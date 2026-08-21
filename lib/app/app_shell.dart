@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../features/canteen/presentation/canteen_page.dart';
 import '../features/catalogue/presentation/catalogue_page.dart';
 import '../features/home/presentation/home_page.dart';
-import '../features/orders/presentation/orders_page.dart';
+import '../features/orders/presentation/orders_list_page.dart';
 import '../features/profile/presentation/profile_page.dart';
 import '../l10n/app_localizations.dart';
 
@@ -27,7 +27,7 @@ class _AppShellState extends State<AppShell> {
     HomePage(),
     CataloguePage(),
     CanteenPage(),
-    OrdersPage(),
+    OrdersListPage(),
     ProfilePage(),
   ];
 

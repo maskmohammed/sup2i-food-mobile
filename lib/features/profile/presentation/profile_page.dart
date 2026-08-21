@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../../../app/auth_scope.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../canteen/presentation/food_pass_page.dart';
 import '../../canteen/presentation/subscription_page.dart';
 import '../../favorites/presentation/favorites_page.dart';
 import '../../notifications/presentation/notifications_page.dart';
 import '../../notifications/presentation/preferences_page.dart';
+import '../../settings/presentation/settings_pages.dart';
 
 /// Onglet Profil : identité, accès (notifications, préférences, Food Pass,
 /// abonnement, langue, aide) et déconnexion.
@@ -66,7 +68,12 @@ class ProfilePage extends StatelessWidget {
           _Row(
             icon: Icons.language,
             label: loc.profileLanguage,
-            onTap: comingSoon,
+            onTap: () => _push(context, const LanguagePage()),
+          ),
+          _Row(
+            icon: Icons.brightness_6_outlined,
+            label: loc.profileAppearance,
+            onTap: () => _push(context, const AppearancePage()),
           ),
           _Row(
             icon: Icons.help_outline,
@@ -111,10 +118,10 @@ class _Identity extends StatelessWidget {
 
     return Row(
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           radius: 28,
-          backgroundColor: AppColors.neutral100,
-          child: Icon(Icons.person, color: AppColors.muted, size: 30),
+          backgroundColor: context.surfaces.background,
+          child: const Icon(Icons.person, color: AppColors.muted, size: 30),
         ),
         const SizedBox(width: 12),
         Column(
@@ -123,7 +130,7 @@ class _Identity extends StatelessWidget {
             Text(name, style: text.titleLarge),
             Text(
               '$idLabel : $id',
-              style: text.bodySmall?.copyWith(color: AppColors.muted),
+              style: text.bodySmall?.copyWith(color: context.surfaces.muted),
             ),
           ],
         ),
@@ -146,12 +153,12 @@ class _Row extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(color: context.surfaces.border),
       ),
-      color: AppColors.neutral0,
+      color: context.surfaces.surface,
       child: ListTile(
         onTap: onTap,
-        leading: Icon(icon, color: AppColors.navy900),
+        leading: Icon(icon, color: context.surfaces.text),
         title: Text(label),
         trailing: const Icon(Icons.chevron_right, color: AppColors.muted),
       ),

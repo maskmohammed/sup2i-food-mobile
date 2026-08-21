@@ -208,6 +208,10 @@ class AppLocalizations {
   String get favoritesTitle => _t('favoritesTitle');
   String get favoritesEmpty => _t('favoritesEmpty');
   String get comingSoon => _t('comingSoon');
+  String get profileAppearance => _t('profileAppearance');
+  String get themeSystem => _t('themeSystem');
+  String get themeLight => _t('themeLight');
+  String get themeDark => _t('themeDark');
 
   String prefCategoryLabel(NotificationCategory c) => _t('prefLabel_${c.name}');
   String prefCategoryDesc(NotificationCategory c) => _t('prefDesc_${c.name}');
@@ -374,6 +378,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'profileFavorites': 'Mes favoris',
     'favoritesTitle': 'Mes favoris',
     'favoritesEmpty': 'Aucun favori pour le moment.',
+    'profileAppearance': 'Apparence',
+    'themeSystem': 'Système',
+    'themeLight': 'Clair',
+    'themeDark': 'Sombre',
     'reservationConfirmedTitle': 'Réservation confirmée',
     'reservationSubtitle': 'Votre repas vous attend à la cantine.',
     'menuOfDay': 'Menu du jour',
@@ -532,6 +540,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'profileFavorites': 'My favourites',
     'favoritesTitle': 'My favourites',
     'favoritesEmpty': 'No favourites yet.',
+    'profileAppearance': 'Appearance',
+    'themeSystem': 'System',
+    'themeLight': 'Light',
+    'themeDark': 'Dark',
     'reservationConfirmedTitle': 'Reservation confirmed',
     'reservationSubtitle': 'Your meal is waiting at the canteen.',
     'menuOfDay': 'Menu of the day',
@@ -688,6 +700,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'profileFavorites': 'مفضّلاتي',
     'favoritesTitle': 'مفضّلاتي',
     'favoritesEmpty': 'لا توجد مفضّلات بعد.',
+    'profileAppearance': 'المظهر',
+    'themeSystem': 'النظام',
+    'themeLight': 'فاتح',
+    'themeDark': 'داكن',
     'reservationConfirmedTitle': 'تم تأكيد الحجز',
     'reservationSubtitle': 'وجبتك بانتظارك في المقصف.',
     'menuOfDay': 'قائمة اليوم',

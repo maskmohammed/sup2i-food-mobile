@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_surfaces.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/category.dart';
 
@@ -66,11 +67,11 @@ class _Chip extends StatelessWidget {
       selected: selected,
       onSelected: (_) => onSelected(),
       showCheckmark: false,
-      backgroundColor: AppColors.neutral0,
+      backgroundColor: context.surfaces.surface,
       selectedColor: AppColors.pink600,
-      side: const BorderSide(color: AppColors.border),
+      side: BorderSide(color: context.surfaces.border),
       labelStyle: TextStyle(
-        color: selected ? AppColors.neutral0 : AppColors.neutral900,
+        color: selected ? AppColors.neutral0 : context.surfaces.text,
       ),
     );
   }

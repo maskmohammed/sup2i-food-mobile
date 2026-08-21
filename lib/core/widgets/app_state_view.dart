@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_surfaces.dart';
 
 /// Vue d'état centrée réutilisable (vide / erreur) : illustration ronde,
 /// titre, message et action optionnelle.
@@ -59,8 +60,8 @@ class AppStateView extends StatelessWidget {
             Container(
               width: 96,
               height: 96,
-              decoration: const BoxDecoration(
-                color: AppColors.neutral0,
+              decoration: BoxDecoration(
+                color: context.surfaces.surface,
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, size: 40, color: iconColor ?? AppColors.muted),
@@ -70,7 +71,7 @@ class AppStateView extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               message,
-              style: text.bodyMedium?.copyWith(color: AppColors.muted),
+              style: text.bodyMedium?.copyWith(color: context.surfaces.muted),
               textAlign: TextAlign.center,
             ),
             if (hasAction) ...[

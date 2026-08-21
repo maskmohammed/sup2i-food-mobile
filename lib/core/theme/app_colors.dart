@@ -27,4 +27,11 @@ class AppColors {
   // Tons utilitaires non gelés par la charte, dérivés pour usage UI courant
   static const Color border = Color(0xFFE4E6EE);
   static const Color muted = Color(0xFF8A8D99);
+
+  // Neutres sombres (mode nuit) — hors charte, dérivés pour l'UI.
+  static const Color darkSurface = Color(0xFF1C1D24);
+  static const Color darkBackground = Color(0xFF121317);
+  static const Color darkText = Color(0xFFE8EAF2);
+  static const Color darkMuted = Color(0xFF9AA0B4);
+  static const Color darkBorder = Color(0xFF33364A);
 }

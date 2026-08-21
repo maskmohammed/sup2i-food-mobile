@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/format/money.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_surfaces.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/product.dart';
 
@@ -32,11 +33,11 @@ class ProductCard extends StatelessWidget {
     return Opacity(
       opacity: product.available ? 1 : 0.6,
       child: Material(
-        color: AppColors.neutral0,
+        color: context.surfaces.surface,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: AppColors.border),
+          side: BorderSide(color: context.surfaces.border),
         ),
         child: InkWell(
           onTap: onTap,
@@ -49,7 +50,7 @@ class ProductCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     Container(
-                      color: AppColors.neutral100,
+                      color: context.surfaces.background,
                       child: const Icon(
                         Icons.restaurant_menu,
                         color: AppColors.muted,
@@ -98,7 +99,7 @@ class ProductCard extends StatelessWidget {
                           Text(
                             Money.format(product.priceCents),
                             style: text.labelLarge?.copyWith(
-                              color: AppColors.navy900,
+                              color: context.surfaces.text,
                             ),
                           ),
                         ],

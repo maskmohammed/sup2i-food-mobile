@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../core/error/api_codes.dart';
 import '../features/canteen/domain/canteen.dart';
+import '../features/notifications/domain/app_notification.dart';
 import '../features/orders/domain/order.dart';
 
 /// Localisation minimale maison (M1) — FR / AR / EN + direction RTL pour l'arabe.
@@ -188,6 +189,21 @@ class AppLocalizations {
 
   String foodPassStatusLabel(FoodPassStatus status) =>
       _t('fpStatus_${status.name}');
+
+  // Notifications / préférences / profil.
+  String get notificationsTitle => _t('notificationsTitle');
+  String get preferencesTitle => _t('preferencesTitle');
+  String get notificationsEmpty => _t('notificationsEmpty');
+  String get profileTitle => _t('profileTitle');
+  String get profileIdLabel => _t('profileIdLabel');
+  String get profileNotifications => _t('profileNotifications');
+  String get profilePreferences => _t('profilePreferences');
+  String get profileLanguage => _t('profileLanguage');
+  String get profileHelp => _t('profileHelp');
+  String get comingSoon => _t('comingSoon');
+
+  String prefCategoryLabel(NotificationCategory c) => _t('prefLabel_${c.name}');
+  String prefCategoryDesc(NotificationCategory c) => _t('prefDesc_${c.name}');
 }
 
 const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
@@ -308,6 +324,24 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'fpStatus_revoked': 'Révoqué',
     'planActive': 'Actif',
     'planInactive': 'Inactif',
+    'notificationsTitle': 'Notifications',
+    'preferencesTitle': 'Préférences',
+    'notificationsEmpty': 'Aucune notification.',
+    'profileTitle': 'Mon Profil',
+    'profileIdLabel': 'ID étudiant',
+    'profileNotifications': 'Notifications',
+    'profilePreferences': 'Préférences de notifications',
+    'profileLanguage': 'Langue',
+    'profileHelp': 'Aide et support',
+    'prefLabel_transactional': 'Transactionnel',
+    'prefDesc_transactional': 'Statut de commande, paiement, retrait',
+    'prefLabel_canteen': 'Cantine',
+    'prefDesc_canteen': 'Quota, réservation, Food Pass',
+    'prefLabel_promotions': 'Promotions',
+    'prefDesc_promotions': 'Offres et réductions',
+    'prefLabel_marketing': 'Marketing',
+    'prefDesc_marketing': 'Actualités SUP2I FOOD',
+    'comingSoon': 'Bientôt disponible',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -424,6 +458,24 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'fpStatus_revoked': 'Revoked',
     'planActive': 'Active',
     'planInactive': 'Inactive',
+    'notificationsTitle': 'Notifications',
+    'preferencesTitle': 'Preferences',
+    'notificationsEmpty': 'No notifications.',
+    'profileTitle': 'My Profile',
+    'profileIdLabel': 'Student ID',
+    'profileNotifications': 'Notifications',
+    'profilePreferences': 'Notification preferences',
+    'profileLanguage': 'Language',
+    'profileHelp': 'Help & support',
+    'prefLabel_transactional': 'Transactional',
+    'prefDesc_transactional': 'Order status, payment, pickup',
+    'prefLabel_canteen': 'Canteen',
+    'prefDesc_canteen': 'Quota, reservation, Food Pass',
+    'prefLabel_promotions': 'Promotions',
+    'prefDesc_promotions': 'Offers and discounts',
+    'prefLabel_marketing': 'Marketing',
+    'prefDesc_marketing': 'SUP2I FOOD news',
+    'comingSoon': 'Coming soon',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -538,6 +590,24 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'fpStatus_revoked': 'ملغاة',
     'planActive': 'نشِط',
     'planInactive': 'غير نشِط',
+    'notificationsTitle': 'الإشعارات',
+    'preferencesTitle': 'التفضيلات',
+    'notificationsEmpty': 'لا توجد إشعارات.',
+    'profileTitle': 'ملفي',
+    'profileIdLabel': 'معرّف الطالب',
+    'profileNotifications': 'الإشعارات',
+    'profilePreferences': 'تفضيلات الإشعارات',
+    'profileLanguage': 'اللغة',
+    'profileHelp': 'المساعدة والدعم',
+    'prefLabel_transactional': 'المعاملات',
+    'prefDesc_transactional': 'حالة الطلب، الدفع، الاستلام',
+    'prefLabel_canteen': 'المقصف',
+    'prefDesc_canteen': 'الحصة، الحجز، بطاقة الطعام',
+    'prefLabel_promotions': 'العروض',
+    'prefDesc_promotions': 'العروض والتخفيضات',
+    'prefLabel_marketing': 'التسويق',
+    'prefDesc_marketing': 'أخبار SUP2I FOOD',
+    'comingSoon': 'قريبًا',
   },
 };
 

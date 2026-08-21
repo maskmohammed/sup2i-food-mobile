@@ -59,10 +59,7 @@ void main() {
     expect(find.text('En attente de paiement'), findsOneWidget);
     // Timeline + bouton d'annulation peuvent être sous la ligne de flottaison
     // (ListView) : on vérifie leur présence dans l'arbre, offstage inclus.
-    expect(
-      find.text('Paiement confirmé', skipOffstage: false),
-      findsOneWidget,
-    );
+    expect(find.text('Paiement confirmé', skipOffstage: false), findsOneWidget);
     expect(
       find.text('Annuler la commande', skipOffstage: false),
       findsOneWidget,

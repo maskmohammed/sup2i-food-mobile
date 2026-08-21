@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/error/api_codes.dart';
+import '../features/canteen/domain/canteen.dart';
 import '../features/orders/domain/order.dart';
 
 /// Localisation minimale maison (M1) — FR / AR / EN + direction RTL pour l'arabe.
@@ -170,6 +171,23 @@ class AppLocalizations {
   String get homeCategories => _t('homeCategories');
   String get homeProducts => _t('homeProducts');
   String get seeMore => _t('seeMore');
+
+  // Cantine / Food Pass / abonnement.
+  String get foodPassPageTitle => _t('foodPassPageTitle');
+  String get subscriptionPageTitle => _t('subscriptionPageTitle');
+  String get foodPassButton => _t('foodPassButton');
+  String get subscriptionButton => _t('subscriptionButton');
+  String get quotaRemainingLabel => _t('quotaRemainingLabel');
+  String get renewsMonday => _t('renewsMonday');
+  String get historyLabel => _t('historyLabel');
+  String get validUntilLabel => _t('validUntilLabel');
+  String get foodPassIdLabel => _t('foodPassIdLabel');
+  String get mealsUsedSuffix => _t('mealsUsedSuffix');
+  String get planActive => _t('planActive');
+  String get planInactive => _t('planInactive');
+
+  String foodPassStatusLabel(FoodPassStatus status) =>
+      _t('fpStatus_${status.name}');
 }
 
 const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
@@ -273,6 +291,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'homeCategories': 'Nos catégories',
     'homeProducts': 'Nos produits',
     'seeMore': 'Voir plus',
+    'foodPassPageTitle': 'Food Pass',
+    'subscriptionPageTitle': 'Mon abonnement',
+    'foodPassButton': 'Votre Food Pass',
+    'subscriptionButton': 'Mon abonnement Cantine',
+    'quotaRemainingLabel': 'repas restants cette semaine',
+    'renewsMonday': 'Se renouvelle chaque lundi',
+    'historyLabel': 'Historique',
+    'validUntilLabel': 'Valide jusqu\'au',
+    'foodPassIdLabel': 'ID',
+    'mealsUsedSuffix': 'repas utilisés',
+    'fpStatus_active': 'Active',
+    'fpStatus_blocked': 'Bloqué',
+    'fpStatus_lost': 'Perdu',
+    'fpStatus_expired': 'Expiré',
+    'fpStatus_revoked': 'Révoqué',
+    'planActive': 'Actif',
+    'planInactive': 'Inactif',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -372,6 +407,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'homeCategories': 'Categories',
     'homeProducts': 'Products',
     'seeMore': 'See more',
+    'foodPassPageTitle': 'Food Pass',
+    'subscriptionPageTitle': 'My subscription',
+    'foodPassButton': 'Your Food Pass',
+    'subscriptionButton': 'My canteen subscription',
+    'quotaRemainingLabel': 'meals left this week',
+    'renewsMonday': 'Renews every Monday',
+    'historyLabel': 'History',
+    'validUntilLabel': 'Valid until',
+    'foodPassIdLabel': 'ID',
+    'mealsUsedSuffix': 'meals used',
+    'fpStatus_active': 'Active',
+    'fpStatus_blocked': 'Blocked',
+    'fpStatus_lost': 'Lost',
+    'fpStatus_expired': 'Expired',
+    'fpStatus_revoked': 'Revoked',
+    'planActive': 'Active',
+    'planInactive': 'Inactive',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -469,6 +521,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'homeCategories': 'الفئات',
     'homeProducts': 'المنتجات',
     'seeMore': 'عرض المزيد',
+    'foodPassPageTitle': 'بطاقة الطعام',
+    'subscriptionPageTitle': 'اشتراكي',
+    'foodPassButton': 'بطاقة الطعام',
+    'subscriptionButton': 'اشتراك المقصف',
+    'quotaRemainingLabel': 'وجبات متبقية هذا الأسبوع',
+    'renewsMonday': 'يتجدد كل يوم اثنين',
+    'historyLabel': 'السجل',
+    'validUntilLabel': 'صالحة حتى',
+    'foodPassIdLabel': 'المعرّف',
+    'mealsUsedSuffix': 'وجبات مستهلكة',
+    'fpStatus_active': 'نشِطة',
+    'fpStatus_blocked': 'محظورة',
+    'fpStatus_lost': 'مفقودة',
+    'fpStatus_expired': 'منتهية',
+    'fpStatus_revoked': 'ملغاة',
+    'planActive': 'نشِط',
+    'planInactive': 'غير نشِط',
   },
 };
 

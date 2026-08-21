@@ -64,6 +64,7 @@ void main() {
     await tester.tap(find.text('Cantine'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Cantine et Food Pass — à venir (M8).'), findsOneWidget);
+    // La Cantine affiche l'accès Food Pass et le menu de la semaine.
+    expect(find.text('Votre Food Pass'), findsOneWidget);
   });
 }

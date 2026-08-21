@@ -76,4 +76,36 @@ void main() {
     expect(find.text('Retirée'), findsOneWidget);
     expect(find.text('Annuler la commande'), findsNothing);
   });
+
+  testWidgets('Suivi : commande prête → bannière', (tester) async {
+    final repo = MockOrderRepository(latency: Duration.zero);
+    final order = (await tester.runAsync(
+      () => repo.createOrder(
+        lines: const <CartLine>[
+          CartLine(
+            id: 'p1|',
+            productId: 'p1',
+            name: 'Tacos',
+            unitPriceCents: 4000,
+            quantity: 1,
+          ),
+        ],
+        slotLabel: '12h00',
+        paymentMethod: PaymentMethod.cash,
+      ),
+    ))!;
+    // Avance la commande jusqu'à READY (simulation serveur).
+    await tester.runAsync(() async {
+      for (var i = 0; i < 5; i++) {
+        await repo.getOrder(order.id);
+      }
+    });
+
+    await tester.pumpWidget(
+      _wrap(OrderTrackingPage(orderId: order.id, repository: repo)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Votre commande est prête !'), findsOneWidget);
+  });
 }

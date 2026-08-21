@@ -161,6 +161,10 @@ class AppLocalizations {
   String get tlPreparing => _t('tlPreparing');
   String get tlOrderReady => _t('tlOrderReady');
   String get ordersEmpty => _t('ordersEmpty');
+  String get refresh => _t('refresh');
+  String get orderReadyTitle => _t('orderReadyTitle');
+  String get queueAheadSuffix => _t('queueAheadSuffix');
+  String get etaLabel => _t('etaLabel');
 
   /// Libellé localisé d'un statut de commande.
   String orderStatusLabel(OrderStatus status) => _t('status_${status.name}');
@@ -306,6 +310,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'tlPreparing': 'En préparation',
     'tlOrderReady': 'Votre commande est prête',
     'ordersEmpty': 'Aucune commande pour le moment.',
+    'refresh': 'Actualiser',
+    'orderReadyTitle': 'Votre commande est prête !',
+    'queueAheadSuffix': 'commandes avant la vôtre',
+    'etaLabel': 'Temps d\'attente estimé',
     'status_draft': 'Brouillon',
     'status_created': 'Créée',
     'status_awaitingPayment': 'En attente de paiement',
@@ -457,6 +465,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'tlPreparing': 'Preparing',
     'tlOrderReady': 'Your order is ready',
     'ordersEmpty': 'No orders yet.',
+    'refresh': 'Refresh',
+    'orderReadyTitle': 'Your order is ready!',
+    'queueAheadSuffix': 'orders ahead of you',
+    'etaLabel': 'Estimated wait',
     'status_draft': 'Draft',
     'status_created': 'Created',
     'status_awaitingPayment': 'Awaiting payment',
@@ -606,6 +618,10 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'tlPreparing': 'قيد التحضير',
     'tlOrderReady': 'طلبك جاهز',
     'ordersEmpty': 'لا توجد طلبات بعد.',
+    'refresh': 'تحديث',
+    'orderReadyTitle': 'طلبك جاهز!',
+    'queueAheadSuffix': 'طلبات قبلك',
+    'etaLabel': 'مدة الانتظار المقدّرة',
     'status_draft': 'مسودة',
     'status_created': 'أُنشئت',
     'status_awaitingPayment': 'بانتظار الدفع',

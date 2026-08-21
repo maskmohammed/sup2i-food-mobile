@@ -72,7 +72,16 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
     final AppLocalizations loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.yourQr)),
+      appBar: AppBar(
+        title: Text(loc.yourQr),
+        actions: [
+          IconButton(
+            onPressed: () => _controller!.load(widget.orderId),
+            icon: const Icon(Icons.refresh),
+            tooltip: loc.refresh,
+          ),
+        ],
+      ),
       body: ListenableBuilder(
         listenable: _controller!,
         builder: (context, _) {
@@ -125,6 +134,24 @@ class _TrackingBody extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
+        if (order.status == OrderStatus.ready) ...[
+          Column(
+            children: [
+              const CircleAvatar(
+                radius: 36,
+                backgroundColor: AppColors.success,
+                child: Icon(Icons.check, color: AppColors.neutral0, size: 40),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                loc.orderReadyTitle,
+                textAlign: TextAlign.center,
+                style: text.headlineSmall?.copyWith(color: AppColors.navy900),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+        ],
         // QR de retrait (rendu réel via une lib QR à ajouter ultérieurement).
         Center(
           child: Container(
@@ -170,6 +197,32 @@ class _TrackingBody extends StatelessWidget {
           textAlign: TextAlign.center,
           style: text.bodySmall?.copyWith(color: AppColors.muted),
         ),
+        if (order.status == OrderStatus.queued &&
+            order.queuePosition != null) ...[
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.pink500.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  '${order.queuePosition} ${loc.queueAheadSuffix}',
+                  style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                if (order.etaMinutes != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    '${loc.etaLabel} : ${order.etaMinutes} ${loc.minutesSuffix}',
+                    style: text.bodySmall?.copyWith(color: AppColors.muted),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
         if (showTimeline) ...[
           const SizedBox(height: 24),
           _Timeline(status: order.status, loc: loc),

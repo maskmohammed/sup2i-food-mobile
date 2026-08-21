@@ -16,6 +16,17 @@ class MockOrderRepository implements OrderRepository {
   static const int _maxActiveOrders = 3;
   int _sequence = 1949;
 
+  // Simulation de progression serveur (le Mobile ne décide de rien).
+  static const List<OrderStatus> _progression = <OrderStatus>[
+    OrderStatus.awaitingPayment,
+    OrderStatus.paid,
+    OrderStatus.queued,
+    OrderStatus.preparing,
+    OrderStatus.ready,
+  ];
+  final Set<String> _liveOrders = <String>{};
+  final Map<String, int> _polls = <String, int>{};
+
   // Historique de démo (statuts variés).
   final List<Order> _orders = <Order>[
     Order(
@@ -80,16 +91,33 @@ class MockOrderRepository implements OrderRepository {
     );
     _sequence++;
     _orders.insert(0, order);
+    _liveOrders.add(order.id);
     return order;
   }
 
   @override
   Future<Order> getOrder(String orderId) async {
     await Future<void>.delayed(latency);
-    return _orders.firstWhere(
-      (o) => o.id == orderId,
-      orElse: () => throw const ApiException(ApiCodes.internalError),
-    );
+    final index = _orders.indexWhere((o) => o.id == orderId);
+    if (index < 0) throw const ApiException(ApiCodes.internalError);
+    var order = _orders[index];
+
+    // Avance d'un cran à chaque rafraîchissement (sauf le tout premier).
+    if (_liveOrders.contains(orderId) && !order.status.isTerminal) {
+      final polls = _polls[orderId] ?? 0;
+      if (polls > 0) {
+        final current = _progression.indexOf(order.status);
+        if (current >= 0 && current < _progression.length - 1) {
+          final next = _progression[current + 1];
+          order = next == OrderStatus.queued
+              ? order.copyWith(status: next, queuePosition: 3, etaMinutes: 8)
+              : order.copyWith(status: next);
+          _orders[index] = order;
+        }
+      }
+      _polls[orderId] = polls + 1;
+    }
+    return order;
   }
 
   @override

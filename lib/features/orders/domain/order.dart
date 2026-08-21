@@ -53,6 +53,8 @@ class Order {
     required this.createdAt,
     this.slotLabel,
     this.paymentMethod,
+    this.queuePosition,
+    this.etaMinutes,
   });
 
   final String id;
@@ -64,14 +66,21 @@ class Order {
   final String? slotLabel;
   final PaymentMethod? paymentMethod;
 
-  Order copyWith({OrderStatus? status}) => Order(
-    id: id,
-    number: number,
-    status: status ?? this.status,
-    lines: lines,
-    totalCents: totalCents,
-    createdAt: createdAt,
-    slotLabel: slotLabel,
-    paymentMethod: paymentMethod,
-  );
+  /// Position dans la file (serveur) quand la commande est en file d'attente.
+  final int? queuePosition;
+  final int? etaMinutes;
+
+  Order copyWith({OrderStatus? status, int? queuePosition, int? etaMinutes}) =>
+      Order(
+        id: id,
+        number: number,
+        status: status ?? this.status,
+        lines: lines,
+        totalCents: totalCents,
+        createdAt: createdAt,
+        slotLabel: slotLabel,
+        paymentMethod: paymentMethod,
+        queuePosition: queuePosition ?? this.queuePosition,
+        etaMinutes: etaMinutes ?? this.etaMinutes,
+      );
 }

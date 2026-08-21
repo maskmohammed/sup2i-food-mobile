@@ -61,6 +61,24 @@ void main() {
     );
   });
 
+  test('progression : getOrder avance après le 1er appel', () async {
+    final r = repo();
+    final o = await r.createOrder(
+      lines: _lines,
+      slotLabel: '12h',
+      paymentMethod: PaymentMethod.cash,
+    );
+    expect(o.status, OrderStatus.awaitingPayment);
+    expect((await r.getOrder(o.id)).status, OrderStatus.awaitingPayment);
+    expect((await r.getOrder(o.id)).status, OrderStatus.paid);
+    final q = await r.getOrder(o.id);
+    expect(q.status, OrderStatus.queued);
+    expect(q.queuePosition, 3);
+    expect((await r.getOrder(o.id)).status, OrderStatus.preparing);
+    expect((await r.getOrder(o.id)).status, OrderStatus.ready);
+    expect((await r.getOrder(o.id)).status, OrderStatus.ready);
+  });
+
   test(
     'createOrder : au-delà de la limite → MAX_ACTIVE_ORDERS_REACHED',
     () async {

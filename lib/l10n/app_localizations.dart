@@ -212,6 +212,12 @@ class AppLocalizations {
   String get themeSystem => _t('themeSystem');
   String get themeLight => _t('themeLight');
   String get themeDark => _t('themeDark');
+  String get profilePromotions => _t('profilePromotions');
+  String get profileLoyalty => _t('profileLoyalty');
+  String get promotionsTitle => _t('promotionsTitle');
+  String get promotionsEmpty => _t('promotionsEmpty');
+  String get loyaltyTitle => _t('loyaltyTitle');
+  String get loyaltyPointsLabel => _t('loyaltyPointsLabel');
 
   String prefCategoryLabel(NotificationCategory c) => _t('prefLabel_${c.name}');
   String prefCategoryDesc(NotificationCategory c) => _t('prefDesc_${c.name}');
@@ -382,6 +388,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'themeSystem': 'Système',
     'themeLight': 'Clair',
     'themeDark': 'Sombre',
+    'profilePromotions': 'Promotions',
+    'profileLoyalty': 'Fidélité',
+    'promotionsTitle': 'Promotions',
+    'promotionsEmpty': 'Aucune promotion pour le moment.',
+    'loyaltyTitle': 'Fidélité',
+    'loyaltyPointsLabel': 'points',
     'reservationConfirmedTitle': 'Réservation confirmée',
     'reservationSubtitle': 'Votre repas vous attend à la cantine.',
     'menuOfDay': 'Menu du jour',
@@ -544,6 +556,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'themeSystem': 'System',
     'themeLight': 'Light',
     'themeDark': 'Dark',
+    'profilePromotions': 'Promotions',
+    'profileLoyalty': 'Loyalty',
+    'promotionsTitle': 'Promotions',
+    'promotionsEmpty': 'No promotions right now.',
+    'loyaltyTitle': 'Loyalty',
+    'loyaltyPointsLabel': 'points',
     'reservationConfirmedTitle': 'Reservation confirmed',
     'reservationSubtitle': 'Your meal is waiting at the canteen.',
     'menuOfDay': 'Menu of the day',
@@ -704,6 +722,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'themeSystem': 'النظام',
     'themeLight': 'فاتح',
     'themeDark': 'داكن',
+    'profilePromotions': 'العروض',
+    'profileLoyalty': 'الولاء',
+    'promotionsTitle': 'العروض',
+    'promotionsEmpty': 'لا توجد عروض حاليًا.',
+    'loyaltyTitle': 'الولاء',
+    'loyaltyPointsLabel': 'نقطة',
     'reservationConfirmedTitle': 'تم تأكيد الحجز',
     'reservationSubtitle': 'وجبتك بانتظارك في المقصف.',
     'menuOfDay': 'قائمة اليوم',

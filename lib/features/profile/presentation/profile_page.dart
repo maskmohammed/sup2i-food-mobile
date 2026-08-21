@@ -9,6 +9,7 @@ import '../../canteen/presentation/subscription_page.dart';
 import '../../favorites/presentation/favorites_page.dart';
 import '../../notifications/presentation/notifications_page.dart';
 import '../../notifications/presentation/preferences_page.dart';
+import '../../rewards/presentation/rewards_pages.dart';
 import '../../settings/presentation/settings_pages.dart';
 
 /// Onglet Profil : identité, accès (notifications, préférences, Food Pass,
@@ -44,6 +45,16 @@ class ProfilePage extends StatelessWidget {
             icon: Icons.favorite_border,
             label: loc.profileFavorites,
             onTap: () => _push(context, const FavoritesPage()),
+          ),
+          _Row(
+            icon: Icons.local_offer_outlined,
+            label: loc.profilePromotions,
+            onTap: () => _push(context, const PromotionsPage()),
+          ),
+          _Row(
+            icon: Icons.workspace_premium_outlined,
+            label: loc.profileLoyalty,
+            onTap: () => _push(context, const LoyaltyPage()),
           ),
           _Row(
             icon: Icons.notifications_none,

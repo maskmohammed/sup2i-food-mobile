@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/app_shell.dart';
+import '../../../app/auth_scope.dart';
+import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -40,20 +41,28 @@ class _LoginPageState extends State<LoginPage> {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
+    final auth = AuthScope.of(context, listen: false);
+    final loc = AppLocalizations.of(context);
+
     setState(() {
       _loading = true;
       _error = null;
     });
 
-    // TODO(M2): remplacer par l'appel d'authentification réel + mapping des
-    // erreurs sur le champ `code` (UNAUTHORIZED, ACCOUNT_BLOCKED, …).
-    await Future<void>.delayed(const Duration(milliseconds: 600));
+    final ok = await auth.login(
+      _emailController.text.trim(),
+      _passwordController.text,
+    );
     if (!mounted) return;
 
-    setState(() => _loading = false);
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const AppShell()),
-    );
+    // En cas de succès, AuthGate bascule automatiquement vers l'app shell ;
+    // sinon on affiche le message dérivé du `code` d'erreur.
+    setState(() {
+      _loading = false;
+      _error = ok
+          ? null
+          : loc.errorMessage(auth.errorCode ?? ApiCodes.internalError);
+    });
   }
 
   String? _validateEmail(String? value) {

@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
+import 'app_surfaces.dart';
 import 'app_typography.dart';
 
-/// Thème applicatif SUP2I FOOD — Material 3.
+/// Thème applicatif SUP2I FOOD — Material 3, variantes claire et sombre.
 ///
-/// Assemble les design tokens ([AppColors], [AppTypography]) en un [ThemeData]
-/// unique, source de vérité pour toute l'UI. Ne pas définir de couleur ou de
-/// style en dur dans les écrans : passer par ce thème ou par les tokens.
+/// Les tokens de marque ([AppColors]) restent constants ; les surfaces neutres
+/// basculent via [AppSurfaces]. Ne pas définir de couleur de surface en dur
+/// dans les écrans : passer par `context.surfaces` ou le thème.
 class AppTheme {
   AppTheme._();
 
-  // Rayons de coin (charte : sm 8 / md 12 / lg 16 / xl 24).
   static const double radiusSm = 8;
   static const double radiusMd = 12;
   static const double radiusLg = 16;
   static const double radiusXl = 24;
 
-  /// [ColorScheme] clair dérivé de la palette de marque.
+  static const RoundedRectangleBorder _shapeMd = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
+  );
+
   static const ColorScheme _lightColorScheme = ColorScheme(
     brightness: Brightness.light,
     primary: AppColors.navy900,
     onPrimary: AppColors.neutral0,
-    primaryContainer: AppColors.blue600,
-    onPrimaryContainer: AppColors.neutral0,
     secondary: AppColors.pink600,
     onSecondary: AppColors.neutral0,
     secondaryContainer: AppColors.pink500,
@@ -39,33 +40,53 @@ class AppTheme {
     outlineVariant: AppColors.border,
   );
 
-  /// Forme standard (radius md) partagée par boutons, cartes et champs.
-  static const RoundedRectangleBorder _shapeMd = RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
+  static const ColorScheme _darkColorScheme = ColorScheme(
+    brightness: Brightness.dark,
+    primary: AppColors.pink600,
+    onPrimary: AppColors.neutral0,
+    secondary: AppColors.pink500,
+    onSecondary: AppColors.neutral0,
+    secondaryContainer: AppColors.pink600,
+    onSecondaryContainer: AppColors.neutral0,
+    tertiary: AppColors.blue600,
+    onTertiary: AppColors.neutral0,
+    error: AppColors.error,
+    onError: AppColors.neutral0,
+    surface: AppColors.darkSurface,
+    onSurface: AppColors.darkText,
+    surfaceContainerHighest: AppColors.darkBackground,
+    outline: AppColors.darkBorder,
+    outlineVariant: AppColors.darkBorder,
   );
 
-  /// Thème clair complet de l'application.
-  static ThemeData get light {
-    final ColorScheme scheme = _lightColorScheme;
-    final TextTheme textTheme = AppTypography.textTheme;
+  static ThemeData get light => _build(_lightColorScheme, AppSurfaces.light);
+  static ThemeData get dark => _build(_darkColorScheme, AppSurfaces.dark);
+
+  static ThemeData _build(ColorScheme scheme, AppSurfaces surfaces) {
+    final TextTheme textTheme = AppTypography.textTheme.apply(
+      bodyColor: surfaces.text,
+      displayColor: surfaces.text,
+    );
 
     return ThemeData(
       useMaterial3: true,
+      brightness: scheme.brightness,
       colorScheme: scheme,
-      scaffoldBackgroundColor: AppColors.neutral100,
+      scaffoldBackgroundColor: surfaces.background,
       textTheme: textTheme,
+      extensions: <ThemeExtension<dynamic>>[surfaces],
 
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.neutral0,
-        foregroundColor: AppColors.neutral900,
+        backgroundColor: surfaces.surface,
+        foregroundColor: surfaces.text,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: AppTypography.h3,
+        titleTextStyle: AppTypography.h3.copyWith(color: surfaces.text),
       ),
 
-      cardTheme: const CardThemeData(
-        color: AppColors.neutral0,
+      cardTheme: CardThemeData(
+        color: surfaces.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         margin: EdgeInsets.zero,
@@ -96,7 +117,7 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: scheme.primary,
-          side: const BorderSide(color: AppColors.border),
+          side: BorderSide(color: surfaces.border),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           textStyle: AppTypography.label,
           shape: _shapeMd,
@@ -113,19 +134,19 @@ class AppTheme {
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.neutral0,
+        fillColor: surfaces.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
         ),
-        hintStyle: AppTypography.bodyM.copyWith(color: AppColors.muted),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
-          borderSide: BorderSide(color: AppColors.border),
+        hintStyle: AppTypography.bodyM.copyWith(color: surfaces.muted),
+        border: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(radiusMd)),
+          borderSide: BorderSide(color: surfaces.border),
         ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
-          borderSide: BorderSide(color: AppColors.border),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(radiusMd)),
+          borderSide: BorderSide(color: surfaces.border),
         ),
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
@@ -137,15 +158,15 @@ class AppTheme {
         ),
       ),
 
-      dividerTheme: const DividerThemeData(
-        color: AppColors.border,
+      dividerTheme: DividerThemeData(
+        color: surfaces.border,
         thickness: 1,
         space: 1,
       ),
 
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: AppColors.neutral0,
-        indicatorColor: AppColors.neutral100,
+        backgroundColor: surfaces.surface,
+        indicatorColor: surfaces.background,
         elevation: 0,
         height: 64,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
@@ -153,15 +174,15 @@ class AppTheme {
           (states) => IconThemeData(
             size: 24,
             color: states.contains(WidgetState.selected)
-                ? AppColors.navy900
-                : AppColors.muted,
+                ? scheme.primary
+                : surfaces.muted,
           ),
         ),
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => AppTypography.caption.copyWith(
             color: states.contains(WidgetState.selected)
-                ? AppColors.navy900
-                : AppColors.muted,
+                ? scheme.primary
+                : surfaces.muted,
             fontWeight: states.contains(WidgetState.selected)
                 ? FontWeight.w600
                 : FontWeight.w400,

@@ -97,6 +97,25 @@ class AppLocalizations {
   String get minutesSuffix => _t('minutesSuffix');
   String get optionIncluded => _t('optionIncluded');
 
+  // Panier & créneaux.
+  String get cartTitle => _t('cartTitle');
+  String get cartEmptyTitle => _t('cartEmptyTitle');
+  String get cartEmptyHint => _t('cartEmptyHint');
+  String get discoverMenu => _t('discoverMenu');
+  String get subtotalLabel => _t('subtotalLabel');
+  String get totalLabel => _t('totalLabel');
+  String get totalIndicativeNote => _t('totalIndicativeNote');
+  String get checkout => _t('checkout');
+  String get checkoutComingSoon => _t('checkoutComingSoon');
+  String get addedToCart => _t('addedToCart');
+  String get pickupSlotLabel => _t('pickupSlotLabel');
+  String get chooseSlot => _t('chooseSlot');
+  String get noSlotSelected => _t('noSlotSelected');
+  String get slotAvailable => _t('slotAvailable');
+  String get slotAlmostFull => _t('slotAlmostFull');
+  String get slotFull => _t('slotFull');
+  String get slotClosed => _t('slotClosed');
+
   /// Message utilisateur dérivé d'un `code` d'erreur API (jamais du `message`
   /// serveur). Repli générique pour tout code non spécifiquement traité.
   String errorMessage(String code) {
@@ -163,6 +182,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'allergensLabel': 'Allergènes',
     'minutesSuffix': 'min',
     'optionIncluded': 'Inclus',
+    'cartTitle': 'Mon Panier',
+    'cartEmptyTitle': 'Votre panier est vide',
+    'cartEmptyHint': 'Ajoutez des produits pour commencer.',
+    'discoverMenu': 'Découvrir le menu',
+    'subtotalLabel': 'Sous-total',
+    'totalLabel': 'Total',
+    'totalIndicativeNote': 'Total indicatif — confirmé à la commande',
+    'checkout': 'Commander',
+    'checkoutComingSoon': 'Commande — à venir (M6).',
+    'addedToCart': 'Ajouté au panier',
+    'pickupSlotLabel': 'Créneau de retrait',
+    'chooseSlot': 'Choisir un créneau',
+    'noSlotSelected': 'Aucun créneau sélectionné',
+    'slotAvailable': 'Disponible',
+    'slotAlmostFull': 'Presque complet',
+    'slotFull': 'Complet',
+    'slotClosed': 'Fermé',
   },
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -207,6 +243,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'allergensLabel': 'Allergens',
     'minutesSuffix': 'min',
     'optionIncluded': 'Included',
+    'cartTitle': 'My Cart',
+    'cartEmptyTitle': 'Your cart is empty',
+    'cartEmptyHint': 'Add products to get started.',
+    'discoverMenu': 'Browse the menu',
+    'subtotalLabel': 'Subtotal',
+    'totalLabel': 'Total',
+    'totalIndicativeNote': 'Indicative total — confirmed at checkout',
+    'checkout': 'Order',
+    'checkoutComingSoon': 'Checkout — coming soon (M6).',
+    'addedToCart': 'Added to cart',
+    'pickupSlotLabel': 'Pickup slot',
+    'chooseSlot': 'Choose a slot',
+    'noSlotSelected': 'No slot selected',
+    'slotAvailable': 'Available',
+    'slotAlmostFull': 'Almost full',
+    'slotFull': 'Full',
+    'slotClosed': 'Closed',
   },
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
@@ -250,6 +303,23 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'allergensLabel': 'مسببات الحساسية',
     'minutesSuffix': 'دقيقة',
     'optionIncluded': 'مشمول',
+    'cartTitle': 'سلتي',
+    'cartEmptyTitle': 'سلتك فارغة',
+    'cartEmptyHint': 'أضف منتجات للبدء.',
+    'discoverMenu': 'تصفّح القائمة',
+    'subtotalLabel': 'المجموع الفرعي',
+    'totalLabel': 'المجموع',
+    'totalIndicativeNote': 'مجموع تقديري — يُؤكَّد عند الطلب',
+    'checkout': 'اطلب',
+    'checkoutComingSoon': 'الطلب — قريبًا (M6).',
+    'addedToCart': 'أُضيف إلى السلة',
+    'pickupSlotLabel': 'موعد الاستلام',
+    'chooseSlot': 'اختر موعدًا',
+    'noSlotSelected': 'لم يتم اختيار موعد',
+    'slotAvailable': 'متاح',
+    'slotAlmostFull': 'شبه ممتلئ',
+    'slotFull': 'ممتلئ',
+    'slotClosed': 'مغلق',
   },
 };
 

@@ -27,6 +27,24 @@ class ProductDetailController extends ChangeNotifier {
 
   bool isSelected(String optionId) => _selectedOptionIds.contains(optionId);
 
+  List<ProductOption> get selectedOptions => detail == null
+      ? const <ProductOption>[]
+      : detail!.optionGroups
+            .expand((g) => g.options)
+            .where((o) => _selectedOptionIds.contains(o.id))
+            .toList();
+
+  /// Prix unitaire **indicatif** (base + deltas d'options). Le total réel est
+  /// autorité serveur.
+  int get indicativeUnitPriceCents =>
+      (detail?.product.priceCents ?? 0) +
+      selectedOptions.fold(0, (sum, o) => sum + o.priceDeltaCents);
+
+  String? get selectedOptionsLabel {
+    final names = selectedOptions.map((o) => o.name).toList();
+    return names.isEmpty ? null : names.join(', ');
+  }
+
   Future<void> load(String productId) async {
     _loading = true;
     _errorCode = null;

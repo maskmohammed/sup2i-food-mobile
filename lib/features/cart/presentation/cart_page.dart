@@ -1,0 +1,202 @@
+import 'package:flutter/material.dart';
+
+import '../../../app/cart_scope.dart';
+import '../../../core/format/money.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/app_state_view.dart';
+import '../../../l10n/app_localizations.dart';
+import '../application/cart_controller.dart';
+import '../data/slot_repository.dart';
+import '../domain/cart_line.dart';
+import 'slot_page.dart';
+
+/// Écran Panier : lignes, créneau de retrait, sous-total **indicatif**,
+/// bouton Commander (actif seulement après choix d'un créneau ; commande → M6).
+class CartPage extends StatelessWidget {
+  const CartPage({super.key, this.slotRepository});
+
+  /// Passé à l'écran de créneaux (injectable pour les tests).
+  final SlotRepository? slotRepository;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations loc = AppLocalizations.of(context);
+    final CartController cart = CartScope.of(context);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(loc.cartTitle)),
+      body: cart.isEmpty
+          ? AppStateView.empty(
+              icon: Icons.shopping_cart_outlined,
+              title: loc.cartEmptyTitle,
+              message: loc.cartEmptyHint,
+              actionLabel: loc.discoverMenu,
+              onAction: () => Navigator.of(context).pop(),
+            )
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: cart.lines.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) =>
+                        _CartLineTile(line: cart.lines[index], cart: cart),
+                  ),
+                ),
+                _SlotRow(
+                  label: cart.slot?.label ?? loc.noSlotSelected,
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => SlotPage(repository: slotRepository),
+                    ),
+                  ),
+                ),
+                _Totals(subtotalCents: cart.subtotalCents),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SizedBox(
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: cart.slot == null
+                          ? null
+                          : () => ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(loc.checkoutComingSoon)),
+                            ),
+                      child: Text(loc.checkout),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+}
+
+class _CartLineTile extends StatelessWidget {
+  const _CartLineTile({required this.line, required this.cart});
+
+  final CartLine line;
+  final CartController cart;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme text = Theme.of(context).textTheme;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.neutral0,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(line.name, style: text.bodyMedium),
+                if (line.optionsLabel != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    line.optionsLabel!,
+                    style: text.bodySmall?.copyWith(color: AppColors.muted),
+                  ),
+                ],
+                const SizedBox(height: 4),
+                Text(
+                  Money.format(line.unitPriceCents),
+                  style: text.labelLarge?.copyWith(color: AppColors.navy900),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: () => cart.decrement(line.id),
+            icon: const Icon(Icons.remove_circle_outline),
+            color: AppColors.navy900,
+          ),
+          Text('${line.quantity}'),
+          IconButton(
+            onPressed: () => cart.increment(line.id),
+            icon: const Icon(Icons.add_circle),
+            color: AppColors.pink600,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SlotRow extends StatelessWidget {
+  const _SlotRow({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations loc = AppLocalizations.of(context);
+    final TextTheme text = Theme.of(context).textTheme;
+
+    return ListTile(
+      onTap: onTap,
+      leading: const Icon(Icons.schedule, color: AppColors.pink600),
+      title: Text(loc.pickupSlotLabel, style: text.bodySmall),
+      subtitle: Text(label, style: text.bodyMedium),
+      trailing: const Icon(Icons.chevron_right),
+    );
+  }
+}
+
+class _Totals extends StatelessWidget {
+  const _Totals({required this.subtotalCents});
+
+  final int subtotalCents;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations loc = AppLocalizations.of(context);
+    final TextTheme text = Theme.of(context).textTheme;
+    final formatted = Money.format(subtotalCents);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                loc.subtotalLabel,
+                style: text.bodyMedium?.copyWith(color: AppColors.muted),
+              ),
+              Text(formatted, style: text.bodyMedium),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                loc.totalLabel,
+                style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              Text(
+                formatted,
+                style: text.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            loc.totalIndicativeNote,
+            style: text.bodySmall?.copyWith(color: AppColors.muted),
+          ),
+        ],
+      ),
+    );
+  }
+}

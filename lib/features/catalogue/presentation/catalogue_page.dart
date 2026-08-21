@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/cart_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../cart/presentation/widgets/cart_button.dart';
 import '../application/catalogue_controller.dart';
 import '../data/catalogue_repository.dart';
 import '../data/mock_catalogue_repository.dart';
@@ -45,7 +47,7 @@ class _CataloguePageState extends State<CataloguePage> {
     final AppLocalizations loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.navOrder)),
+      appBar: AppBar(title: Text(loc.navOrder), actions: const [CartButton()]),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {
@@ -101,14 +103,19 @@ class _CataloguePageState extends State<CataloguePage> {
                               ),
                             ),
                             onAddToCart: product.available
-                                ? () => ScaffoldMessenger.of(context)
-                                      .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            loc.addToCartComingSoon,
-                                          ),
-                                        ),
-                                      )
+                                ? () {
+                                    CartScope.of(
+                                      context,
+                                      listen: false,
+                                    ).addItem(
+                                      productId: product.id,
+                                      name: product.name,
+                                      unitPriceCents: product.priceCents,
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(loc.addedToCart)),
+                                    );
+                                  }
                                 : null,
                           );
                         },

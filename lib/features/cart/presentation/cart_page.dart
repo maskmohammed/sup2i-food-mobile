@@ -5,6 +5,7 @@ import '../../../app/orders_scope.dart';
 import '../../../core/error/api_exception.dart';
 import '../../../core/format/money.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../orders/presentation/order_tracking_page.dart';
@@ -117,9 +118,9 @@ class _CartLineTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.neutral0,
+        color: context.surfaces.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.surfaces.border),
       ),
       child: Row(
         children: [
@@ -138,7 +139,9 @@ class _CartLineTile extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   Money.format(line.unitPriceCents),
-                  style: text.labelLarge?.copyWith(color: AppColors.navy900),
+                  style: text.labelLarge?.copyWith(
+                    color: context.surfaces.text,
+                  ),
                 ),
               ],
             ),

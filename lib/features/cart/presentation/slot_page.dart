@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/cart_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -113,12 +114,12 @@ class _SlotTile extends StatelessWidget {
     return Opacity(
       opacity: slot.selectable ? 1 : 0.5,
       child: Material(
-        color: AppColors.neutral0,
+        color: context.surfaces.surface,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: selected ? AppColors.pink600 : AppColors.border,
+            color: selected ? AppColors.pink600 : context.surfaces.border,
             width: selected ? 1.5 : 1,
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/canteen_repository.dart';
 import '../domain/canteen.dart';
@@ -128,11 +129,11 @@ class _ReasonTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       elevation: 0,
-      color: AppColors.neutral0,
+      color: context.surfaces.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: selected ? AppColors.pink600 : AppColors.border,
+          color: selected ? AppColors.pink600 : context.surfaces.border,
           width: selected ? 1.5 : 1,
         ),
       ),

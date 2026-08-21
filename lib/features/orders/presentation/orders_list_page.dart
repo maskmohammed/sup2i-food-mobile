@@ -4,6 +4,7 @@ import '../../../app/orders_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/format/money.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -98,11 +99,11 @@ class _OrderCard extends StatelessWidget {
     final TextTheme text = Theme.of(context).textTheme;
 
     return Material(
-      color: AppColors.neutral0,
+      color: context.surfaces.surface,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(color: context.surfaces.border),
       ),
       child: InkWell(
         onTap: () => Navigator.of(context).push(
@@ -132,7 +133,7 @@ class _OrderCard extends StatelessWidget {
               ),
               Text(
                 Money.format(order.totalCents),
-                style: text.labelLarge?.copyWith(color: AppColors.navy900),
+                style: text.labelLarge?.copyWith(color: context.surfaces.text),
               ),
               const Icon(Icons.chevron_right, color: AppColors.muted),
             ],

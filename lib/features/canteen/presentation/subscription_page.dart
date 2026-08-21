@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -125,7 +126,7 @@ class _Body extends StatelessWidget {
         Center(
           child: Text(
             '${s.quotaRemaining} / ${s.quotaTotal}',
-            style: text.displayLarge?.copyWith(color: AppColors.navy900),
+            style: text.displayLarge?.copyWith(color: context.surfaces.text),
           ),
         ),
         Center(
@@ -140,7 +141,7 @@ class _Body extends StatelessWidget {
           child: LinearProgressIndicator(
             value: progress,
             minHeight: 8,
-            backgroundColor: AppColors.neutral100,
+            backgroundColor: context.surfaces.background,
             color: AppColors.pink600,
           ),
         ),

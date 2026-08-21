@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -100,10 +101,10 @@ class _NotificationCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: item.read
-            ? AppColors.neutral0
+            ? context.surfaces.surface
             : AppColors.pink500.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.surfaces.border),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

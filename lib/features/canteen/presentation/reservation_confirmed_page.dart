@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/canteen_repository.dart';
 import '../domain/canteen.dart';
@@ -58,9 +59,9 @@ class ReservationConfirmedPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.neutral0,
+              color: context.surfaces.surface,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.surfaces.border),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

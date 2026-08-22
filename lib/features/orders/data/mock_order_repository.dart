@@ -28,7 +28,10 @@ class MockOrderRepository implements OrderRepository {
   final Map<String, int> _polls = <String, int>{};
 
   // Historique de démo (statuts variés).
-  final List<Order> _orders = <Order>[
+  final List<Order> _orders = _seedOrders();
+
+  /// Jeu de données initial, ré-appliqué par [reset] (outil de debug).
+  static List<Order> _seedOrders() => <Order>[
     Order(
       id: 'o_a1949',
       number: 'A1949',
@@ -219,5 +222,16 @@ class MockOrderRepository implements OrderRepository {
   Future<List<Order>> listOrders() async {
     await Future<void>.delayed(latency);
     return List<Order>.unmodifiable(_orders);
+  }
+
+  /// Réinitialise l'état mock au jeu de données initial (outil de debug ;
+  /// aucun équivalent côté backend réel).
+  void reset() {
+    _orders
+      ..clear()
+      ..addAll(_seedOrders());
+    _liveOrders.clear();
+    _polls.clear();
+    _sequence = 1949;
   }
 }

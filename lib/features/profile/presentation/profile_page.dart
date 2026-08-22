@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
 import '../../../app/auth_scope.dart';
+import '../../../app/cart_scope.dart';
+import '../../../app/favorites_scope.dart';
+import '../../../app/orders_scope.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
 import '../../../l10n/app_localizations.dart';
@@ -9,6 +13,7 @@ import '../../canteen/presentation/subscription_page.dart';
 import '../../favorites/presentation/favorites_page.dart';
 import '../../notifications/presentation/notifications_page.dart';
 import '../../notifications/presentation/preferences_page.dart';
+import '../../orders/data/mock_order_repository.dart';
 import '../../rewards/presentation/rewards_pages.dart';
 import '../../settings/presentation/settings_pages.dart';
 
@@ -29,6 +34,18 @@ class ProfilePage extends StatelessWidget {
     void comingSoon() => ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(loc.comingSoon)));
+
+    // Outil de développement uniquement (jamais en release) : remet l'état mock
+    // (panier, favoris, historique commandes) au jeu initial.
+    void resetMockData() {
+      CartScope.of(context, listen: false).clear();
+      FavoritesScope.of(context, listen: false).clear();
+      final repo = OrdersScope.of(context);
+      if (repo is MockOrderRepository) repo.reset();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.devMockDataReset)));
+    }
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.profileTitle)),
@@ -106,6 +123,20 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
           ),
+          if (kDebugMode) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 48,
+              child: TextButton.icon(
+                onPressed: resetMockData,
+                icon: const Icon(Icons.restart_alt, color: AppColors.muted),
+                label: Text(
+                  loc.devResetMockData,
+                  style: const TextStyle(color: AppColors.muted),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

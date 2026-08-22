@@ -210,6 +210,8 @@ class AppLocalizations {
   String get favoritesTitle => _t('favoritesTitle');
   String get favoritesEmpty => _t('favoritesEmpty');
   String get comingSoon => _t('comingSoon');
+  String get devResetMockData => _t('devResetMockData');
+  String get devMockDataReset => _t('devMockDataReset');
   String get profileAppearance => _t('profileAppearance');
   String get themeSystem => _t('themeSystem');
   String get themeLight => _t('themeLight');
@@ -386,6 +388,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'Marketing',
     'prefDesc_marketing': 'Actualités SUP2I FOOD',
     'comingSoon': 'Bientôt disponible',
+    'devResetMockData': 'Réinitialiser les données mock',
+    'devMockDataReset': 'Données mock réinitialisées',
     'profileFavorites': 'Mes favoris',
     'favoritesTitle': 'Mes favoris',
     'favoritesEmpty': 'Aucun favori pour le moment.',
@@ -557,6 +561,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'Marketing',
     'prefDesc_marketing': 'SUP2I FOOD news',
     'comingSoon': 'Coming soon',
+    'devResetMockData': 'Reset mock data',
+    'devMockDataReset': 'Mock data reset',
     'profileFavorites': 'My favourites',
     'favoritesTitle': 'My favourites',
     'favoritesEmpty': 'No favourites yet.',
@@ -725,6 +731,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'التسويق',
     'prefDesc_marketing': 'أخبار SUP2I FOOD',
     'comingSoon': 'قريبًا',
+    'devResetMockData': 'إعادة تعيين البيانات التجريبية',
+    'devMockDataReset': 'تمت إعادة تعيين البيانات التجريبية',
     'profileFavorites': 'مفضّلاتي',
     'favoritesTitle': 'مفضّلاتي',
     'favoritesEmpty': 'لا توجد مفضّلات بعد.',

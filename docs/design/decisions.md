@@ -25,3 +25,19 @@ Une entrée par décision.
     via Commandes → suivi.
 - **Impact / planning** : l'implémentation (nav + écran QR contextuel) n'est pas
   dans les points 3–11 du plan de polish en cours ; à planifier séparément.
+
+## D2 — Identité du logo sur l'écran Login
+
+- **Date** : 2026-08-21
+- **Décision** : l'écran Login porte l'**identité produit SUP2I FOOD** — on garde
+  l'**emblème app-icon** actuel (`assets/images/sup2i_logo.png`). Pas de logo
+  institutionnel « Sup2i (école) » sur cet écran.
+- **Pourquoi** : l'app EST le produit de restauration ; cohérence avec l'icône
+  d'application et le branding produit (reconnaissance immédiate).
+- **État du code** : **déjà conforme** — l'emblème produit est affiché ; aucun
+  changement de code requis pour cette décision.
+- **Sous-point mineur en attente** : la tagline actuelle « Reconnu par l'État »
+  est **institutionnelle**. Sur une identité produit, à confirmer : la **garder**
+  (co-mention école), la **retirer**, ou la **remplacer** par la signature
+  produit de la charte « La restauration étudiante, simple et intelligente ».
+

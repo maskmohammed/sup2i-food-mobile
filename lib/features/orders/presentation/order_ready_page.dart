@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_motion.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/order.dart';
 
@@ -9,16 +10,58 @@ import '../domain/order.dart';
 ///
 /// Affiché quand une commande passe au statut READY (poussé en fullscreen
 /// depuis le suivi). Met en avant le QR de retrait à présenter au comptoir.
-/// L'animation de pulsation (charte) est ajoutée au point 7.
-class OrderReadyPage extends StatelessWidget {
+/// Le check fait une pulsation d'attention (charte : 250–400 ms, bornée à
+/// quelques cycles), désactivée si `prefers-reduced-motion`.
+class OrderReadyPage extends StatefulWidget {
   const OrderReadyPage({super.key, required this.order});
 
   final Order order;
 
   @override
+  State<OrderReadyPage> createState() => _OrderReadyPageState();
+}
+
+class _OrderReadyPageState extends State<OrderReadyPage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: AppMotion.pulse,
+  );
+  late final Animation<double> _scale = Tween<double>(
+    begin: 1,
+    end: 1.08,
+  ).animate(CurvedAnimation(parent: _pulse, curve: AppMotion.standard));
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!AppMotion.reduceMotion(context) && !_pulse.isAnimating) {
+      _runPulse();
+    }
+  }
+
+  /// Quelques cycles de pulsation puis retour au repos (auto-terminant : ne
+  /// bloque pas `pumpAndSettle`).
+  Future<void> _runPulse() async {
+    for (var i = 0; i < 3; i++) {
+      if (!mounted) return;
+      await _pulse.forward(from: 0);
+      if (!mounted) return;
+      await _pulse.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final AppLocalizations loc = AppLocalizations.of(context);
     final TextTheme text = Theme.of(context).textTheme;
+    final order = widget.order;
 
     return Scaffold(
       backgroundColor: AppColors.success,
@@ -41,13 +84,16 @@ class OrderReadyPage extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const CircleAvatar(
-                          radius: 44,
-                          backgroundColor: AppColors.neutral0,
-                          child: Icon(
-                            Icons.check_rounded,
-                            color: AppColors.success,
-                            size: 52,
+                        ScaleTransition(
+                          scale: _scale,
+                          child: const CircleAvatar(
+                            radius: 44,
+                            backgroundColor: AppColors.neutral0,
+                            child: Icon(
+                              Icons.check_rounded,
+                              color: AppColors.success,
+                              size: 52,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),

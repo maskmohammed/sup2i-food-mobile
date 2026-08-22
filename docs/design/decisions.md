@@ -74,3 +74,20 @@ Une entrée par décision.
   (`MediaQuery.disableAnimations`) → squelette **statique** si l'utilisateur a
   réduit les animations. Aligné avec le **point 7** (charte des durées).
 
+## D5 — Charte d'animation (durées, courbes, reduced-motion)
+
+- **Date** : 2026-08-22
+- **Décision** : centraliser les durées/courbes dans `AppMotion`
+  (`lib/core/theme/app_motion.dart`), source de vérité :
+  - **UI courante** : 160–220 ms (`ui` 200 ms, `uiFast` 160 ms), courbe
+    `easeInOut`.
+  - **Pulsation « commande prête »** : 250–400 ms (`pulse` 320 ms), **bornée à
+    3 cycles** puis repos (n'accapare pas l'attention, ne bloque pas les tests).
+  - **Micro-scale ajout panier** : 160–200 ms (`cartAdd` 180 ms), courbe
+    `easeOutBack` (léger rebond) — badge du `CartButton` à chaque ajout.
+- **`prefers-reduced-motion`** : toute animation passe par
+  `AppMotion.reduceMotion(context)` / `effective(context, d)` (0 ms si réduit).
+  Appliqué au check de `OrderReadyPage`, au badge `CartButton` et au `Skeleton`.
+- **Pourquoi** : cohérence perçue, feedbacks brefs et non intrusifs, et
+  accessibilité (respect du réglage système). Valeurs en dur proscrites.
+

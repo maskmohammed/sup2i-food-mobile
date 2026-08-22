@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_motion.dart';
 import '../theme/app_surfaces.dart';
 
 /// Bloc « squelette » (placeholder de chargement) avec pulsation douce.
@@ -45,8 +46,7 @@ class _SkeletonState extends State<Skeleton>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final reduceMotion =
-        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+    final reduceMotion = AppMotion.reduceMotion(context);
     if (reduceMotion && _animating) {
       _controller.stop();
       _animating = false;

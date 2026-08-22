@@ -41,3 +41,22 @@ Une entrée par décision.
   (co-mention école), la **retirer**, ou la **remplacer** par la signature
   produit de la charte « La restauration étudiante, simple et intelligente ».
 
+## D3 — Écran plein écran « commande prête »
+
+- **Date** : 2026-08-22
+- **Décision** : au **passage effectif** d'une commande au statut **READY**, on
+  pousse un **écran dédié plein écran** (`OrderReadyPage`, route `fullscreenDialog`)
+  sur fond `success`, centré sur le **QR de retrait** (200 px), le titre « Votre
+  commande est prête ! » et le **numéro** en grand.
+- **Déclenchement** : détecté côté suivi (`OrderTrackingPage`) sur la **transition**
+  de statut (précédent ≠ READY → READY). Le **premier rendu n'ouvre jamais** le
+  plein écran, même si la commande est déjà prête : ouvrir le suivi est un choix
+  de l'utilisateur.
+- **Repli manuel** : sur le suivi, le **bandeau « prêt » est tapable** et rouvre
+  l'écran plein écran à tout moment.
+- **Pourquoi** : moment clé du parcours (aller au comptoir) → besoin d'un écran
+  très lisible et impossible à manquer, distinct du suivi dense. Ne pas détourner
+  au 1er rendu évite de « voler » la navigation quand on consulte une commande.
+- **Charte / à venir** : l'animation de **pulsation (250–400 ms)** sur cet écran
+  est traitée au **point 7** (durées d'animation + `prefers-reduced-motion`).
+

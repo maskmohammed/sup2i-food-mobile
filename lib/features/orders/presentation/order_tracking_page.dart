@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../application/order_tracking_controller.dart';
 import '../data/order_repository.dart';
 import '../domain/order.dart';
+import 'order_ready_page.dart';
 
 /// Suivi d'une commande : QR de retrait, statut, timeline, annulation.
 /// La progression réelle des statuts est pilotée serveur (temps réel = M7).
@@ -26,19 +27,56 @@ class OrderTrackingPage extends StatefulWidget {
 class _OrderTrackingPageState extends State<OrderTrackingPage> {
   OrderTrackingController? _controller;
 
+  // Suivi de la transition de statut pour n'ouvrir l'écran plein écran
+  // « commande prête » qu'au passage effectif à READY (pas au 1er rendu).
+  OrderStatus? _lastStatus;
+  bool _firstEmission = true;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_controller == null) {
       final repo = widget.repository ?? OrdersScope.of(context);
-      _controller = OrderTrackingController(repo)..load(widget.orderId);
+      _controller = OrderTrackingController(repo)
+        ..addListener(_onControllerChanged)
+        ..load(widget.orderId);
     }
   }
 
   @override
   void dispose() {
+    _controller?.removeListener(_onControllerChanged);
     _controller?.dispose();
     super.dispose();
+  }
+
+  void _onControllerChanged() {
+    final order = _controller?.order;
+    if (order == null) return;
+    final previous = _lastStatus;
+    _lastStatus = order.status;
+    // Au premier chargement, on ne détourne pas vers le plein écran même si la
+    // commande est déjà prête (l'utilisateur a ouvert le suivi volontairement) :
+    // le bandeau prêt, tapable, permet de l'ouvrir.
+    if (_firstEmission) {
+      _firstEmission = false;
+      return;
+    }
+    if (order.status == OrderStatus.ready && previous != OrderStatus.ready) {
+      _openReady(order);
+    }
+  }
+
+  void _openReady(Order order) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          fullscreenDialog: true,
+          builder: (_) => OrderReadyPage(order: order),
+        ),
+      );
+    });
   }
 
   Future<void> _confirmCancel(AppLocalizations loc) async {
@@ -107,6 +145,9 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
             onCancel: order.status.isCancelable
                 ? () => _confirmCancel(loc)
                 : null,
+            onOpenReady: order.status == OrderStatus.ready
+                ? () => _openReady(order)
+                : null,
           );
         },
       ),
@@ -119,11 +160,13 @@ class _TrackingBody extends StatelessWidget {
     required this.order,
     required this.loc,
     required this.onCancel,
+    required this.onOpenReady,
   });
 
   final Order order;
   final AppLocalizations loc;
   final VoidCallback? onCancel;
+  final VoidCallback? onOpenReady;
 
   @override
   Widget build(BuildContext context) {
@@ -136,20 +179,24 @@ class _TrackingBody extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       children: [
         if (order.status == OrderStatus.ready) ...[
-          Column(
-            children: [
-              const CircleAvatar(
-                radius: 36,
-                backgroundColor: AppColors.success,
-                child: Icon(Icons.check, color: AppColors.neutral0, size: 40),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                loc.orderReadyTitle,
-                textAlign: TextAlign.center,
-                style: text.headlineSmall?.copyWith(color: AppColors.navy900),
-              ),
-            ],
+          InkWell(
+            onTap: onOpenReady,
+            borderRadius: BorderRadius.circular(12),
+            child: Column(
+              children: [
+                const CircleAvatar(
+                  radius: 36,
+                  backgroundColor: AppColors.success,
+                  child: Icon(Icons.check, color: AppColors.neutral0, size: 40),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  loc.orderReadyTitle,
+                  textAlign: TextAlign.center,
+                  style: text.headlineSmall?.copyWith(color: AppColors.navy900),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 20),
         ],

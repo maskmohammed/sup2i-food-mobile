@@ -163,6 +163,8 @@ class AppLocalizations {
   String get ordersEmpty => _t('ordersEmpty');
   String get refresh => _t('refresh');
   String get orderReadyTitle => _t('orderReadyTitle');
+  String get orderReadySubtitle => _t('orderReadySubtitle');
+  String get orderReadyClose => _t('orderReadyClose');
   String get queueAheadSuffix => _t('queueAheadSuffix');
   String get etaLabel => _t('etaLabel');
 
@@ -325,6 +327,9 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'ordersEmpty': 'Aucune commande pour le moment.',
     'refresh': 'Actualiser',
     'orderReadyTitle': 'Votre commande est prête !',
+    'orderReadySubtitle':
+        'Présentez ce QR au comptoir pour récupérer votre commande.',
+    'orderReadyClose': 'Fermer',
     'queueAheadSuffix': 'commandes avant la vôtre',
     'etaLabel': 'Temps d\'attente estimé',
     'status_draft': 'Brouillon',
@@ -493,6 +498,9 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'ordersEmpty': 'No orders yet.',
     'refresh': 'Refresh',
     'orderReadyTitle': 'Your order is ready!',
+    'orderReadySubtitle':
+        'Show this QR code at the counter to collect your order.',
+    'orderReadyClose': 'Close',
     'queueAheadSuffix': 'orders ahead of you',
     'etaLabel': 'Estimated wait',
     'status_draft': 'Draft',
@@ -659,6 +667,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'ordersEmpty': 'لا توجد طلبات بعد.',
     'refresh': 'تحديث',
     'orderReadyTitle': 'طلبك جاهز!',
+    'orderReadySubtitle': 'اعرض رمز QR هذا عند الكاونتر لاستلام طلبك.',
+    'orderReadyClose': 'إغلاق',
     'queueAheadSuffix': 'طلبات قبلك',
     'etaLabel': 'مدة الانتظار المقدّرة',
     'status_draft': 'مسودة',

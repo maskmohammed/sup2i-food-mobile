@@ -5,7 +5,6 @@ import '../../../core/error/api_codes.dart';
 import '../../../core/format/money.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
-import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../cart/presentation/widgets/cart_button.dart';
@@ -13,6 +12,7 @@ import '../application/product_detail_controller.dart';
 import '../data/catalogue_repository.dart';
 import '../data/mock_catalogue_repository.dart';
 import '../domain/product_detail.dart';
+import 'widgets/loading_skeletons.dart';
 
 /// Écran détail produit : image, prix, durée, quantité, allergènes (chips
 /// texte), groupes d'options, note. Le total reste autorité serveur ; l'ajout
@@ -68,7 +68,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         builder: (context, _) {
           final detail = _controller.detail;
           if (_controller.isLoading && detail == null) {
-            return const AppLoadingView();
+            return const ProductDetailSkeleton();
           }
           if (_controller.errorCode != null && detail == null) {
             return AppStateView.error(

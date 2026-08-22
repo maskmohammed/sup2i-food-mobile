@@ -60,3 +60,17 @@ Une entrée par décision.
 - **Charte / à venir** : l'animation de **pulsation (250–400 ms)** sur cet écran
   est traitée au **point 7** (durées d'animation + `prefers-reduced-motion`).
 
+## D4 — Skeleton screens plutôt que spinner (Catalogue + Détail)
+
+- **Date** : 2026-08-22
+- **Décision** : sur le **Catalogue** (grille) et le **Détail produit**, l'état de
+  chargement affiche un **squelette** reproduisant la mise en page réelle
+  (`CatalogueSkeleton`, `ProductDetailSkeleton`) au lieu du spinner générique
+  (`AppLoadingView`). Primitive partagée `Skeleton` (pulsation d'opacité ~1 s).
+- **Pourquoi** : perception de rapidité et **absence de saut visuel** (le contenu
+  réel prend la même place que le squelette) ; meilleure lisibilité de ce qui
+  arrive. Le spinner reste utilisé sur les écrans sans mise en page riche.
+- **Accessibilité** : respecte `prefers-reduced-motion`
+  (`MediaQuery.disableAnimations`) → squelette **statique** si l'utilisateur a
+  réduit les animations. Aligné avec le **point 7** (charte des durées).
+

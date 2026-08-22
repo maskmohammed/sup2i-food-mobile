@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../app/cart_scope.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
-import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../cart/presentation/widgets/cart_button.dart';
@@ -12,6 +11,7 @@ import '../data/catalogue_repository.dart';
 import '../data/mock_catalogue_repository.dart';
 import 'product_detail_page.dart';
 import 'widgets/category_selector.dart';
+import 'widgets/loading_skeletons.dart';
 import 'widgets/product_card.dart';
 
 /// Onglet Commander : catalogue produits filtrable par catégorie.
@@ -53,7 +53,7 @@ class _CataloguePageState extends State<CataloguePage> {
         listenable: _controller,
         builder: (context, _) {
           if (_controller.isLoading && _controller.products.isEmpty) {
-            return const AppLoadingView();
+            return const CatalogueSkeleton();
           }
           if (_controller.errorCode != null && _controller.products.isEmpty) {
             return AppStateView.error(

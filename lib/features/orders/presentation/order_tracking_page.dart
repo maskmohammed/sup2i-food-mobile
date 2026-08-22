@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../app/orders_scope.dart';
 import '../../../core/error/api_codes.dart';
@@ -152,19 +153,28 @@ class _TrackingBody extends StatelessWidget {
           ),
           const SizedBox(height: 20),
         ],
-        // QR de retrait (rendu réel via une lib QR à ajouter ultérieurement).
+        // QR de retrait — zone blanche dégagée, non décoré (charte), blanc même
+        // en thème sombre pour rester scannable.
         Center(
           child: Container(
-            width: 180,
-            height: 180,
+            padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.neutral100,
+              color: AppColors.neutral0,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(
-              Icons.qr_code_2,
-              size: 120,
-              color: AppColors.navy900,
+            child: QrImageView(
+              data: order.number,
+              version: QrVersions.auto,
+              size: 160,
+              backgroundColor: AppColors.neutral0,
+              eyeStyle: const QrEyeStyle(
+                eyeShape: QrEyeShape.square,
+                color: Color(0xFF000000),
+              ),
+              dataModuleStyle: const QrDataModuleStyle(
+                dataModuleShape: QrDataModuleShape.square,
+                color: Color(0xFF000000),
+              ),
             ),
           ),
         ),

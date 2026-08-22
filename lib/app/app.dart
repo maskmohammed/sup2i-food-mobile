@@ -18,7 +18,11 @@ import 'settings_scope.dart';
 
 /// Racine de l'application SUP2I FOOD.
 class Sup2iFoodApp extends StatefulWidget {
-  const Sup2iFoodApp({super.key});
+  const Sup2iFoodApp({super.key, this.settings});
+
+  /// Contrôleur de réglages préchargé (persistance via `main`). Si absent
+  /// (tests), un contrôleur en mémoire est créé.
+  final SettingsController? settings;
 
   @override
   State<Sup2iFoodApp> createState() => _Sup2iFoodAppState();
@@ -30,7 +34,8 @@ class _Sup2iFoodAppState extends State<Sup2iFoodApp> {
   final CartController _cart = CartController();
   final OrderRepository _orders = MockOrderRepository();
   final FavoritesController _favorites = FavoritesController();
-  final SettingsController _settings = SettingsController();
+  late final SettingsController _settings =
+      widget.settings ?? SettingsController();
 
   @override
   void dispose() {

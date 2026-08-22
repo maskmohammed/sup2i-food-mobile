@@ -121,24 +121,30 @@ class _FoodPassPageState extends State<FoodPassPage> {
                   Center(
                     // Zone blanche dégagée, QR non décoré (charte) — reste blanc
                     // même en thème sombre pour rester scannable.
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.neutral0,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: QrImageView(
-                        data: fp.qrPayload,
-                        version: QrVersions.auto,
-                        size: 150,
-                        backgroundColor: AppColors.neutral0,
-                        eyeStyle: const QrEyeStyle(
-                          eyeShape: QrEyeShape.square,
-                          color: Color(0xFF000000),
+                    child: Semantics(
+                      image: true,
+                      label: loc.qrFoodPassSemantics,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.neutral0,
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        dataModuleStyle: const QrDataModuleStyle(
-                          dataModuleShape: QrDataModuleShape.square,
-                          color: Color(0xFF000000),
+                        child: ExcludeSemantics(
+                          child: QrImageView(
+                            data: fp.qrPayload,
+                            version: QrVersions.auto,
+                            size: 150,
+                            backgroundColor: AppColors.neutral0,
+                            eyeStyle: const QrEyeStyle(
+                              eyeShape: QrEyeShape.square,
+                              color: Color(0xFF000000),
+                            ),
+                            dataModuleStyle: const QrDataModuleStyle(
+                              dataModuleShape: QrDataModuleShape.square,
+                              color: Color(0xFF000000),
+                            ),
+                          ),
                         ),
                       ),
                     ),

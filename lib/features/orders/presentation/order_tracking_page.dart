@@ -203,24 +203,30 @@ class _TrackingBody extends StatelessWidget {
         // QR de retrait — zone blanche dégagée, non décoré (charte), blanc même
         // en thème sombre pour rester scannable.
         Center(
-          child: Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.neutral0,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: QrImageView(
-              data: order.number,
-              version: QrVersions.auto,
-              size: 160,
-              backgroundColor: AppColors.neutral0,
-              eyeStyle: const QrEyeStyle(
-                eyeShape: QrEyeShape.square,
-                color: Color(0xFF000000),
+          child: Semantics(
+            image: true,
+            label: '${loc.qrOrderSemantics} ${order.number}',
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.neutral0,
+                borderRadius: BorderRadius.circular(16),
               ),
-              dataModuleStyle: const QrDataModuleStyle(
-                dataModuleShape: QrDataModuleShape.square,
-                color: Color(0xFF000000),
+              child: ExcludeSemantics(
+                child: QrImageView(
+                  data: order.number,
+                  version: QrVersions.auto,
+                  size: 160,
+                  backgroundColor: AppColors.neutral0,
+                  eyeStyle: const QrEyeStyle(
+                    eyeShape: QrEyeShape.square,
+                    color: Color(0xFF000000),
+                  ),
+                  dataModuleStyle: const QrDataModuleStyle(
+                    dataModuleShape: QrDataModuleShape.square,
+                    color: Color(0xFF000000),
+                  ),
+                ),
               ),
             ),
           ),

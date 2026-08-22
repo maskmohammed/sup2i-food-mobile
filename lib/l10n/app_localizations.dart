@@ -155,6 +155,12 @@ class AppLocalizations {
   String get orderNumberLabel => _t('orderNumberLabel');
   String get presentAtCounter => _t('presentAtCounter');
   String get yourQr => _t('yourQr');
+  // Accessibilité (labels lecteur d'écran / tooltips).
+  String get qrOrderSemantics => _t('qrOrderSemantics');
+  String get qrFoodPassSemantics => _t('qrFoodPassSemantics');
+  String get decreaseQuantity => _t('decreaseQuantity');
+  String get increaseQuantity => _t('increaseQuantity');
+  String get quantityLabel => _t('quantityLabel');
   String get cancelOrder => _t('cancelOrder');
   String get tlPaymentConfirmed => _t('tlPaymentConfirmed');
   String get tlOrderReceived => _t('tlOrderReceived');
@@ -321,6 +327,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'orderNumberLabel': 'Numéro',
     'presentAtCounter': 'Présentez ce numéro au comptoir',
     'yourQr': 'Votre QR',
+    'qrOrderSemantics': 'Code QR de retrait de la commande',
+    'qrFoodPassSemantics': 'Code QR du Food Pass',
+    'decreaseQuantity': 'Diminuer la quantité',
+    'increaseQuantity': 'Augmenter la quantité',
+    'quantityLabel': 'Quantité',
     'cancelOrder': 'Annuler la commande',
     'tlPaymentConfirmed': 'Paiement confirmé',
     'tlOrderReceived': 'Commande reçue',
@@ -494,6 +505,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'orderNumberLabel': 'Number',
     'presentAtCounter': 'Show this number at the counter',
     'yourQr': 'Your QR',
+    'qrOrderSemantics': 'Order pickup QR code',
+    'qrFoodPassSemantics': 'Food Pass QR code',
+    'decreaseQuantity': 'Decrease quantity',
+    'increaseQuantity': 'Increase quantity',
+    'quantityLabel': 'Quantity',
     'cancelOrder': 'Cancel order',
     'tlPaymentConfirmed': 'Payment confirmed',
     'tlOrderReceived': 'Order received',
@@ -665,6 +681,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'orderNumberLabel': 'الرقم',
     'presentAtCounter': 'اعرض هذا الرقم عند الكاونتر',
     'yourQr': 'رمز الاستلام',
+    'qrOrderSemantics': 'رمز QR لاستلام الطلب',
+    'qrFoodPassSemantics': 'رمز QR لبطاقة الطعام',
+    'decreaseQuantity': 'إنقاص الكمية',
+    'increaseQuantity': 'زيادة الكمية',
+    'quantityLabel': 'الكمية',
     'cancelOrder': 'إلغاء الطلب',
     'tlPaymentConfirmed': 'تم تأكيد الدفع',
     'tlOrderReceived': 'تم استلام الطلب',

@@ -113,3 +113,25 @@ Une entrée par décision.
 - **Pourquoi** : filet anti-régression visuelle sur les écrans critiques, sans
   fragiliser la CI ni dépendre du réseau.
 
+## D7 — Passe accessibilité (Panier, Commande QR, Food Pass)
+
+- **Date** : 2026-08-23
+- **Décision** : rendre les écrans clés utilisables au lecteur d'écran et au
+  tactile :
+  - **QR annoncés** : chaque QR (suivi commande, écran commande prête, Food
+    Pass) est enveloppé dans `Semantics(image: true, label: …)` avec
+    `ExcludeSemantics` sur les modules — le lecteur annonce « Code QR de retrait
+    de la commande A1949 » / « Code QR du Food Pass » au lieu du bruit des
+    modules.
+  - **Panier** : nom + options + prix d'une ligne regroupés (`MergeSemantics`)
+    en une annonce ; boutons +/- dotés de **tooltips** (`Augmenter/Diminuer la
+    quantité`) ; la quantité expose un `semanticsLabel` « Quantité : N ».
+  - **Cibles tactiles** : les actions passent par `IconButton`/boutons Material
+    (zone tactile ≥ 48 dp, `MaterialTapTargetSize.padded`), au-delà du minimum
+    44×44.
+  - **Contrastes / couleur seule** : les statuts (commande, Food Pass) restent
+    toujours accompagnés d'un **libellé texte** (jamais la couleur seule).
+- **l10n** : labels d'accessibilité en FR/AR/EN.
+- **Pourquoi** : conformité aux bonnes pratiques mobiles (WCAG/▸ lecteur
+  d'écran), parcours critiques (retrait au comptoir) accessibles.
+

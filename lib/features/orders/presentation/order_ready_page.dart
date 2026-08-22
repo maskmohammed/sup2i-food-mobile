@@ -116,24 +116,30 @@ class _OrderReadyPageState extends State<OrderReadyPage>
                         const SizedBox(height: 28),
                         // QR de retrait — zone blanche dégagée, non décoré
                         // (charte), reste blanc pour la scannabilité.
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral0,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: QrImageView(
-                            data: order.number,
-                            version: QrVersions.auto,
-                            size: 200,
-                            backgroundColor: AppColors.neutral0,
-                            eyeStyle: const QrEyeStyle(
-                              eyeShape: QrEyeShape.square,
-                              color: Color(0xFF000000),
+                        Semantics(
+                          image: true,
+                          label: '${loc.qrOrderSemantics} ${order.number}',
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppColors.neutral0,
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                            dataModuleStyle: const QrDataModuleStyle(
-                              dataModuleShape: QrDataModuleShape.square,
-                              color: Color(0xFF000000),
+                            child: ExcludeSemantics(
+                              child: QrImageView(
+                                data: order.number,
+                                version: QrVersions.auto,
+                                size: 200,
+                                backgroundColor: AppColors.neutral0,
+                                eyeStyle: const QrEyeStyle(
+                                  eyeShape: QrEyeShape.square,
+                                  color: Color(0xFF000000),
+                                ),
+                                dataModuleStyle: const QrDataModuleStyle(
+                                  dataModuleShape: QrDataModuleShape.square,
+                                  color: Color(0xFF000000),
+                                ),
+                              ),
                             ),
                           ),
                         ),

@@ -91,3 +91,25 @@ Une entrée par décision.
 - **Pourquoi** : cohérence perçue, feedbacks brefs et non intrusifs, et
   accessibilité (respect du réglage système). Valeurs en dur proscrites.
 
+## D6 — Golden tests : périmètre et contraintes
+
+- **Date** : 2026-08-22
+- **Décision** : golden tests sur 5 écrans clés — Accueil, Catalogue, Panier,
+  Commande QR (suivi), Food Pass (`test/golden/`, images dans
+  `test/golden/goldens/`).
+- **Contraintes de rendu** :
+  - `google_fonts` récupère les polices par réseau ; en test il n'y a pas de
+    réseau. `test/flutter_test_config.dart` désactive la récupération runtime
+    (`allowRuntimeFetching = false`) et ignore l'erreur d'absence de police
+    (retombée sur la police par défaut du harnais). Rendu ainsi déterministe.
+  - La police de repli étant plus large que Montserrat/Inter, les goldens sont
+    rendus sur un gabarit généreux (**440×956**) pour éviter des débordements
+    propres au test (aucun débordement dans l'app réelle avec les vraies
+    polices).
+  - Le rendu dépend de la plateforme : goldens **générés/vérifiés en local
+    (Windows)** et **exclus de la CI Linux** (`flutter test --exclude-tags
+    golden`, tag déclaré dans `dart_test.yaml`) pour éviter les faux négatifs.
+- **Régénération** : `flutter test --update-goldens --tags golden`.
+- **Pourquoi** : filet anti-régression visuelle sur les écrans critiques, sans
+  fragiliser la CI ni dépendre du réseau.
+

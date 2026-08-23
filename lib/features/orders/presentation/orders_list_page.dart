@@ -72,13 +72,18 @@ class _OrdersListPageState extends State<OrdersListPage> {
               message: '',
             );
           }
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: controller.orders.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 12),
-            itemBuilder: (context, index) => _OrderCard(
-              order: controller.orders[index],
-              repository: widget.repository,
+          return RefreshIndicator(
+            onRefresh: controller.load,
+            color: AppColors.pink600,
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: controller.orders.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 12),
+              itemBuilder: (context, index) => _OrderCard(
+                order: controller.orders[index],
+                repository: widget.repository,
+              ),
             ),
           );
         },

@@ -57,6 +57,8 @@ void main() {
 
     expect(find.text('Tacos Poulet XL'), findsOneWidget);
     expect(find.text('40,00 DH'), findsWidgets);
+    // Pull-to-refresh câblé (point 4).
+    expect(find.byType(RefreshIndicator), findsOneWidget);
   });
 
   testWidgets('Filtre par catégorie (Pizza)', (tester) async {

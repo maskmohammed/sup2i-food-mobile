@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../app/cart_scope.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
+import '../../../core/haptics/app_haptics.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../cart/presentation/widgets/cart_button.dart';
@@ -84,48 +86,58 @@ class _CataloguePageState extends State<CataloguePage> {
                         title: loc.catalogueEmpty,
                         message: '',
                       )
-                    : GridView.builder(
-                        padding: const EdgeInsets.all(16),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 16,
-                              crossAxisSpacing: 16,
-                              childAspectRatio: 0.72,
-                            ),
-                        itemCount: _controller.products.length,
-                        itemBuilder: (context, index) {
-                          final product = _controller.products[index];
-                          final favorites = FavoritesScope.of(context);
-                          return ProductCard(
-                            product: product,
-                            isFavorite: favorites.isFavorite(product.id),
-                            onFavoriteTap: () => favorites.toggle(product.id),
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (_) => ProductDetailPage(
-                                  productId: product.id,
-                                  repository: widget.repository,
+                    : RefreshIndicator(
+                        onRefresh: _controller.load,
+                        color: AppColors.pink600,
+                        child: GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
+                                childAspectRatio: 0.72,
+                              ),
+                          itemCount: _controller.products.length,
+                          itemBuilder: (context, index) {
+                            final product = _controller.products[index];
+                            final favorites = FavoritesScope.of(context);
+                            return ProductCard(
+                              product: product,
+                              isFavorite: favorites.isFavorite(product.id),
+                              onFavoriteTap: () => favorites.toggle(product.id),
+                              onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => ProductDetailPage(
+                                    productId: product.id,
+                                    repository: widget.repository,
+                                  ),
                                 ),
                               ),
-                            ),
-                            onAddToCart: product.available
-                                ? () {
-                                    CartScope.of(
-                                      context,
-                                      listen: false,
-                                    ).addItem(
-                                      productId: product.id,
-                                      name: product.name,
-                                      unitPriceCents: product.priceCents,
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(loc.addedToCart)),
-                                    );
-                                  }
-                                : null,
-                          );
-                        },
+                              onAddToCart: product.available
+                                  ? () {
+                                      AppHaptics.light();
+                                      CartScope.of(
+                                        context,
+                                        listen: false,
+                                      ).addItem(
+                                        productId: product.id,
+                                        name: product.name,
+                                        unitPriceCents: product.priceCents,
+                                      );
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(loc.addedToCart),
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                            );
+                          },
+                        ),
                       ),
               ),
             ],

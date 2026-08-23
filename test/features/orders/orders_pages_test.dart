@@ -26,6 +26,8 @@ void main() {
     expect(find.text('Commande #A1949'), findsOneWidget);
     expect(find.text('Retirée'), findsOneWidget);
     expect(find.text('Annulée'), findsOneWidget);
+    // Pull-to-refresh câblé (point 4).
+    expect(find.byType(RefreshIndicator), findsOneWidget);
   });
 
   testWidgets('Suivi : commande en attente → QR, timeline, annulation', (

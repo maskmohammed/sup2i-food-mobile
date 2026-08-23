@@ -8,6 +8,7 @@ import 'package:sup2i_food_mobile/features/cart/application/cart_controller.dart
 import 'package:sup2i_food_mobile/features/catalogue/data/mock_catalogue_repository.dart';
 import 'package:sup2i_food_mobile/features/catalogue/data/search_history_store.dart';
 import 'package:sup2i_food_mobile/features/catalogue/presentation/search_page.dart';
+import 'package:sup2i_food_mobile/features/catalogue/presentation/widgets/product_card.dart';
 import 'package:sup2i_food_mobile/features/favorites/application/favorites_controller.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
@@ -113,13 +114,33 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField), 'pizza');
-    // Avant la fin du debounce : pas encore filtré.
+    // Avant la fin du debounce : la grille (ProductCard) n'est pas encore rendue
+    // (les suggestions immédiates, elles, peuvent apparaître — cf. point 5).
     await tester.pump(const Duration(milliseconds: 100));
-    expect(find.text('Pizza margherita'), findsNothing);
+    expect(find.byType(ProductCard), findsNothing);
 
-    // Après la pause : résultats affichés.
+    // Après la pause : la grille de résultats est rendue.
     await tester.pump(const Duration(milliseconds: 250));
-    expect(find.text('Pizza margherita'), findsOneWidget);
+    expect(find.byType(ProductCard), findsWidgets);
+  });
+
+  testWidgets('Auto-suggestion dès le premier caractère (avant debounce)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_wrap(_page));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'piz');
+    await tester.pump(); // immédiat, sans attendre le debounce
+
+    // Suggestion proposée tout de suite ; la grille lourde attend le debounce.
+    expect(find.widgetWithText(ListTile, 'Pizza margherita'), findsOneWidget);
+    expect(find.byType(ProductCard), findsNothing);
+
+    // Choisir une suggestion applique le filtre (grille).
+    await tester.tap(find.widgetWithText(ListTile, 'Pizza margherita'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ProductCard), findsOneWidget);
   });
 
   group('mergeRecentSearch', () {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/cart_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/format/money.dart';
+import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_state_view.dart';
@@ -13,6 +14,7 @@ import '../data/catalogue_repository.dart';
 import '../data/mock_catalogue_repository.dart';
 import '../domain/product_detail.dart';
 import 'widgets/loading_skeletons.dart';
+import 'widgets/product_image.dart';
 
 /// Écran détail produit : image, prix, durée, quantité, allergènes (chips
 /// texte), groupes d'options, note. Le total reste autorité serveur ; l'ajout
@@ -103,14 +105,7 @@ class _DetailBody extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 1.5,
-          child: Container(
-            color: context.surfaces.background,
-            child: const Icon(
-              Icons.restaurant_menu,
-              size: 56,
-              color: AppColors.muted,
-            ),
-          ),
+          child: ProductImage(query: product.name, iconSize: 56),
         ),
         Padding(
           padding: const EdgeInsets.all(20),
@@ -185,6 +180,7 @@ class _DetailBody extends StatelessWidget {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () {
+                    AppHaptics.light();
                     CartScope.of(context, listen: false).addItem(
                       productId: product.id,
                       name: product.name,

@@ -135,3 +135,74 @@ Une entrée par décision.
 - **Pourquoi** : conformité aux bonnes pratiques mobiles (WCAG/▸ lecteur
   d'écran), parcours critiques (retrait au comptoir) accessibles.
 
+
+## D8 — Icônes de catégories (Phosphor) et couleur d'état
+
+- **Date** : 2026-08-23
+- **Décision** : les chips de catégories (Catalogue/Accueil) portent une **icône
+  Phosphor** (`phosphor_flutter`, licence MIT) : Tacos→hamburger, Pizza→pizza,
+  Pasticio→bowlFood, Boisson→coffee, Dessert→iceCream, « Tous »/inconnu→forkKnife
+  (`categoryIcon`, mapping décoratif avec repli).
+- **Couleur = état UI, pas la catégorie** (charte §22) : icône + libellé
+  **pink600** quand actif, **muted** (icône) quand inactif ; **jamais** une
+  couleur différente par sous-marque/catégorie.
+- **Changement visuel** : le chip sélectionné passe d'un **aplat pink600 plein**
+  à un **fond teinté pink600 (12%) + icône/texte pink600** (bordure pink600).
+  Motivé par la consigne « icône pink600 à l'état actif » : sur un aplat plein,
+  l'icône pink serait invisible. Contraste texte pink600 sur teinte claire OK.
+- **Impact tests** : goldens `catalogue`/`home` régénérés (changement voulu).
+- **Pourquoi** : repères visuels rapides par catégorie tout en gardant une
+  sémantique de couleur cohérente (état, pas identité de sous-marque).
+
+## D9 — Photos produits via Unsplash : DÉVELOPPEMENT UNIQUEMENT ⚠️
+
+- **Date** : 2026-08-23
+- **Décision** : en développement, les cartes/détails produits peuvent afficher
+  de vraies photos de nourriture récupérées via l'**API officielle Unsplash**
+  (`UnsplashPhotoService` + widget `ProductImage`), à la place des placeholders.
+- **⚠️ AVERTISSEMENT — NE JAMAIS SHIPPER EN PRODUCTION** : ces photos sont
+  **génériques** et **ne correspondent pas au plat réellement servi**. Les
+  afficher en production **induirait le client en erreur** (photo ≠ produit).
+  Elles doivent être **remplacées par les vraies photos SUP2I FOOD** avant toute
+  mise en production. Un commentaire de code explicite le rappelle à l'endroit
+  du chargement (`product_image.dart`, `product_photo_service.dart`).
+- **Sécurité clé** : la clé API est lue depuis l'**environnement**
+  (`--dart-define=UNSPLASH_ACCESS_KEY=...`), **jamais** en dur ni versionnée.
+  Sans clé → service **désactivé** (placeholder), donc tests/CI restent
+  hors-ligne et verts, et aucune photo Unsplash ne part en build par défaut.
+- **Garde-fou production suggéré** : ne fournir la clé qu'aux builds de dev ;
+  un build release sans `UNSPLASH_ACCESS_KEY` n'affiche aucune photo Unsplash.
+- **Pourquoi** : maquettes plus réalistes pendant le dev sans bloquer sur
+  l'absence des photos officielles, tout en évitant tout risque de tromperie
+  client en production.
+
+## D10 — Retour haptique (supplémentaire, jamais l'unique confirmation)
+
+- **Date** : 2026-08-23
+- **Décision** : haptique natif (`HapticFeedback` via `AppHaptics`) sur :
+  - **ajout au panier** → `light()` (le snackbar reste la confirmation visible) ;
+  - **commande créée** (checkout réussi) → `success()` (navigation vers le suivi) ;
+  - **« commande prête »** (`OrderReadyPage`) → `success()` (écran plein écran).
+- **Accessibilité (charte §15)** : le haptique est **toujours supplémentaire** à
+  un retour visuel ; jamais l'unique confirmation. L'OS respecte les réglages
+  système (haptique désactivable par l'utilisateur).
+- **Divergence assumée « scan QR réussi »** : l'app **étudiante présente** les QR
+  (commande, Food Pass) mais **ne les scanne pas** — le scan est réalisé par les
+  terminaux **staff** (hors périmètre de cette app). Le point « scan QR réussi »
+  est donc rattaché au **moment succès équivalent côté étudiant** : la commande
+  passe à **READY** (écran « commande prête »). À revoir si un scanner est un
+  jour ajouté à l'app étudiante.
+
+## D11 — Auto-suggestion de recherche (en plus du debounce)
+
+- **Date** : 2026-08-23
+- **Décision** : dès le **1er caractère**, l'écran de recherche propose des
+  **suggestions immédiates** (noms de produits correspondants, max 5), mises à
+  jour à chaque frappe. Le **filtre de la grille reste débouncé** (~280 ms, D non
+  supprimé) : les suggestions **complètent** le debounce, ne le remplacent pas.
+- **Comportement** : pendant la frappe (debounce en cours) → liste de suggestions
+  légères ; une fois la pause écoulée → grille de résultats filtrée. Taper une
+  suggestion applique le filtre immédiatement (et l'enregistre dans l'historique).
+- **Pourquoi** : retour instantané et peu coûteux pendant la saisie rapide, tout
+  en évitant un re-render lourd de la grille à chaque caractère (perf + anti
+  clignotement).

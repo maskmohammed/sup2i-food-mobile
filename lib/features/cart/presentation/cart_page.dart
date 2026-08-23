@@ -113,6 +113,7 @@ class _CartLineTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations loc = AppLocalizations.of(context);
     final TextTheme text = Theme.of(context).textTheme;
 
     return Container(
@@ -124,38 +125,46 @@ class _CartLineTile extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // Regroupe nom + options + prix en une seule annonce lecteur d'écran.
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(line.name, style: text.bodyMedium),
-                if (line.optionsLabel != null) ...[
-                  const SizedBox(height: 2),
+            child: MergeSemantics(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(line.name, style: text.bodyMedium),
+                  if (line.optionsLabel != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      line.optionsLabel!,
+                      style: text.bodySmall?.copyWith(color: AppColors.muted),
+                    ),
+                  ],
+                  const SizedBox(height: 4),
                   Text(
-                    line.optionsLabel!,
-                    style: text.bodySmall?.copyWith(color: AppColors.muted),
+                    Money.format(line.unitPriceCents),
+                    style: text.labelLarge?.copyWith(
+                      color: context.surfaces.text,
+                    ),
                   ),
                 ],
-                const SizedBox(height: 4),
-                Text(
-                  Money.format(line.unitPriceCents),
-                  style: text.labelLarge?.copyWith(
-                    color: context.surfaces.text,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           IconButton(
             onPressed: () => cart.decrement(line.id),
             icon: const Icon(Icons.remove_circle_outline),
             color: AppColors.navy900,
+            tooltip: loc.decreaseQuantity,
           ),
-          Text('${line.quantity}'),
+          Text(
+            '${line.quantity}',
+            semanticsLabel: '${loc.quantityLabel} : ${line.quantity}',
+          ),
           IconButton(
             onPressed: () => cart.increment(line.id),
             icon: const Icon(Icons.add_circle),
             color: AppColors.pink600,
+            tooltip: loc.increaseQuantity,
           ),
         ],
       ),

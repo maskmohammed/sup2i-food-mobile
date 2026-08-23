@@ -15,6 +15,7 @@ import '../../catalogue/data/mock_catalogue_repository.dart';
 import '../../catalogue/domain/product.dart';
 import '../../catalogue/presentation/catalogue_page.dart';
 import '../../catalogue/presentation/product_detail_page.dart';
+import '../../catalogue/presentation/search_page.dart';
 import '../../catalogue/presentation/widgets/category_selector.dart';
 import '../../catalogue/presentation/widgets/product_card.dart';
 
@@ -46,10 +47,21 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _openCatalogue() {
+  void _openCatalogue([String? categoryId]) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => CataloguePage(repository: widget.repository),
+        builder: (_) => CataloguePage(
+          repository: widget.repository,
+          initialCategoryId: categoryId,
+        ),
+      ),
+    );
+  }
+
+  void _openSearch() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => SearchPage(repository: widget.repository),
       ),
     );
   }
@@ -111,10 +123,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _SearchBar(
-                  hint: loc.homeSearchHint,
-                  onTap: _openCatalogue,
-                ),
+                child: _SearchBar(hint: loc.homeSearchHint, onTap: _openSearch),
               ),
               const SizedBox(height: 24),
               _SectionHeader(title: loc.homeFavorites),
@@ -147,7 +156,7 @@ class _HomePageState extends State<HomePage> {
               CategorySelector(
                 categories: _controller.categories,
                 selectedId: null,
-                onSelect: (_) => _openCatalogue(),
+                onSelect: (categoryId) => _openCatalogue(categoryId),
               ),
               const SizedBox(height: 24),
               _SectionHeader(

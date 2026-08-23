@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
@@ -118,17 +119,33 @@ class _FoodPassPageState extends State<FoodPassPage> {
                   ),
                   const SizedBox(height: 20),
                   Center(
-                    child: Container(
-                      width: 160,
-                      height: 160,
-                      decoration: BoxDecoration(
-                        color: AppColors.neutral0,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.qr_code_2,
-                        size: 110,
-                        color: AppColors.navy900,
+                    // Zone blanche dégagée, QR non décoré (charte) — reste blanc
+                    // même en thème sombre pour rester scannable.
+                    child: Semantics(
+                      image: true,
+                      label: loc.qrFoodPassSemantics,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.neutral0,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ExcludeSemantics(
+                          child: QrImageView(
+                            data: fp.qrPayload,
+                            version: QrVersions.auto,
+                            size: 150,
+                            backgroundColor: AppColors.neutral0,
+                            eyeStyle: const QrEyeStyle(
+                              eyeShape: QrEyeShape.square,
+                              color: Color(0xFF000000),
+                            ),
+                            dataModuleStyle: const QrDataModuleStyle(
+                              dataModuleShape: QrDataModuleShape.square,
+                              color: Color(0xFF000000),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

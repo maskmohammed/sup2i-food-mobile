@@ -153,3 +153,25 @@ Une entrée par décision.
 - **Impact tests** : goldens `catalogue`/`home` régénérés (changement voulu).
 - **Pourquoi** : repères visuels rapides par catégorie tout en gardant une
   sémantique de couleur cohérente (état, pas identité de sous-marque).
+
+## D9 — Photos produits via Unsplash : DÉVELOPPEMENT UNIQUEMENT ⚠️
+
+- **Date** : 2026-08-23
+- **Décision** : en développement, les cartes/détails produits peuvent afficher
+  de vraies photos de nourriture récupérées via l'**API officielle Unsplash**
+  (`UnsplashPhotoService` + widget `ProductImage`), à la place des placeholders.
+- **⚠️ AVERTISSEMENT — NE JAMAIS SHIPPER EN PRODUCTION** : ces photos sont
+  **génériques** et **ne correspondent pas au plat réellement servi**. Les
+  afficher en production **induirait le client en erreur** (photo ≠ produit).
+  Elles doivent être **remplacées par les vraies photos SUP2I FOOD** avant toute
+  mise en production. Un commentaire de code explicite le rappelle à l'endroit
+  du chargement (`product_image.dart`, `product_photo_service.dart`).
+- **Sécurité clé** : la clé API est lue depuis l'**environnement**
+  (`--dart-define=UNSPLASH_ACCESS_KEY=...`), **jamais** en dur ni versionnée.
+  Sans clé → service **désactivé** (placeholder), donc tests/CI restent
+  hors-ligne et verts, et aucune photo Unsplash ne part en build par défaut.
+- **Garde-fou production suggéré** : ne fournir la clé qu'aux builds de dev ;
+  un build release sans `UNSPLASH_ACCESS_KEY` n'affiche aucune photo Unsplash.
+- **Pourquoi** : maquettes plus réalistes pendant le dev sans bloquer sur
+  l'absence des photos officielles, tout en évitant tout risque de tromperie
+  client en production.

@@ -13,6 +13,7 @@ import '../data/catalogue_repository.dart';
 import '../data/mock_catalogue_repository.dart';
 import '../domain/product_detail.dart';
 import 'widgets/loading_skeletons.dart';
+import 'widgets/product_image.dart';
 
 /// Écran détail produit : image, prix, durée, quantité, allergènes (chips
 /// texte), groupes d'options, note. Le total reste autorité serveur ; l'ajout
@@ -103,14 +104,7 @@ class _DetailBody extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 1.5,
-          child: Container(
-            color: context.surfaces.background,
-            child: const Icon(
-              Icons.restaurant_menu,
-              size: 56,
-              color: AppColors.muted,
-            ),
-          ),
+          child: ProductImage(query: product.name, iconSize: 56),
         ),
         Padding(
           padding: const EdgeInsets.all(20),

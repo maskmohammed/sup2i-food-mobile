@@ -5,6 +5,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_surfaces.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/product.dart';
+import 'product_image.dart';
 
 /// Carte produit du catalogue (image, nom, prix DH, favori, ajout panier).
 /// Un produit indisponible est grisé + badge « Indisponible » (statut jamais
@@ -49,14 +50,7 @@ class ProductCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Container(
-                      color: context.surfaces.background,
-                      child: const Icon(
-                        Icons.restaurant_menu,
-                        color: AppColors.muted,
-                        size: 36,
-                      ),
-                    ),
+                    ProductImage(query: product.name),
                     Positioned(
                       top: 4,
                       right: 4,

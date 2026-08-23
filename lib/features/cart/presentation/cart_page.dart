@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/cart_scope.dart';
 import '../../../app/orders_scope.dart';
 import '../../../core/error/api_exception.dart';
+import '../../../core/haptics/app_haptics.dart';
 import '../../../core/format/money.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
@@ -37,6 +38,7 @@ class CartPage extends StatelessWidget {
         slotLabel: cart.slot!.label,
         paymentMethod: method,
       );
+      AppHaptics.success(); // confirmation supplémentaire (l'écran suivi suit)
       cart.clear();
       if (!context.mounted) return;
       Navigator.of(context).pushReplacement(

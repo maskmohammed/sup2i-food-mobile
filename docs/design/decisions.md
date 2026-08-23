@@ -175,3 +175,20 @@ Une entrée par décision.
 - **Pourquoi** : maquettes plus réalistes pendant le dev sans bloquer sur
   l'absence des photos officielles, tout en évitant tout risque de tromperie
   client en production.
+
+## D10 — Retour haptique (supplémentaire, jamais l'unique confirmation)
+
+- **Date** : 2026-08-23
+- **Décision** : haptique natif (`HapticFeedback` via `AppHaptics`) sur :
+  - **ajout au panier** → `light()` (le snackbar reste la confirmation visible) ;
+  - **commande créée** (checkout réussi) → `success()` (navigation vers le suivi) ;
+  - **« commande prête »** (`OrderReadyPage`) → `success()` (écran plein écran).
+- **Accessibilité (charte §15)** : le haptique est **toujours supplémentaire** à
+  un retour visuel ; jamais l'unique confirmation. L'OS respecte les réglages
+  système (haptique désactivable par l'utilisateur).
+- **Divergence assumée « scan QR réussi »** : l'app **étudiante présente** les QR
+  (commande, Food Pass) mais **ne les scanne pas** — le scan est réalisé par les
+  terminaux **staff** (hors périmètre de cette app). Le point « scan QR réussi »
+  est donc rattaché au **moment succès équivalent côté étudiant** : la commande
+  passe à **READY** (écran « commande prête »). À revoir si un scanner est un
+  jour ajouté à l'app étudiante.

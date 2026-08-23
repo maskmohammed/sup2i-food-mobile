@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_motion.dart';
 import '../../../l10n/app_localizations.dart';
@@ -31,6 +32,14 @@ class _OrderReadyPageState extends State<OrderReadyPage>
     begin: 1,
     end: 1.08,
   ).animate(CurvedAnimation(parent: _pulse, curve: AppMotion.standard));
+
+  @override
+  void initState() {
+    super.initState();
+    // « Commande prête » : moment succès du parcours (l'app présente le QR, elle
+    // ne le scanne pas). Haptique supplémentaire — l'écran reste la confirmation.
+    AppHaptics.success();
+  }
 
   @override
   void didChangeDependencies() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/cart_scope.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
+import '../../../core/haptics/app_haptics.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../cart/presentation/widgets/cart_button.dart';
@@ -111,6 +112,7 @@ class _CataloguePageState extends State<CataloguePage> {
                             ),
                             onAddToCart: product.available
                                 ? () {
+                                    AppHaptics.light();
                                     CartScope.of(
                                       context,
                                       listen: false,

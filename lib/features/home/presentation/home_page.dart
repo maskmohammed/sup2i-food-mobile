@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/cart_scope.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
+import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_loading_view.dart';
@@ -78,6 +79,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _addToCart(Product product, AppLocalizations loc) {
+    AppHaptics.light(); // supplémentaire : le snackbar reste la confirmation
     CartScope.of(context, listen: false).addItem(
       productId: product.id,
       name: product.name,

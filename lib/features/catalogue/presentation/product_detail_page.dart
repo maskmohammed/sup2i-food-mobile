@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/cart_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/format/money.dart';
+import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_state_view.dart';
@@ -179,6 +180,7 @@ class _DetailBody extends StatelessWidget {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () {
+                    AppHaptics.light();
                     CartScope.of(context, listen: false).addItem(
                       productId: product.id,
                       name: product.name,

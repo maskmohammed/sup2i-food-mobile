@@ -9,18 +9,23 @@ import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/catalogue_repository.dart';
 import '../data/mock_catalogue_repository.dart';
+import '../data/search_history_store.dart';
 import '../domain/product.dart';
 import 'product_detail_page.dart';
 import 'widgets/product_card.dart';
 
 /// Écran de recherche dédié : champ éditable (autofocus), filtre les produits
 /// par nom (insensible à la casse) au fil de la saisie. État vide « Aucun
-/// résultat » réutilisé du design.
+/// résultat » réutilisé du design. Historique des 5 dernières recherches
+/// proposé quand le champ est vide.
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key, this.repository});
+  const SearchPage({super.key, this.repository, this.historyStore});
 
   /// Injectable pour les tests (défaut : mock).
   final CatalogueRepository? repository;
+
+  /// Historique local (défaut : shared_preferences).
+  final SearchHistoryStore? historyStore;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -28,9 +33,11 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late final CatalogueRepository _repository;
+  late final SearchHistoryStore _historyStore;
   final TextEditingController _field = TextEditingController();
 
   List<Product> _all = const <Product>[];
+  List<String> _recent = const <String>[];
   bool _loading = true;
   String? _errorCode;
   String _query = '';
@@ -39,7 +46,34 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _repository = widget.repository ?? const MockCatalogueRepository();
+    _historyStore =
+        widget.historyStore ?? SharedPreferencesSearchHistoryStore();
     _loadAll();
+    _loadHistory();
+  }
+
+  Future<void> _loadHistory() async {
+    final terms = await _historyStore.load();
+    if (!mounted) return;
+    setState(() => _recent = terms);
+  }
+
+  void _record(String term) {
+    final updated = mergeRecentSearch(_recent, term);
+    if (updated == _recent) return;
+    setState(() => _recent = updated);
+    _historyStore.save(updated);
+  }
+
+  void _applyRecent(String term) {
+    _field.text = term;
+    _field.selection = TextSelection.collapsed(offset: term.length);
+    setState(() => _query = term);
+  }
+
+  Future<void> _clearHistory() async {
+    setState(() => _recent = const <String>[]);
+    await _historyStore.save(const <String>[]);
   }
 
   Future<void> _loadAll() async {
@@ -76,6 +110,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _openDetail(Product product) {
+    _record(_query);
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) =>
@@ -95,6 +130,7 @@ class _SearchPageState extends State<SearchPage> {
           autofocus: true,
           textInputAction: TextInputAction.search,
           onChanged: (value) => setState(() => _query = value),
+          onSubmitted: _record,
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: loc.homeSearchHint,
@@ -127,7 +163,12 @@ class _SearchPageState extends State<SearchPage> {
       );
     }
     if (_query.trim().isEmpty) {
-      return _Prompt(text: loc.searchPrompt);
+      if (_recent.isEmpty) return _Prompt(text: loc.searchPrompt);
+      return _RecentSearches(
+        terms: _recent,
+        onSelect: _applyRecent,
+        onClear: _clearHistory,
+      );
     }
     final results = _results;
     if (results.isEmpty) {
@@ -173,6 +214,52 @@ class _SearchPageState extends State<SearchPage> {
               : null,
         );
       },
+    );
+  }
+}
+
+class _RecentSearches extends StatelessWidget {
+  const _RecentSearches({
+    required this.terms,
+    required this.onSelect,
+    required this.onClear,
+  });
+
+  final List<String> terms;
+  final ValueChanged<String> onSelect;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations loc = AppLocalizations.of(context);
+    final TextTheme text = Theme.of(context).textTheme;
+
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                loc.searchRecentTitle,
+                style: text.labelLarge?.copyWith(color: AppColors.muted),
+              ),
+              TextButton(
+                onPressed: onClear,
+                child: Text(loc.searchClearHistory),
+              ),
+            ],
+          ),
+        ),
+        for (final term in terms)
+          ListTile(
+            leading: const Icon(Icons.history, color: AppColors.muted),
+            title: Text(term),
+            onTap: () => onSelect(term),
+          ),
+      ],
     );
   }
 }

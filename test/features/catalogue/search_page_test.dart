@@ -6,9 +6,21 @@ import 'package:sup2i_food_mobile/app/favorites_scope.dart';
 import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
 import 'package:sup2i_food_mobile/features/cart/application/cart_controller.dart';
 import 'package:sup2i_food_mobile/features/catalogue/data/mock_catalogue_repository.dart';
+import 'package:sup2i_food_mobile/features/catalogue/data/search_history_store.dart';
 import 'package:sup2i_food_mobile/features/catalogue/presentation/search_page.dart';
 import 'package:sup2i_food_mobile/features/favorites/application/favorites_controller.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
+
+class _FakeHistory implements SearchHistoryStore {
+  _FakeHistory([this.terms = const <String>[]]);
+  List<String> terms;
+
+  @override
+  Future<List<String>> load() async => terms;
+
+  @override
+  Future<void> save(List<String> value) async => terms = value;
+}
 
 Widget _wrap(Widget home) => CartScope(
   controller: CartController(),
@@ -57,5 +69,42 @@ void main() {
 
     expect(find.text('Aucun résultat'), findsOneWidget);
     expect(find.text('Voir tout le catalogue'), findsOneWidget);
+  });
+
+  testWidgets('Champ vide : propose l\'historique récent', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        SearchPage(
+          repository: const MockCatalogueRepository(latency: Duration.zero),
+          historyStore: _FakeHistory(['pizza', 'tacos']),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Recherches récentes'), findsOneWidget);
+    expect(find.text('pizza'), findsOneWidget);
+
+    // Taper une recherche récente remplit le champ et filtre.
+    await tester.tap(find.text('pizza'));
+    await tester.pumpAndSettle();
+    expect(find.text('Pizza margherita'), findsOneWidget);
+    expect(find.text('Tacos Poulet XL'), findsNothing);
+  });
+
+  group('mergeRecentSearch', () {
+    test('ajoute en tête et dédoublonne (insensible à la casse)', () {
+      expect(mergeRecentSearch(['tacos'], 'Pizza'), ['Pizza', 'tacos']);
+      expect(mergeRecentSearch(['tacos'], 'TACOS'), ['TACOS']);
+    });
+
+    test('plafonne à 5', () {
+      final r = mergeRecentSearch(['a', 'b', 'c', 'd', 'e'], 'f');
+      expect(r, ['f', 'a', 'b', 'c', 'd']);
+    });
+
+    test('ignore un terme vide', () {
+      expect(mergeRecentSearch(['a'], '   '), ['a']);
+    });
   });
 }

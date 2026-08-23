@@ -16,6 +16,9 @@ abstract final class AppMotion {
   /// Micro-scale de retour à l'ajout au panier : 160–200 ms.
   static const Duration cartAdd = Duration(milliseconds: 180);
 
+  /// Anti-rebond de la saisie de recherche : 250–300 ms.
+  static const Duration searchDebounce = Duration(milliseconds: 280);
+
   /// Courbe standard des transitions d'interface.
   static const Curve standard = Curves.easeInOut;
 

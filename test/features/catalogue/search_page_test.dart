@@ -54,6 +54,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField), 'TACOS');
+    await tester.pump(const Duration(milliseconds: 300)); // debounce
     await tester.pumpAndSettle();
 
     expect(find.text('Tacos Poulet XL'), findsOneWidget);
@@ -65,6 +66,7 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField), 'zzzzz');
+    await tester.pump(const Duration(milliseconds: 300)); // debounce
     await tester.pumpAndSettle();
 
     expect(find.text('Aucun résultat'), findsOneWidget);
@@ -90,6 +92,20 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Pizza margherita'), findsOneWidget);
     expect(find.text('Tacos Poulet XL'), findsNothing);
+  });
+
+  testWidgets('Debounce : filtre appliqué après la pause', (tester) async {
+    await tester.pumpWidget(_wrap(_page));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'pizza');
+    // Avant la fin du debounce : pas encore filtré.
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(find.text('Pizza margherita'), findsNothing);
+
+    // Après la pause : résultats affichés.
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(find.text('Pizza margherita'), findsOneWidget);
   });
 
   group('mergeRecentSearch', () {

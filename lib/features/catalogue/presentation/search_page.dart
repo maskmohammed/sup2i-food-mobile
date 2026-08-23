@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../app/cart_scope.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_motion.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -40,7 +43,8 @@ class _SearchPageState extends State<SearchPage> {
   List<String> _recent = const <String>[];
   bool _loading = true;
   String? _errorCode;
-  String _query = '';
+  String _query = ''; // terme filtrant (débounced)
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -65,10 +69,33 @@ class _SearchPageState extends State<SearchPage> {
     _historyStore.save(updated);
   }
 
+  /// Débounce : ne filtre qu'après une courte pause de frappe (charte).
+  void _onChanged(String value) {
+    _debounce?.cancel();
+    // Rebuild immédiat pour le bouton « effacer » (basé sur _field.text).
+    setState(() {});
+    _debounce = Timer(AppMotion.searchDebounce, () {
+      if (mounted) setState(() => _query = value);
+    });
+  }
+
+  void _submit(String value) {
+    _debounce?.cancel();
+    setState(() => _query = value);
+    _record(value);
+  }
+
   void _applyRecent(String term) {
+    _debounce?.cancel();
     _field.text = term;
     _field.selection = TextSelection.collapsed(offset: term.length);
     setState(() => _query = term);
+  }
+
+  void _clearField() {
+    _debounce?.cancel();
+    _field.clear();
+    setState(() => _query = '');
   }
 
   Future<void> _clearHistory() async {
@@ -99,6 +126,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _field.dispose();
     super.dispose();
   }
@@ -129,22 +157,19 @@ class _SearchPageState extends State<SearchPage> {
           controller: _field,
           autofocus: true,
           textInputAction: TextInputAction.search,
-          onChanged: (value) => setState(() => _query = value),
-          onSubmitted: _record,
+          onChanged: _onChanged,
+          onSubmitted: _submit,
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: loc.homeSearchHint,
           ),
         ),
         actions: [
-          if (_query.isNotEmpty)
+          if (_field.text.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.close),
               tooltip: loc.searchClear,
-              onPressed: () => setState(() {
-                _field.clear();
-                _query = '';
-              }),
+              onPressed: _clearField,
             ),
         ],
       ),
@@ -177,10 +202,7 @@ class _SearchPageState extends State<SearchPage> {
         title: loc.searchNoResultsTitle,
         message: loc.searchNoResultsHint,
         actionLabel: loc.searchSeeAllCatalogue,
-        onAction: () => setState(() {
-          _field.clear();
-          _query = '';
-        }),
+        onAction: _clearField,
       );
     }
     return GridView.builder(

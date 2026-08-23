@@ -69,7 +69,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300)); // debounce
     await tester.pumpAndSettle();
 
-    expect(find.text('Aucun résultat'), findsOneWidget);
+    // Le terme recherché est inclus dans le message (point 14).
+    expect(find.text('Aucun résultat pour « zzzzz »'), findsOneWidget);
     expect(find.text('Voir tout le catalogue'), findsOneWidget);
   });
 

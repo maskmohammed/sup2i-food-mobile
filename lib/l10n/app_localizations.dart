@@ -185,6 +185,11 @@ class AppLocalizations {
   String get searchClear => _t('searchClear');
   String get searchPrompt => _t('searchPrompt');
   String get searchNoResultsTitle => _t('searchNoResultsTitle');
+
+  /// Titre d'état vide incluant le terme recherché (ex. « Aucun résultat pour
+  /// "tacos" »).
+  String searchNoResultsFor(String query) =>
+      _t('searchNoResultsFor').replaceFirst('{q}', query);
   String get searchNoResultsHint => _t('searchNoResultsHint');
   String get searchSeeAllCatalogue => _t('searchSeeAllCatalogue');
   String get searchRecentTitle => _t('searchRecentTitle');
@@ -373,6 +378,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'searchClear': 'Effacer la recherche',
     'searchPrompt': 'Tapez pour rechercher un produit',
     'searchNoResultsTitle': 'Aucun résultat',
+    'searchNoResultsFor': 'Aucun résultat pour « {q} »',
     'searchNoResultsHint': 'Essayez un autre mot-clé ou une autre catégorie.',
     'searchSeeAllCatalogue': 'Voir tout le catalogue',
     'searchRecentTitle': 'Recherches récentes',
@@ -559,6 +565,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'searchClear': 'Clear search',
     'searchPrompt': 'Type to search for a product',
     'searchNoResultsTitle': 'No results',
+    'searchNoResultsFor': 'No results for “{q}”',
     'searchNoResultsHint': 'Try another keyword or category.',
     'searchSeeAllCatalogue': 'See all catalogue',
     'searchRecentTitle': 'Recent searches',
@@ -742,6 +749,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'searchClear': 'مسح البحث',
     'searchPrompt': 'اكتب للبحث عن منتج',
     'searchNoResultsTitle': 'لا توجد نتائج',
+    'searchNoResultsFor': 'لا نتائج لـ «{q}»',
     'searchNoResultsHint': 'جرّب كلمة مفتاحية أو فئة أخرى.',
     'searchSeeAllCatalogue': 'عرض كل القائمة',
     'searchRecentTitle': 'عمليات البحث الأخيرة',

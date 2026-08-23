@@ -199,7 +199,7 @@ class _SearchPageState extends State<SearchPage> {
     if (results.isEmpty) {
       return AppStateView.empty(
         icon: Icons.search_off,
-        title: loc.searchNoResultsTitle,
+        title: loc.searchNoResultsFor(_query.trim()),
         message: loc.searchNoResultsHint,
         actionLabel: loc.searchSeeAllCatalogue,
         onAction: _clearField,

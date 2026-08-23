@@ -135,3 +135,21 @@ Une entrée par décision.
 - **Pourquoi** : conformité aux bonnes pratiques mobiles (WCAG/▸ lecteur
   d'écran), parcours critiques (retrait au comptoir) accessibles.
 
+
+## D8 — Icônes de catégories (Phosphor) et couleur d'état
+
+- **Date** : 2026-08-23
+- **Décision** : les chips de catégories (Catalogue/Accueil) portent une **icône
+  Phosphor** (`phosphor_flutter`, licence MIT) : Tacos→hamburger, Pizza→pizza,
+  Pasticio→bowlFood, Boisson→coffee, Dessert→iceCream, « Tous »/inconnu→forkKnife
+  (`categoryIcon`, mapping décoratif avec repli).
+- **Couleur = état UI, pas la catégorie** (charte §22) : icône + libellé
+  **pink600** quand actif, **muted** (icône) quand inactif ; **jamais** une
+  couleur différente par sous-marque/catégorie.
+- **Changement visuel** : le chip sélectionné passe d'un **aplat pink600 plein**
+  à un **fond teinté pink600 (12%) + icône/texte pink600** (bordure pink600).
+  Motivé par la consigne « icône pink600 à l'état actif » : sur un aplat plein,
+  l'icône pink serait invisible. Contraste texte pink600 sur teinte claire OK.
+- **Impact tests** : goldens `catalogue`/`home` régénérés (changement voulu).
+- **Pourquoi** : repères visuels rapides par catégorie tout en gardant une
+  sémantique de couleur cohérente (état, pas identité de sous-marque).

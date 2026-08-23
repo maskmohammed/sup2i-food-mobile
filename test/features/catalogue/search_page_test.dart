@@ -59,6 +59,8 @@ void main() {
 
     expect(find.text('Tacos Poulet XL'), findsOneWidget);
     expect(find.text('Pizza margherita'), findsNothing);
+    // Nombre de résultats affiché/annoncé (4 tacos).
+    expect(find.text('4 résultats'), findsOneWidget);
   });
 
   testWidgets('Aucun résultat : état vide dédié', (tester) async {
@@ -93,6 +95,17 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Pizza margherita'), findsOneWidget);
     expect(find.text('Tacos Poulet XL'), findsNothing);
+  });
+
+  testWidgets('Accessibilité : le champ porte un label sémantique', (
+    tester,
+  ) async {
+    final handle = tester.ensureSemantics();
+    await tester.pumpWidget(_wrap(_page));
+    await tester.pumpAndSettle();
+
+    expect(find.bySemanticsLabel('Rechercher'), findsOneWidget);
+    handle.dispose();
   });
 
   testWidgets('Debounce : filtre appliqué après la pause', (tester) async {

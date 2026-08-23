@@ -194,6 +194,12 @@ class AppLocalizations {
   String get searchSeeAllCatalogue => _t('searchSeeAllCatalogue');
   String get searchRecentTitle => _t('searchRecentTitle');
   String get searchClearHistory => _t('searchClearHistory');
+
+  /// Nombre de résultats (singulier/pluriel) — sert aussi à l'annonce lecteur
+  /// d'écran (live region).
+  String searchResultsCount(int n) =>
+      (n <= 1 ? _t('searchResultsCountOne') : _t('searchResultsCountOther'))
+          .replaceFirst('{n}', '$n');
   String get homeFavorites => _t('homeFavorites');
   String get homeCategories => _t('homeCategories');
   String get homeProducts => _t('homeProducts');
@@ -383,6 +389,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'searchSeeAllCatalogue': 'Voir tout le catalogue',
     'searchRecentTitle': 'Recherches récentes',
     'searchClearHistory': 'Effacer l\'historique',
+    'searchResultsCountOne': '{n} résultat',
+    'searchResultsCountOther': '{n} résultats',
     'homeFavorites': 'Nos coups de cœur',
     'homeCategories': 'Nos catégories',
     'homeProducts': 'Nos produits',
@@ -570,6 +578,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'searchSeeAllCatalogue': 'See all catalogue',
     'searchRecentTitle': 'Recent searches',
     'searchClearHistory': 'Clear history',
+    'searchResultsCountOne': '{n} result',
+    'searchResultsCountOther': '{n} results',
     'homeFavorites': 'Our favourites',
     'homeCategories': 'Categories',
     'homeProducts': 'Products',
@@ -754,6 +764,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'searchSeeAllCatalogue': 'عرض كل القائمة',
     'searchRecentTitle': 'عمليات البحث الأخيرة',
     'searchClearHistory': 'مسح السجل',
+    'searchResultsCountOne': '{n} نتيجة',
+    'searchResultsCountOther': '{n} نتيجة',
     'homeFavorites': 'مختاراتنا',
     'homeCategories': 'الفئات',
     'homeProducts': 'المنتجات',

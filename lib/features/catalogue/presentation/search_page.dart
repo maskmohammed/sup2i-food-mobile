@@ -153,15 +153,19 @@ class _SearchPageState extends State<SearchPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          controller: _field,
-          autofocus: true,
-          textInputAction: TextInputAction.search,
-          onChanged: _onChanged,
-          onSubmitted: _submit,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: loc.homeSearchHint,
+        title: Semantics(
+          textField: true,
+          label: loc.searchTitle,
+          child: TextField(
+            controller: _field,
+            autofocus: true,
+            textInputAction: TextInputAction.search,
+            onChanged: _onChanged,
+            onSubmitted: _submit,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: loc.homeSearchHint,
+            ),
           ),
         ),
         actions: [
@@ -205,6 +209,28 @@ class _SearchPageState extends State<SearchPage> {
         onAction: _clearField,
       );
     }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Nombre de résultats — annoncé au lecteur d'écran (live region).
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Semantics(
+            liveRegion: true,
+            child: Text(
+              loc.searchResultsCount(results.length),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.muted),
+            ),
+          ),
+        ),
+        Expanded(child: _resultsGrid(loc, results)),
+      ],
+    );
+  }
+
+  Widget _resultsGrid(AppLocalizations loc, List<Product> results) {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

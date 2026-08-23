@@ -16,10 +16,13 @@ import 'widgets/product_card.dart';
 
 /// Onglet Commander : catalogue produits filtrable par catégorie.
 class CataloguePage extends StatefulWidget {
-  const CataloguePage({super.key, this.repository});
+  const CataloguePage({super.key, this.repository, this.initialCategoryId});
 
   /// Injectable pour les tests (défaut : mock).
   final CatalogueRepository? repository;
+
+  /// Catégorie présélectionnée à l'ouverture (ex. depuis l'Accueil).
+  final String? initialCategoryId;
 
   @override
   State<CataloguePage> createState() => _CataloguePageState();
@@ -34,7 +37,7 @@ class _CataloguePageState extends State<CataloguePage> {
     _controller = CatalogueController(
       widget.repository ?? const MockCatalogueRepository(),
     );
-    _controller.load();
+    _controller.load(categoryId: widget.initialCategoryId);
   }
 
   @override

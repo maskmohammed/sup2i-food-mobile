@@ -180,6 +180,13 @@ class AppLocalizations {
   // Accueil.
   String get homeWelcome => _t('homeWelcome');
   String get homeSearchHint => _t('homeSearchHint');
+  // Recherche (écran dédié).
+  String get searchTitle => _t('searchTitle');
+  String get searchClear => _t('searchClear');
+  String get searchPrompt => _t('searchPrompt');
+  String get searchNoResultsTitle => _t('searchNoResultsTitle');
+  String get searchNoResultsHint => _t('searchNoResultsHint');
+  String get searchSeeAllCatalogue => _t('searchSeeAllCatalogue');
   String get homeFavorites => _t('homeFavorites');
   String get homeCategories => _t('homeCategories');
   String get homeProducts => _t('homeProducts');
@@ -360,6 +367,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_noShow': 'Non retirée',
     'homeWelcome': 'Bienvenue chez SUP2I FOOD',
     'homeSearchHint': 'Rechercher des produits',
+    'searchTitle': 'Rechercher',
+    'searchClear': 'Effacer la recherche',
+    'searchPrompt': 'Tapez pour rechercher un produit',
+    'searchNoResultsTitle': 'Aucun résultat',
+    'searchNoResultsHint': 'Essayez un autre mot-clé ou une autre catégorie.',
+    'searchSeeAllCatalogue': 'Voir tout le catalogue',
     'homeFavorites': 'Nos coups de cœur',
     'homeCategories': 'Nos catégories',
     'homeProducts': 'Nos produits',
@@ -538,6 +551,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_noShow': 'No-show',
     'homeWelcome': 'Welcome to SUP2I FOOD',
     'homeSearchHint': 'Search products',
+    'searchTitle': 'Search',
+    'searchClear': 'Clear search',
+    'searchPrompt': 'Type to search for a product',
+    'searchNoResultsTitle': 'No results',
+    'searchNoResultsHint': 'Try another keyword or category.',
+    'searchSeeAllCatalogue': 'See all catalogue',
     'homeFavorites': 'Our favourites',
     'homeCategories': 'Categories',
     'homeProducts': 'Products',
@@ -713,6 +732,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_noShow': 'لم تُستلم',
     'homeWelcome': 'مرحبًا بك في SUP2I FOOD',
     'homeSearchHint': 'ابحث عن المنتجات',
+    'searchTitle': 'بحث',
+    'searchClear': 'مسح البحث',
+    'searchPrompt': 'اكتب للبحث عن منتج',
+    'searchNoResultsTitle': 'لا توجد نتائج',
+    'searchNoResultsHint': 'جرّب كلمة مفتاحية أو فئة أخرى.',
+    'searchSeeAllCatalogue': 'عرض كل القائمة',
     'homeFavorites': 'مختاراتنا',
     'homeCategories': 'الفئات',
     'homeProducts': 'المنتجات',

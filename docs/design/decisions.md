@@ -192,3 +192,17 @@ Une entrée par décision.
   est donc rattaché au **moment succès équivalent côté étudiant** : la commande
   passe à **READY** (écran « commande prête »). À revoir si un scanner est un
   jour ajouté à l'app étudiante.
+
+## D11 — Auto-suggestion de recherche (en plus du debounce)
+
+- **Date** : 2026-08-23
+- **Décision** : dès le **1er caractère**, l'écran de recherche propose des
+  **suggestions immédiates** (noms de produits correspondants, max 5), mises à
+  jour à chaque frappe. Le **filtre de la grille reste débouncé** (~280 ms, D non
+  supprimé) : les suggestions **complètent** le debounce, ne le remplacent pas.
+- **Comportement** : pendant la frappe (debounce en cours) → liste de suggestions
+  légères ; une fois la pause écoulée → grille de résultats filtrée. Taper une
+  suggestion applique le filtre immédiatement (et l'enregistre dans l'historique).
+- **Pourquoi** : retour instantané et peu coûteux pendant la saisie rapide, tout
+  en évitant un re-render lourd de la grille à chaque caractère (perf + anti
+  clignotement).

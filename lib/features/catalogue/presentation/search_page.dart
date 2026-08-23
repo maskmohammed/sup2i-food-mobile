@@ -93,6 +93,27 @@ class _SearchPageState extends State<SearchPage> {
     setState(() => _query = term);
   }
 
+  /// Suggestions immédiates : noms de produits correspondant à la saisie brute.
+  List<String> _suggestionsFor(String raw) {
+    final q = raw.toLowerCase();
+    final names = <String>[];
+    for (final p in _all) {
+      if (p.name.toLowerCase().contains(q) && !names.contains(p.name)) {
+        names.add(p.name);
+        if (names.length >= 5) break;
+      }
+    }
+    return names;
+  }
+
+  void _applySuggestion(String name) {
+    _debounce?.cancel();
+    _field.text = name;
+    _field.selection = TextSelection.collapsed(offset: name.length);
+    setState(() => _query = name);
+    _record(name);
+  }
+
   void _clearField() {
     _debounce?.cancel();
     _field.clear();
@@ -192,13 +213,23 @@ class _SearchPageState extends State<SearchPage> {
         onAction: _loadAll,
       );
     }
-    if (_query.trim().isEmpty) {
+    final raw = _field.text.trim();
+    if (raw.isEmpty) {
       if (_recent.isEmpty) return _Prompt(text: loc.searchPrompt);
       return _RecentSearches(
         terms: _recent,
         onSelect: _applyRecent,
         onClear: _clearHistory,
       );
+    }
+    // Auto-suggestions IMMÉDIATES (dès le 1er caractère), en plus du debounce :
+    // tant que le filtre débouncé n'a pas rattrapé la saisie, on propose des
+    // noms de produits correspondants (retour instantané sans re-render lourd).
+    final pending = raw.toLowerCase() != _query.trim().toLowerCase();
+    if (pending) {
+      final suggestions = _suggestionsFor(raw);
+      if (suggestions.isEmpty) return const SizedBox.shrink();
+      return _Suggestions(terms: suggestions, onSelect: _applySuggestion);
     }
     final results = _results;
     if (results.isEmpty) {
@@ -264,6 +295,29 @@ class _SearchPageState extends State<SearchPage> {
               : null,
         );
       },
+    );
+  }
+}
+
+/// Suggestions immédiates (autocomplétion) affichées pendant la frappe.
+class _Suggestions extends StatelessWidget {
+  const _Suggestions({required this.terms, required this.onSelect});
+
+  final List<String> terms;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      children: [
+        for (final term in terms)
+          ListTile(
+            leading: const Icon(Icons.search, color: AppColors.muted),
+            title: Text(term),
+            onTap: () => onSelect(term),
+          ),
+      ],
     );
   }
 }

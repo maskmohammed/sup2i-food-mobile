@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/app_bar_actions.dart';
 import '../../../app/orders_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/format/money.dart';
@@ -47,7 +48,10 @@ class _OrdersListPageState extends State<OrdersListPage> {
     final AppLocalizations loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.navOrders)),
+      appBar: AppBar(
+        title: Text(loc.navOrders),
+        actions: const [AppBarActions()],
+      ),
       body: ListenableBuilder(
         listenable: _controller!,
         builder: (context, _) {

@@ -15,6 +15,7 @@ Future<void> _fill(
 void main() {
   testWidgets('L\'app démarre sur l\'écran Login', (tester) async {
     await tester.pumpWidget(const Sup2iFoodApp());
+    await tester.pump(const Duration(seconds: 1)); // flush le chargement notifs
 
     expect(find.text('Se connecter'), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
@@ -24,6 +25,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(const Sup2iFoodApp());
+    await tester.pump(const Duration(seconds: 1)); // flush le chargement notifs
 
     await tester.tap(find.byKey(const Key('login_submit')));
     await tester.pump();
@@ -35,6 +37,7 @@ void main() {
 
   testWidgets('E-mail invalide : message de format', (tester) async {
     await tester.pumpWidget(const Sup2iFoodApp());
+    await tester.pump(const Duration(seconds: 1)); // flush le chargement notifs
 
     await _fill(tester, email: 'pasunemail', password: 'secret12');
     await tester.tap(find.byKey(const Key('login_submit')));

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 
+import '../../../app/app_bar_actions.dart';
 import '../../../app/auth_scope.dart';
 import '../../../app/cart_scope.dart';
 import '../../../app/favorites_scope.dart';
@@ -48,7 +49,10 @@ class ProfilePage extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.profileTitle)),
+      appBar: AppBar(
+        title: Text(loc.profileTitle),
+        actions: const [AppBarActions()],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

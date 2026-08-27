@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sup2i_food_mobile/app/cart_scope.dart';
 import 'package:sup2i_food_mobile/app/favorites_scope.dart';
+import 'package:sup2i_food_mobile/app/notifications_scope.dart';
 import 'package:sup2i_food_mobile/app/orders_scope.dart';
 import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
 import 'package:sup2i_food_mobile/features/canteen/data/canteen_repository.dart';
@@ -13,6 +14,8 @@ import 'package:sup2i_food_mobile/features/catalogue/data/mock_catalogue_reposit
 import 'package:sup2i_food_mobile/features/catalogue/presentation/catalogue_page.dart';
 import 'package:sup2i_food_mobile/features/favorites/application/favorites_controller.dart';
 import 'package:sup2i_food_mobile/features/home/presentation/home_page.dart';
+import 'package:sup2i_food_mobile/features/notifications/application/notifications_controller.dart';
+import 'package:sup2i_food_mobile/features/notifications/data/notifications_repository.dart';
 import 'package:sup2i_food_mobile/features/orders/data/mock_order_repository.dart';
 import 'package:sup2i_food_mobile/features/orders/presentation/order_tracking_page.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
@@ -33,7 +36,15 @@ Widget _app(Widget home, {CartController? cart, MockOrderRepository? orders}) {
   }
   tree = CartScope(
     controller: cart ?? CartController(),
-    child: FavoritesScope(controller: FavoritesController(), child: tree),
+    child: FavoritesScope(
+      controller: FavoritesController(),
+      child: NotificationsScope(
+        controller: NotificationsController(
+          MockNotificationsRepository(latency: Duration.zero),
+        )..load(),
+        child: tree,
+      ),
+    ),
   );
   return tree;
 }

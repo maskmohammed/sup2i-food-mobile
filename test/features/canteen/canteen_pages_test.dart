@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:sup2i_food_mobile/app/cart_scope.dart';
+import 'package:sup2i_food_mobile/app/notifications_scope.dart';
 import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
 import 'package:sup2i_food_mobile/features/canteen/data/canteen_repository.dart';
 import 'package:sup2i_food_mobile/features/canteen/presentation/canteen_page.dart';
 import 'package:sup2i_food_mobile/features/canteen/presentation/food_pass_page.dart';
 import 'package:sup2i_food_mobile/features/canteen/presentation/subscription_page.dart';
+import 'package:sup2i_food_mobile/features/cart/application/cart_controller.dart';
+import 'package:sup2i_food_mobile/features/notifications/application/notifications_controller.dart';
+import 'package:sup2i_food_mobile/features/notifications/data/notifications_repository.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
-Widget _wrap(Widget home) => MaterialApp(
-  theme: AppTheme.light,
-  locale: const Locale('fr'),
-  supportedLocales: AppLocalizations.supportedLocales,
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
-  home: home,
+Widget _wrap(Widget home) => CartScope(
+  controller: CartController(),
+  child: NotificationsScope(
+    controller: NotificationsController(
+      MockNotificationsRepository(latency: Duration.zero),
+    )..load(),
+    child: MaterialApp(
+      theme: AppTheme.light,
+      locale: const Locale('fr'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      home: home,
+    ),
+  ),
 );
 
 const _repo = MockCanteenRepository(latency: Duration.zero);

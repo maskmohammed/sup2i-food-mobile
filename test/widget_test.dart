@@ -18,8 +18,9 @@ import 'package:sup2i_food_mobile/features/favorites/application/favorites_contr
 import 'package:sup2i_food_mobile/features/orders/data/mock_order_repository.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
-Widget _wrap(Widget home) => AuthScope(
-  controller: AuthController(const MockAuthRepository(latency: Duration.zero)),
+Widget _wrap(Widget home, {AuthController? auth}) => AuthScope(
+  controller:
+      auth ?? AuthController(const MockAuthRepository(latency: Duration.zero)),
   child: CartScope(
     controller: CartController(),
     child: OrdersScope(
@@ -61,15 +62,37 @@ void main() {
     expect(theme.colorScheme.primary, AppColors.navy900);
   });
 
-  testWidgets('La sélection d\'un onglet change l\'écran affiché', (
+  testWidgets(
+    'Utilisateur connecté : la sélection d\'un onglet change l\'écran',
+    (tester) async {
+      // Onglet Cantine protégé : on authentifie d'abord.
+      final auth = AuthController(
+        const MockAuthRepository(latency: Duration.zero),
+      );
+      await tester.runAsync(() => auth.login('etudiant@sup2i.ma', 'secret12'));
+
+      await tester.pumpWidget(_wrap(const AppShell(), auth: auth));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Cantine'));
+      await tester.pumpAndSettle();
+
+      // La Cantine affiche l'accès Food Pass et le menu de la semaine.
+      expect(find.text('Votre Food Pass'), findsOneWidget);
+    },
+  );
+
+  testWidgets('Invité : taper un onglet protégé affiche le mur, pas de nav', (
     tester,
   ) async {
     await tester.pumpWidget(_wrap(const AppShell()));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Cantine'));
     await tester.pumpAndSettle();
 
-    // La Cantine affiche l'accès Food Pass et le menu de la semaine.
-    expect(find.text('Votre Food Pass'), findsOneWidget);
+    // Mur affiché, contenu Cantine non navigué.
+    expect(find.text('Connexion requise'), findsOneWidget);
+    expect(find.text('Votre Food Pass'), findsNothing);
   });
 }

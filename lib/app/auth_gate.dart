@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../features/auth/presentation/login_page.dart';
 import 'app_shell.dart';
-import 'auth_scope.dart';
 
-/// Aiguille entre l'écran de connexion et l'app shell selon l'état d'auth.
-/// Se reconstruit automatiquement à la connexion / déconnexion.
+/// Entrée de l'application en **mode invité** : l'app est librement accessible
+/// (Accueil + catalogue) sans connexion. L'authentification est exigée de façon
+/// **contextuelle** (onglets Cantine/Commandes/Profil, ajout au panier /
+/// commande) via `AuthGuard` et son mur de connexion. Voir D12.
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final auth = AuthScope.of(context);
-    return auth.isAuthenticated ? const AppShell() : const LoginPage();
-  }
+  Widget build(BuildContext context) => const AppShell();
 }

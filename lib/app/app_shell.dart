@@ -6,6 +6,8 @@ import '../features/home/presentation/home_page.dart';
 import '../features/orders/presentation/orders_list_page.dart';
 import '../features/profile/presentation/profile_page.dart';
 import '../l10n/app_localizations.dart';
+import 'auth_guard.dart';
+import 'auth_scope.dart';
 
 /// Coquille de l'application : bottom nav gelée à 5 onglets
 /// (Accueil / Commander / Cantine / Commandes / Profil).
@@ -31,14 +33,34 @@ class _AppShellState extends State<AppShell> {
     ProfilePage(),
   ];
 
+  /// Onglets protégés (connexion requise) : Cantine(2), Commandes(3), Profil(4).
+  /// Accueil(0) et Commander(1) restent libres en mode invité.
+  static bool _requiresAuth(int index) => index >= 2;
+
   void _onSelect(int index) {
     if (index == _index) return;
+    // Mur de connexion AVANT toute navigation vers un onglet protégé.
+    if (_requiresAuth(index)) {
+      final loc = AppLocalizations.of(context);
+      if (!AuthGuard.require(context, message: loc.loginWallTabMessage)) return;
+    }
     setState(() => _index = index);
   }
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations loc = AppLocalizations.of(context);
+
+    // Après une déconnexion, si l'onglet actif est protégé, on ramène l'invité
+    // sur Accueil (règle centralisée, pas dupliquée dans le Profil).
+    final authed = AuthScope.of(context).isAuthenticated;
+    if (!authed && _requiresAuth(_index)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !AuthScope.of(context).isAuthenticated) {
+          setState(() => _index = 0);
+        }
+      });
+    }
 
     return Scaffold(
       body: IndexedStack(index: _index, children: _pages),

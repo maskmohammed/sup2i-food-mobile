@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/auth_guard.dart';
 import '../../../app/cart_scope.dart';
 import '../../../app/orders_scope.dart';
 import '../../../core/error/api_exception.dart';
@@ -29,6 +30,8 @@ class CartPage extends StatelessWidget {
     CartController cart,
     AppLocalizations loc,
   ) async {
+    // Passage de commande = action protégée (mode invité).
+    if (!AuthGuard.require(context, message: loc.loginWallCartMessage)) return;
     final method = await showPaymentMethodSheet(context);
     if (method == null || !context.mounted) return;
     final repo = OrdersScope.of(context);

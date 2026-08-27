@@ -206,3 +206,33 @@ Une entrée par décision.
 - **Pourquoi** : retour instantané et peu coûteux pendant la saisie rapide, tout
   en évitant un re-render lourd de la grille à chaque caractère (perf + anti
   clignotement).
+
+## D12 — Mode invité + mur de connexion contextuel (uniforme)
+
+- **Date** : 2026-08-23
+- **Décision** : l'app est **accessible en invité** (Accueil + catalogue visibles
+  sans connexion). La connexion est exigée **au moment de l'action** :
+  - **Accueil / Commander** : libres ; seul l'**ajout au panier** / le **passage
+    de commande** déclenche le mur.
+  - **Cantine / Commandes / Profil** : **au tap sur l'onglet**, avant tout
+    affichage, le mur s'affiche et **la navigation est bloquée** si non connecté.
+- **Mécanisme centralisé** : `AuthGuard.require(context, message:)` +
+  `showLoginWall` (une seule source de vérité). Les écrans/onglets l'appellent ;
+  aucune vérification dupliquée. S'appuie sur l'état réel `AuthController`
+  (`AuthScope`), pas un booléen ad hoc. Entrée de l'app en mode invité
+  (`AuthGate → AppShell`). Après déconnexion, le shell ramène l'invité sur
+  Accueil si l'onglet actif est protégé.
+- **Mur = modale centrée** (`AlertDialog` Material 3, donc styles `AppTheme` :
+  couleurs/radius/typo du design system) : message court, bouton primaire
+  « Se connecter » (→ écran Login existant), fermeture sans se connecter (bouton
+  secondaire « Plus tard » ou tap en dehors). Pas d'écran plein page ni de
+  redirection silencieuse.
+- **Pourquoi ce comportement uniforme plutôt qu'un onglet grisé** :
+  - un onglet **grisé/masqué** cache la valeur de l'app à l'invité (il ne voit
+    pas ce qu'il gagnerait à se connecter) et crée une nav incohérente (icônes
+    inertes) ;
+  - le **mur contextuel** laisse **explorer librement** (Accueil, catalogue) et
+    n'interrompt qu'au moment où la connexion est réellement nécessaire, avec une
+    explication et un CTA — meilleur taux de conversion et parcours plus clair ;
+  - **une seule règle centralisée** : le jour où la liste des actions protégées
+    change, on modifie `AuthGuard`/`_requiresAuth`, pas N écrans.

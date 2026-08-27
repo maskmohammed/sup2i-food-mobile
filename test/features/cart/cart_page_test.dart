@@ -6,6 +6,7 @@ import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
 import 'package:sup2i_food_mobile/features/cart/application/cart_controller.dart';
 import 'package:sup2i_food_mobile/features/cart/domain/time_slot.dart';
 import 'package:sup2i_food_mobile/features/cart/presentation/cart_page.dart';
+import 'package:sup2i_food_mobile/features/catalogue/presentation/widgets/product_image.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
 Widget _wrap(CartController cart, Widget home) => CartScope(
@@ -43,6 +44,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Tacos Poulet XL'), findsOneWidget);
+      // Miniature produit sur la ligne (placeholder hors-ligne).
+      expect(find.byType(ProductImage), findsOneWidget);
       // Sous-total indicatif = 2 × 40,00 DH.
       expect(find.text('80,00 DH'), findsWidgets);
 

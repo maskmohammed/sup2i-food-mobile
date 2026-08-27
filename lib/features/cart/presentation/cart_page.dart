@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../catalogue/presentation/widgets/product_image.dart';
 import '../../orders/presentation/order_tracking_page.dart';
 import '../../orders/presentation/widgets/payment_method_sheet.dart';
 import '../application/cart_controller.dart';
@@ -127,6 +128,19 @@ class _CartLineTile extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // Miniature produit (même mécanisme/placeholder que les Card/Product
+          // du catalogue) ; radius sm/md du thème.
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              width: 60,
+              height: 60,
+              child: ExcludeSemantics(
+                child: ProductImage(query: line.name, iconSize: 26),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
           // Regroupe nom + options + prix en une seule annonce lecteur d'écran.
           Expanded(
             child: MergeSemantics(

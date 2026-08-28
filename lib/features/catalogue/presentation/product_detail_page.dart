@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/auth_guard.dart';
 import '../../../app/cart_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/format/money.dart';
@@ -180,6 +181,12 @@ class _DetailBody extends StatelessWidget {
                 height: 52,
                 child: ElevatedButton(
                   onPressed: () {
+                    if (!AuthGuard.require(
+                      context,
+                      message: loc.loginWallCartMessage,
+                    )) {
+                      return;
+                    }
                     AppHaptics.light();
                     CartScope.of(context, listen: false).addItem(
                       productId: product.id,

@@ -53,6 +53,31 @@ void main() {
     },
   );
 
+  testWidgets('Taper une ligne édite (remplace), ne duplique pas', (
+    tester,
+  ) async {
+    final cart = CartController()
+      ..addItem(
+        productId: 'p1',
+        name: 'Tacos Poulet XL',
+        unitPriceCents: 4000,
+        quantity: 2,
+      );
+
+    await tester.pumpWidget(_wrap(cart, const CartPage()));
+    await tester.pumpAndSettle();
+    expect(cart.lines, hasLength(1));
+
+    // Ouvre la feuille d'édition depuis la ligne.
+    await tester.tap(find.text('Tacos Poulet XL'));
+    await tester.pumpAndSettle();
+
+    // Confirme : la ligne est remplacée, pas dupliquée.
+    await tester.tap(find.textContaining('Ajouter au panier'));
+    await tester.pumpAndSettle();
+    expect(cart.lines, hasLength(1));
+  });
+
   testWidgets('Créneau choisi : Commander activé', (tester) async {
     final cart = CartController()
       ..addItem(productId: 'p1', name: 'Tacos', unitPriceCents: 4000)

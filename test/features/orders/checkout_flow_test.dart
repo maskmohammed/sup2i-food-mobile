@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:sup2i_food_mobile/app/auth_scope.dart';
 import 'package:sup2i_food_mobile/app/cart_scope.dart';
 import 'package:sup2i_food_mobile/app/orders_scope.dart';
 import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
+import 'package:sup2i_food_mobile/features/auth/application/auth_controller.dart';
+import 'package:sup2i_food_mobile/features/auth/data/mock_auth_repository.dart';
 import 'package:sup2i_food_mobile/features/cart/application/cart_controller.dart';
 import 'package:sup2i_food_mobile/features/cart/domain/time_slot.dart';
 import 'package:sup2i_food_mobile/features/cart/presentation/cart_page.dart';
@@ -20,18 +23,26 @@ void main() {
         const TimeSlot(id: 's1', label: '12h00', status: SlotStatus.available),
       );
     final repo = MockOrderRepository(latency: Duration.zero);
+    // Le passage de commande est protégé : utilisateur authentifié.
+    final auth = AuthController(
+      const MockAuthRepository(latency: Duration.zero),
+    );
+    await tester.runAsync(() => auth.login('etudiant@sup2i.ma', 'secret12'));
 
     await tester.pumpWidget(
-      CartScope(
-        controller: cart,
-        child: OrdersScope(
-          repository: repo,
-          child: MaterialApp(
-            theme: AppTheme.light,
-            locale: const Locale('fr'),
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            home: const CartPage(),
+      AuthScope(
+        controller: auth,
+        child: CartScope(
+          controller: cart,
+          child: OrdersScope(
+            repository: repo,
+            child: MaterialApp(
+              theme: AppTheme.light,
+              locale: const Locale('fr'),
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              home: const CartPage(),
+            ),
           ),
         ),
       ),

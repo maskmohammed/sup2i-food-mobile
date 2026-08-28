@@ -207,53 +207,102 @@ class MockCatalogueRepository implements CatalogueRepository {
       orElse: () => throw const ApiException(ApiCodes.productUnavailable),
     );
 
-    // Seuls les tacos ont des options dans ce mock (démo du parcours complet).
-    if (product.categoryId != 'tacos') {
-      return ProductDetail(product: product);
-    }
+    final groups = _optionGroupsFor(product.categoryId);
+    if (groups.isEmpty) return ProductDetail(product: product);
     return ProductDetail(
       product: product,
-      prepMinutes: 15,
-      note: 'Jusqu\'à 2 sauces incluses, +3,00 DH par sauce supplémentaire.',
-      optionGroups: const <ProductOptionGroup>[
-        ProductOptionGroup(
-          id: 'supplements',
-          name: 'Suppléments',
-          options: <ProductOption>[
-            ProductOption(id: 'fromage', name: 'Fromage', priceDeltaCents: 300),
-            ProductOption(
-              id: 'algerienne',
-              name: 'Sauce algérienne',
-              priceDeltaCents: 0,
-            ),
-            ProductOption(
-              id: 'barbecue',
-              name: 'Barbecue',
-              priceDeltaCents: 300,
-            ),
-          ],
-        ),
-        ProductOptionGroup(
-          id: 'accompagnement',
-          name: 'Accompagnement',
-          options: <ProductOption>[
-            ProductOption(id: 'frites', name: 'Frites', priceDeltaCents: 500),
-            ProductOption(
-              id: 'gratine',
-              name: 'Gratiné',
-              priceDeltaCents: 1000,
-            ),
-          ],
-        ),
-        ProductOptionGroup(
-          id: 'boisson',
-          name: 'Boisson',
-          options: <ProductOption>[
-            ProductOption(id: 'coca', name: 'Coca 33cl', priceDeltaCents: 500),
-            ProductOption(id: 'eau', name: 'Eau', priceDeltaCents: 500),
-          ],
-        ),
-      ],
+      prepMinutes: product.categoryId == 'tacos' ? 15 : 12,
+      note: 'Personnalisez votre plat : accompagnement, suppléments, boisson.',
+      optionGroups: groups,
     );
+  }
+
+  // Accompagnement « Frites » commun (démo « add frites »).
+  static const ProductOptionGroup _accompagnement = ProductOptionGroup(
+    id: 'accompagnement',
+    name: 'Accompagnement',
+    options: <ProductOption>[
+      ProductOption(id: 'frites', name: 'Frites', priceDeltaCents: 500),
+      ProductOption(id: 'salade', name: 'Salade', priceDeltaCents: 300),
+    ],
+  );
+
+  static const ProductOptionGroup _boisson = ProductOptionGroup(
+    id: 'boisson',
+    name: 'Boisson',
+    options: <ProductOption>[
+      ProductOption(id: 'coca', name: 'Coca 33cl', priceDeltaCents: 500),
+      ProductOption(id: 'eau', name: 'Eau', priceDeltaCents: 500),
+    ],
+  );
+
+  /// Options par catégorie (démo). Frites/suppléments disponibles sur plusieurs
+  /// familles ; desserts/boissons sans options.
+  static List<ProductOptionGroup> _optionGroupsFor(String categoryId) {
+    switch (categoryId) {
+      case 'tacos':
+        return const <ProductOptionGroup>[
+          ProductOptionGroup(
+            id: 'supplements',
+            name: 'Suppléments',
+            options: <ProductOption>[
+              ProductOption(
+                id: 'fromage',
+                name: 'Fromage',
+                priceDeltaCents: 300,
+              ),
+              ProductOption(
+                id: 'algerienne',
+                name: 'Sauce algérienne',
+                priceDeltaCents: 0,
+              ),
+              ProductOption(
+                id: 'barbecue',
+                name: 'Barbecue',
+                priceDeltaCents: 300,
+              ),
+            ],
+          ),
+          ProductOptionGroup(
+            id: 'accompagnement',
+            name: 'Accompagnement',
+            options: <ProductOption>[
+              ProductOption(id: 'frites', name: 'Frites', priceDeltaCents: 500),
+              ProductOption(
+                id: 'gratine',
+                name: 'Gratiné',
+                priceDeltaCents: 1000,
+              ),
+            ],
+          ),
+          _boisson,
+        ];
+      case 'pizza':
+        return const <ProductOptionGroup>[
+          ProductOptionGroup(
+            id: 'supplements',
+            name: 'Suppléments',
+            options: <ProductOption>[
+              ProductOption(
+                id: 'extra_fromage',
+                name: 'Extra fromage',
+                priceDeltaCents: 300,
+              ),
+              ProductOption(
+                id: 'champignons',
+                name: 'Champignons',
+                priceDeltaCents: 200,
+              ),
+              ProductOption(id: 'olives', name: 'Olives', priceDeltaCents: 0),
+            ],
+          ),
+          _accompagnement,
+          _boisson,
+        ];
+      case 'pasticio':
+        return const <ProductOptionGroup>[_accompagnement, _boisson];
+      default:
+        return const <ProductOptionGroup>[];
+    }
   }
 }

@@ -55,13 +55,15 @@ class _LoginPageState extends State<LoginPage> {
     );
     if (!mounted) return;
 
-    // En cas de succès, AuthGate bascule automatiquement vers l'app shell ;
-    // sinon on affiche le message dérivé du `code` d'erreur.
+    if (ok) {
+      // Mode invité : Login est un écran poussé (via le mur de connexion ou le
+      // Profil). On revient à l'écran précédent, désormais authentifié.
+      Navigator.of(context).maybePop();
+      return;
+    }
     setState(() {
       _loading = false;
-      _error = ok
-          ? null
-          : loc.errorMessage(auth.errorCode ?? ApiCodes.internalError);
+      _error = loc.errorMessage(auth.errorCode ?? ApiCodes.internalError);
     });
   }
 

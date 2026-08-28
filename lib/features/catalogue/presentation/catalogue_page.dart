@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/cart_scope.dart';
+import '../../../app/auth_guard.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
-import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -15,6 +14,7 @@ import 'product_detail_page.dart';
 import 'widgets/category_selector.dart';
 import 'widgets/loading_skeletons.dart';
 import 'widgets/product_card.dart';
+import 'widgets/product_options_sheet.dart';
 
 /// Onglet Commander : catalogue produits filtrable par catégorie.
 class CataloguePage extends StatefulWidget {
@@ -117,21 +117,17 @@ class _CataloguePageState extends State<CataloguePage> {
                               ),
                               onAddToCart: product.available
                                   ? () {
-                                      AppHaptics.light();
-                                      CartScope.of(
+                                      if (!AuthGuard.require(
                                         context,
-                                        listen: false,
-                                      ).addItem(
+                                        message: loc.loginWallCartMessage,
+                                      )) {
+                                        return;
+                                      }
+                                      showProductOptionsSheet(
+                                        context,
                                         productId: product.id,
-                                        name: product.name,
-                                        unitPriceCents: product.priceCents,
-                                      );
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(loc.addedToCart),
-                                        ),
+                                        productName: product.name,
+                                        repository: widget.repository,
                                       );
                                     }
                                   : null,

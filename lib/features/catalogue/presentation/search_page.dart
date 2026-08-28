@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../../app/cart_scope.dart';
+import '../../../app/auth_guard.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
-import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_motion.dart';
 import '../../../core/widgets/app_loading_view.dart';
@@ -17,6 +16,7 @@ import '../data/search_history_store.dart';
 import '../domain/product.dart';
 import 'product_detail_page.dart';
 import 'widgets/product_card.dart';
+import 'widgets/product_options_sheet.dart';
 
 /// Écran de recherche dédié : champ éditable (autofocus), filtre les produits
 /// par nom (insensible à la casse) au fil de la saisie. État vide « Aucun
@@ -282,15 +282,18 @@ class _SearchPageState extends State<SearchPage> {
           onTap: () => _openDetail(product),
           onAddToCart: product.available
               ? () {
-                  AppHaptics.light();
-                  CartScope.of(context, listen: false).addItem(
-                    productId: product.id,
-                    name: product.name,
-                    unitPriceCents: product.priceCents,
-                  );
-                  ScaffoldMessenger.of(
+                  if (!AuthGuard.require(
                     context,
-                  ).showSnackBar(SnackBar(content: Text(loc.addedToCart)));
+                    message: loc.loginWallCartMessage,
+                  )) {
+                    return;
+                  }
+                  showProductOptionsSheet(
+                    context,
+                    productId: product.id,
+                    productName: product.name,
+                    repository: _repository,
+                  );
                 }
               : null,
         );

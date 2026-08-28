@@ -83,6 +83,12 @@ class AppLocalizations {
   String get loginPasswordRequired => _t('loginPasswordRequired');
   String get loginShowPassword => _t('loginShowPassword');
   String get loginHidePassword => _t('loginHidePassword');
+  // Mur de connexion contextuel (mode invité).
+  String get loginWallTitle => _t('loginWallTitle');
+  String get loginWallSignIn => _t('loginWallSignIn');
+  String get loginWallLater => _t('loginWallLater');
+  String get loginWallTabMessage => _t('loginWallTabMessage');
+  String get loginWallCartMessage => _t('loginWallCartMessage');
 
   // Profil.
   String get profileLogout => _t('profileLogout');
@@ -299,6 +305,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'Entrez votre mot de passe.',
     'loginShowPassword': 'Afficher le mot de passe',
     'loginHidePassword': 'Masquer le mot de passe',
+    'loginWallTitle': 'Connexion requise',
+    'loginWallSignIn': 'Se connecter',
+    'loginWallLater': 'Plus tard',
+    'loginWallTabMessage': 'Connectez-vous pour accéder à cette section.',
+    'loginWallCartMessage':
+        'Connectez-vous pour ajouter des articles et commander.',
     'profileLogout': 'Se déconnecter',
     'errUnauthorized': 'E-mail ou mot de passe incorrect.',
     'errAccountBlocked':
@@ -489,6 +501,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'Enter your password.',
     'loginShowPassword': 'Show password',
     'loginHidePassword': 'Hide password',
+    'loginWallTitle': 'Sign in required',
+    'loginWallSignIn': 'Sign in',
+    'loginWallLater': 'Not now',
+    'loginWallTabMessage': 'Sign in to access this section.',
+    'loginWallCartMessage': 'Sign in to add items and order.',
     'profileLogout': 'Log out',
     'errUnauthorized': 'Incorrect email or password.',
     'errAccountBlocked': 'Your account is blocked. Contact the administration.',
@@ -678,6 +695,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'أدخل كلمة المرور.',
     'loginShowPassword': 'إظهار كلمة المرور',
     'loginHidePassword': 'إخفاء كلمة المرور',
+    'loginWallTitle': 'يلزم تسجيل الدخول',
+    'loginWallSignIn': 'تسجيل الدخول',
+    'loginWallLater': 'لاحقًا',
+    'loginWallTabMessage': 'سجّل الدخول للوصول إلى هذا القسم.',
+    'loginWallCartMessage': 'سجّل الدخول لإضافة المنتجات وتقديم الطلب.',
     'profileLogout': 'تسجيل الخروج',
     'errUnauthorized': 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
     'errAccountBlocked': 'حسابك محظور. يرجى التواصل مع الإدارة.',

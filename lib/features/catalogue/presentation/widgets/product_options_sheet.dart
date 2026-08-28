@@ -6,20 +6,22 @@ import '../../../../core/haptics/app_haptics.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_surfaces.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../cart/domain/cart_line.dart';
 import '../../application/product_detail_controller.dart';
 import '../../data/catalogue_repository.dart';
 import '../../data/mock_catalogue_repository.dart';
 import '../../domain/product_detail.dart';
 
-/// Feuille de personnalisation ouverte depuis le bouton « + » d'ajout rapide :
-/// quantité + options (suppléments, accompagnement « frites », boisson) avant
-/// l'ajout au panier. Réutilise [ProductDetailController] (prix indicatif ;
-/// total réel = autorité serveur).
+/// Feuille de personnalisation ouverte depuis le bouton « + » (ajout) ou depuis
+/// une ligne du panier ([editLine] non nul → **édition** : la ligne d'origine
+/// est remplacée, pas dupliquée). Réutilise [ProductDetailController] (prix
+/// indicatif ; total réel = autorité serveur).
 Future<void> showProductOptionsSheet(
   BuildContext context, {
   required String productId,
   required String productName,
   CatalogueRepository? repository,
+  CartLine? editLine,
 }) async {
   final controller = ProductDetailController(
     repository ?? const MockCatalogueRepository(),
@@ -29,22 +31,66 @@ Future<void> showProductOptionsSheet(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (sheetContext) =>
-        _OptionsSheet(controller: controller, fallbackName: productName),
+    builder: (sheetContext) => _OptionsSheet(
+      controller: controller,
+      fallbackName: productName,
+      editLine: editLine,
+    ),
   );
   controller.dispose();
 }
 
-class _OptionsSheet extends StatelessWidget {
-  const _OptionsSheet({required this.controller, required this.fallbackName});
+class _OptionsSheet extends StatefulWidget {
+  const _OptionsSheet({
+    required this.controller,
+    required this.fallbackName,
+    this.editLine,
+  });
 
   final ProductDetailController controller;
   final String fallbackName;
+  final CartLine? editLine;
 
-  void _add(BuildContext context, ProductDetail detail) {
+  @override
+  State<_OptionsSheet> createState() => _OptionsSheetState();
+}
+
+class _OptionsSheetState extends State<_OptionsSheet> {
+  bool _prefilled = false;
+
+  ProductDetailController get controller => widget.controller;
+
+  /// Préremplit quantité + options depuis la ligne éditée (une seule fois,
+  /// dès que le détail est chargé).
+  void _applyEditPrefill(ProductDetail detail) {
+    if (_prefilled || widget.editLine == null) return;
+    _prefilled = true;
+    final line = widget.editLine!;
+    final names = (line.optionsLabel ?? '')
+        .split(', ')
+        .where((s) => s.isNotEmpty)
+        .toSet();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      controller.setQuantity(line.quantity);
+      for (final group in detail.optionGroups) {
+        for (final option in group.options) {
+          if (names.contains(option.name) &&
+              !controller.isSelected(option.id)) {
+            controller.toggleOption(option.id);
+          }
+        }
+      }
+    });
+  }
+
+  void _confirm(BuildContext context, ProductDetail detail) {
     final loc = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    CartScope.of(context, listen: false).addItem(
+    final cart = CartScope.of(context, listen: false);
+    // Édition : on retire la ligne d'origine pour la remplacer (pas de doublon).
+    if (widget.editLine != null) cart.remove(widget.editLine!.id);
+    cart.addItem(
       productId: detail.product.id,
       name: detail.product.name,
       unitPriceCents: controller.indicativeUnitPriceCents,
@@ -81,6 +127,7 @@ class _OptionsSheet extends StatelessWidget {
                 ),
               );
             }
+            _applyEditPrefill(detail);
             final indicativeTotal =
                 controller.indicativeUnitPriceCents * controller.quantity;
 
@@ -117,7 +164,7 @@ class _OptionsSheet extends StatelessWidget {
                   width: double.infinity,
                   height: 52,
                   child: FilledButton(
-                    onPressed: () => _add(context, detail),
+                    onPressed: () => _confirm(context, detail),
                     child: Text(
                       '${loc.addToCart} · ${Money.format(indicativeTotal)}',
                     ),

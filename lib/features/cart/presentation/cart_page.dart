@@ -10,6 +10,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../catalogue/presentation/widgets/product_image.dart';
+import '../../catalogue/presentation/widgets/product_options_sheet.dart';
 import '../../orders/presentation/order_tracking_page.dart';
 import '../../orders/presentation/widgets/payment_method_sheet.dart';
 import '../application/cart_controller.dart';
@@ -121,57 +123,84 @@ class _CartLineTile extends StatelessWidget {
     final AppLocalizations loc = AppLocalizations.of(context);
     final TextTheme text = Theme.of(context).textTheme;
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: context.surfaces.surface,
+    return Material(
+      color: context.surfaces.surface,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.surfaces.border),
+        side: BorderSide(color: context.surfaces.border),
       ),
-      child: Row(
-        children: [
-          // Regroupe nom + options + prix en une seule annonce lecteur d'écran.
-          Expanded(
-            child: MergeSemantics(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(line.name, style: text.bodyMedium),
-                  if (line.optionsLabel != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      line.optionsLabel!,
-                      style: text.bodySmall?.copyWith(color: AppColors.muted),
-                    ),
-                  ],
-                  const SizedBox(height: 4),
-                  Text(
-                    Money.format(line.unitPriceCents),
-                    style: text.labelLarge?.copyWith(
-                      color: context.surfaces.text,
-                    ),
+      child: InkWell(
+        // Taper la ligne rouvre la personnalisation (suppléments, frites…) en
+        // ÉDITION : la ligne est remplacée, pas dupliquée.
+        onTap: () => showProductOptionsSheet(
+          context,
+          productId: line.productId,
+          productName: line.name,
+          editLine: line,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              // Miniature produit (même mécanisme/placeholder que le catalogue).
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SizedBox(
+                  width: 60,
+                  height: 60,
+                  child: ExcludeSemantics(
+                    child: ProductImage(query: line.name, iconSize: 26),
                   ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(width: 12),
+              // Regroupe nom + options + prix en une seule annonce lecteur.
+              Expanded(
+                child: MergeSemantics(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(line.name, style: text.bodyMedium),
+                      if (line.optionsLabel != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          line.optionsLabel!,
+                          style: text.bodySmall?.copyWith(
+                            color: AppColors.muted,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 4),
+                      Text(
+                        Money.format(line.unitPriceCents),
+                        style: text.labelLarge?.copyWith(
+                          color: context.surfaces.text,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () => cart.decrement(line.id),
+                icon: const Icon(Icons.remove_circle_outline),
+                color: AppColors.navy900,
+                tooltip: loc.decreaseQuantity,
+              ),
+              Text(
+                '${line.quantity}',
+                semanticsLabel: '${loc.quantityLabel} : ${line.quantity}',
+              ),
+              IconButton(
+                onPressed: () => cart.increment(line.id),
+                icon: const Icon(Icons.add_circle),
+                color: AppColors.pink600,
+                tooltip: loc.increaseQuantity,
+              ),
+            ],
           ),
-          IconButton(
-            onPressed: () => cart.decrement(line.id),
-            icon: const Icon(Icons.remove_circle_outline),
-            color: AppColors.navy900,
-            tooltip: loc.decreaseQuantity,
-          ),
-          Text(
-            '${line.quantity}',
-            semanticsLabel: '${loc.quantityLabel} : ${line.quantity}',
-          ),
-          IconButton(
-            onPressed: () => cart.increment(line.id),
-            icon: const Icon(Icons.add_circle),
-            color: AppColors.pink600,
-            tooltip: loc.increaseQuantity,
-          ),
-        ],
+        ),
       ),
     );
   }

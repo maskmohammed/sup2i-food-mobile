@@ -1,20 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:sup2i_food_mobile/app/cart_scope.dart';
+import 'package:sup2i_food_mobile/app/notifications_scope.dart';
 import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
+import 'package:sup2i_food_mobile/features/cart/application/cart_controller.dart';
 import 'package:sup2i_food_mobile/features/cart/domain/cart_line.dart';
+import 'package:sup2i_food_mobile/features/notifications/application/notifications_controller.dart';
+import 'package:sup2i_food_mobile/features/notifications/data/notifications_repository.dart';
 import 'package:sup2i_food_mobile/features/orders/data/mock_order_repository.dart';
 import 'package:sup2i_food_mobile/features/orders/domain/order.dart';
 import 'package:sup2i_food_mobile/features/orders/presentation/order_tracking_page.dart';
 import 'package:sup2i_food_mobile/features/orders/presentation/orders_list_page.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
-Widget _wrap(Widget home) => MaterialApp(
-  theme: AppTheme.light,
-  locale: const Locale('fr'),
-  supportedLocales: AppLocalizations.supportedLocales,
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
-  home: home,
+Widget _wrap(Widget home) => CartScope(
+  controller: CartController(),
+  child: NotificationsScope(
+    controller: NotificationsController(
+      MockNotificationsRepository(latency: Duration.zero),
+    )..load(),
+    child: MaterialApp(
+      theme: AppTheme.light,
+      locale: const Locale('fr'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      home: home,
+    ),
+  ),
 );
 
 void main() {

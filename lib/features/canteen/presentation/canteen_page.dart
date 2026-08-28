@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/app_bar_actions.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
@@ -71,7 +72,10 @@ class _CanteenPageState extends State<CanteenPage> {
     final AppLocalizations loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.navCanteen)),
+      appBar: AppBar(
+        title: Text(loc.navCanteen),
+        actions: const [AppBarActions()],
+      ),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {

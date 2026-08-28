@@ -117,6 +117,15 @@ class AppLocalizations {
   String get checkout => _t('checkout');
   String get checkoutComingSoon => _t('checkoutComingSoon');
   String get addedToCart => _t('addedToCart');
+  // En-tête : icônes panier + notifications (tooltips + accessibilité).
+  String get cartTooltip => _t('cartTooltip');
+  String get notificationsTooltip => _t('notificationsTooltip');
+  String cartItemsA11y(int n) => n == 0
+      ? _t('cartEmptyA11y')
+      : _t('cartItemsA11y').replaceFirst('{n}', '$n');
+  String notificationsUnreadA11y(int n) => n == 0
+      ? _t('notificationsNoneA11y')
+      : _t('notificationsUnreadA11y').replaceFirst('{n}', '$n');
   String get pickupSlotLabel => _t('pickupSlotLabel');
   String get chooseSlot => _t('chooseSlot');
   String get noSlotSelected => _t('noSlotSelected');
@@ -339,6 +348,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'checkout': 'Commander',
     'checkoutComingSoon': 'Commande — à venir (M6).',
     'addedToCart': 'Ajouté au panier',
+    'cartTooltip': 'Panier',
+    'notificationsTooltip': 'Notifications',
+    'cartEmptyA11y': 'Panier, vide',
+    'cartItemsA11y': 'Panier, {n} articles',
+    'notificationsNoneA11y': 'Notifications, aucune non lue',
+    'notificationsUnreadA11y': '{n} notifications non lues',
     'pickupSlotLabel': 'Créneau de retrait',
     'chooseSlot': 'Choisir un créneau',
     'noSlotSelected': 'Aucun créneau sélectionné',
@@ -533,6 +548,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'checkout': 'Order',
     'checkoutComingSoon': 'Checkout — coming soon (M6).',
     'addedToCart': 'Added to cart',
+    'cartTooltip': 'Cart',
+    'notificationsTooltip': 'Notifications',
+    'cartEmptyA11y': 'Cart, empty',
+    'cartItemsA11y': 'Cart, {n} items',
+    'notificationsNoneA11y': 'Notifications, none unread',
+    'notificationsUnreadA11y': '{n} unread notifications',
     'pickupSlotLabel': 'Pickup slot',
     'chooseSlot': 'Choose a slot',
     'noSlotSelected': 'No slot selected',
@@ -726,6 +747,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'checkout': 'اطلب',
     'checkoutComingSoon': 'الطلب — قريبًا (M6).',
     'addedToCart': 'أُضيف إلى السلة',
+    'cartTooltip': 'السلة',
+    'notificationsTooltip': 'الإشعارات',
+    'cartEmptyA11y': 'السلة، فارغة',
+    'cartItemsA11y': 'السلة، {n} عناصر',
+    'notificationsNoneA11y': 'الإشعارات، لا شيء غير مقروء',
+    'notificationsUnreadA11y': '{n} إشعارات غير مقروءة',
     'pickupSlotLabel': 'موعد الاستلام',
     'chooseSlot': 'اختر موعدًا',
     'noSlotSelected': 'لم يتم اختيار موعد',

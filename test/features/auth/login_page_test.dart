@@ -15,6 +15,7 @@ Future<void> _fill(
 /// Ouvre l'écran Login via le mur de connexion (onglet protégé Profil).
 Future<void> _openLogin(WidgetTester tester) async {
   await tester.pumpWidget(const Sup2iFoodApp());
+  await tester.pump(const Duration(seconds: 1)); // flush le chargement notifs
   await tester.pumpAndSettle();
   await tester.tap(find.text('Profil')); // onglet protégé -> mur
   await tester.pumpAndSettle();
@@ -27,6 +28,9 @@ void main() {
     'Mode invité : l\'app démarre sur le shell (pas de login forcé)',
     (tester) async {
       await tester.pumpWidget(const Sup2iFoodApp());
+      await tester.pump(
+        const Duration(seconds: 1),
+      ); // flush le chargement notifs
       await tester.pumpAndSettle();
 
       expect(find.byType(NavigationBar), findsOneWidget);

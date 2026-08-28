@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/app_bar_actions.dart';
 import '../../../app/auth_guard.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../cart/presentation/widgets/cart_button.dart';
 import '../application/catalogue_controller.dart';
 import '../data/catalogue_repository.dart';
 import '../data/mock_catalogue_repository.dart';
@@ -53,7 +53,10 @@ class _CataloguePageState extends State<CataloguePage> {
     final AppLocalizations loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.navOrder), actions: const [CartButton()]),
+      appBar: AppBar(
+        title: Text(loc.navOrder),
+        actions: const [AppBarActions()],
+      ),
       body: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {

@@ -8,6 +8,7 @@ import 'package:sup2i_food_mobile/app/app_shell.dart';
 import 'package:sup2i_food_mobile/app/auth_scope.dart';
 import 'package:sup2i_food_mobile/app/cart_scope.dart';
 import 'package:sup2i_food_mobile/app/favorites_scope.dart';
+import 'package:sup2i_food_mobile/app/notifications_scope.dart';
 import 'package:sup2i_food_mobile/app/orders_scope.dart';
 import 'package:sup2i_food_mobile/core/theme/app_colors.dart';
 import 'package:sup2i_food_mobile/core/theme/app_theme.dart';
@@ -15,6 +16,8 @@ import 'package:sup2i_food_mobile/features/auth/application/auth_controller.dart
 import 'package:sup2i_food_mobile/features/auth/data/mock_auth_repository.dart';
 import 'package:sup2i_food_mobile/features/cart/application/cart_controller.dart';
 import 'package:sup2i_food_mobile/features/favorites/application/favorites_controller.dart';
+import 'package:sup2i_food_mobile/features/notifications/application/notifications_controller.dart';
+import 'package:sup2i_food_mobile/features/notifications/data/notifications_repository.dart';
 import 'package:sup2i_food_mobile/features/orders/data/mock_order_repository.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
@@ -27,12 +30,17 @@ Widget _wrap(Widget home, {AuthController? auth}) => AuthScope(
       repository: MockOrderRepository(latency: Duration.zero),
       child: FavoritesScope(
         controller: FavoritesController(),
-        child: MaterialApp(
-          theme: AppTheme.light,
-          locale: const Locale('fr'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          home: home,
+        child: NotificationsScope(
+          controller: NotificationsController(
+            MockNotificationsRepository(latency: Duration.zero),
+          )..load(),
+          child: MaterialApp(
+            theme: AppTheme.light,
+            locale: const Locale('fr'),
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            home: home,
+          ),
         ),
       ),
     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/app_bar_actions.dart';
 import '../../../app/auth_guard.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
@@ -8,7 +9,6 @@ import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../cart/presentation/widgets/cart_button.dart';
 import '../../catalogue/application/catalogue_controller.dart';
 import '../../catalogue/data/catalogue_repository.dart';
 import '../../catalogue/data/mock_catalogue_repository.dart';
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(loc.homeWelcome),
-        actions: const [CartButton()],
+        actions: const [AppBarActions()],
       ),
       body: ListenableBuilder(
         listenable: _controller,

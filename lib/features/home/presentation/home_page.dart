@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/auth_guard.dart';
-import '../../../app/cart_scope.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
-import '../../../core/haptics/app_haptics.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_loading_view.dart';
@@ -20,6 +18,7 @@ import '../../catalogue/presentation/product_detail_page.dart';
 import '../../catalogue/presentation/search_page.dart';
 import '../../catalogue/presentation/widgets/category_selector.dart';
 import '../../catalogue/presentation/widgets/product_card.dart';
+import '../../catalogue/presentation/widgets/product_options_sheet.dart';
 
 /// Onglet Accueil : mise en avant (coups de cœur, catégories, produits).
 /// Réutilise le catalogue ; sert de point d'entrée vers Commander et le détail.
@@ -82,15 +81,13 @@ class _HomePageState extends State<HomePage> {
   void _addToCart(Product product, AppLocalizations loc) {
     // Action protégée (mode invité) : mur de connexion avant tout ajout.
     if (!AuthGuard.require(context, message: loc.loginWallCartMessage)) return;
-    AppHaptics.light(); // supplémentaire : le snackbar reste la confirmation
-    CartScope.of(context, listen: false).addItem(
-      productId: product.id,
-      name: product.name,
-      unitPriceCents: product.priceCents,
-    );
-    ScaffoldMessenger.of(
+    // Ouvre la feuille de personnalisation (quantité + options) avant l'ajout.
+    showProductOptionsSheet(
       context,
-    ).showSnackBar(SnackBar(content: Text(loc.addedToCart)));
+      productId: product.id,
+      productName: product.name,
+      repository: widget.repository,
+    );
   }
 
   @override

@@ -39,6 +39,6 @@ void main() {
     expect(find.text('Gluten'), findsOneWidget);
     expect(find.text('Frites'), findsOneWidget);
     expect(find.text('Ajouter au panier'), findsOneWidget);
-    expect(find.textContaining('sauces incluses'), findsOneWidget);
+    expect(find.textContaining('Personnalisez'), findsOneWidget);
   });
 }

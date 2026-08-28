@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/auth_guard.dart';
-import '../../../app/cart_scope.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/widgets/app_loading_view.dart';
@@ -13,6 +12,7 @@ import '../../catalogue/data/mock_catalogue_repository.dart';
 import '../../catalogue/domain/product.dart';
 import '../../catalogue/presentation/product_detail_page.dart';
 import '../../catalogue/presentation/widgets/product_card.dart';
+import '../../catalogue/presentation/widgets/product_options_sheet.dart';
 
 /// Écran « Mes favoris » : produits marqués (client-side pour l'instant).
 class FavoritesPage extends StatefulWidget {
@@ -43,14 +43,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
   void _addToCart(Product product, AppLocalizations loc) {
     if (!AuthGuard.require(context, message: loc.loginWallCartMessage)) return;
-    CartScope.of(context, listen: false).addItem(
-      productId: product.id,
-      name: product.name,
-      unitPriceCents: product.priceCents,
-    );
-    ScaffoldMessenger.of(
+    showProductOptionsSheet(
       context,
-    ).showSnackBar(SnackBar(content: Text(loc.addedToCart)));
+      productId: product.id,
+      productName: product.name,
+      repository: widget.repository,
+    );
   }
 
   @override

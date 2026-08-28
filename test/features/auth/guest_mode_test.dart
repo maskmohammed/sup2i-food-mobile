@@ -75,7 +75,14 @@ void main() {
     await tester.tap(find.byIcon(Icons.add_circle).first);
     await tester.pumpAndSettle();
 
+    // Pas de mur ; le « + » ouvre la feuille de personnalisation avec options.
     expect(find.text('Connexion requise'), findsNothing);
+    expect(cart.isEmpty, isTrue); // rien ajouté tant qu'on n'a pas confirmé
+    expect(find.text('Frites'), findsOneWidget); // option « add frites »
+
+    // Confirmer dans la feuille ajoute réellement au panier.
+    await tester.tap(find.textContaining('Ajouter au panier'));
+    await tester.pumpAndSettle();
     expect(cart.isEmpty, isFalse);
   });
 }

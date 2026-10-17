@@ -12,4 +12,11 @@ class FavoritesController extends ChangeNotifier {
     if (!_ids.add(productId)) _ids.remove(productId);
     notifyListeners();
   }
+
+  /// Vide tous les favoris (utilisé par l'outil de debug « Reset mock data »).
+  void clear() {
+    if (_ids.isEmpty) return;
+    _ids.clear();
+    notifyListeners();
+  }
 }

@@ -35,23 +35,27 @@ class MockCanteenRepository implements CanteenRepository {
       MealDay(
         id: 'lundi',
         label: 'Plat Lundi',
-        description: 'Poulet rôti, riz, légumes',
+        description: 'Salade verte · Poulet rôti, riz, légumes · Yaourt',
       ),
-      MealDay(id: 'mardi', label: 'Plat Mardi', description: 'Tajine de bœuf'),
+      MealDay(
+        id: 'mardi',
+        label: 'Plat Mardi',
+        description: 'Soupe du jour · Tajine de bœuf aux pruneaux · Fruit',
+      ),
       MealDay(
         id: 'mercredi',
         label: 'Plat Mercredi',
-        description: 'Poisson, pommes de terre',
+        description: 'Betteraves · Poisson pané, pommes de terre · Flan',
       ),
       MealDay(
         id: 'jeudi',
         label: 'Plat Jeudi',
-        description: 'Couscous légumes',
+        description: 'Carottes râpées · Couscous légumes · Orange',
       ),
       MealDay(
         id: 'vendredi',
         label: 'Plat Vendredi',
-        description: 'Pâtes bolognaise',
+        description: 'Taboulé · Pâtes bolognaise · Compote de pommes',
       ),
     ];
   }

@@ -79,6 +79,20 @@ void main() {
     expect((await r.getOrder(o.id)).status, OrderStatus.ready);
   });
 
+  test('reset : revient au jeu de données initial', () async {
+    final r = repo();
+    final seeded = (await r.listOrders()).length;
+    await r.createOrder(
+      lines: _lines,
+      slotLabel: '12h00',
+      paymentMethod: PaymentMethod.cash,
+    );
+    expect((await r.listOrders()).length, seeded + 1);
+
+    r.reset();
+    expect((await r.listOrders()).length, seeded);
+  });
+
   test(
     'createOrder : au-delà de la limite → MAX_ACTIVE_ORDERS_REACHED',
     () async {

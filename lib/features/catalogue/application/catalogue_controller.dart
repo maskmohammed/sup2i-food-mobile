@@ -25,7 +25,9 @@ class CatalogueController extends ChangeNotifier {
   String? get selectedCategoryId => _selectedCategoryId;
 
   /// Charge les catégories puis les produits de la sélection courante.
-  Future<void> load() async {
+  /// [categoryId] permet d'ouvrir directement sur une catégorie présélectionnée.
+  Future<void> load({String? categoryId}) async {
+    if (categoryId != null) _selectedCategoryId = categoryId;
     _loading = true;
     _errorCode = null;
     notifyListeners();

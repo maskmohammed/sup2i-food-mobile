@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:sup2i_food_mobile/app/app.dart';
+
+Future<void> _reachLogin(WidgetTester tester) async {
+  await tester.pumpWidget(const Sup2iFoodApp());
+
+  expect(find.byKey(const Key('splash_screen')), findsOneWidget);
+
+  await tester.pump(const Duration(milliseconds: 2000));
+  await tester.pumpAndSettle();
+
+  expect(find.byKey(const Key('login_screen')), findsOneWidget);
+}
 
 Future<void> _fill(
   WidgetTester tester, {
@@ -12,37 +24,38 @@ Future<void> _fill(
   await tester.enterText(find.byKey(const Key('login_password')), password);
 }
 
-/// Ouvre l'écran Login via le mur de connexion (onglet protégé Profil).
-Future<void> _openLogin(WidgetTester tester) async {
-  await tester.pumpWidget(const Sup2iFoodApp());
-  await tester.pump(const Duration(seconds: 1)); // flush le chargement notifs
-  await tester.pumpAndSettle();
-  await tester.tap(find.text('Profil')); // onglet protégé -> mur
-  await tester.pumpAndSettle();
-  await tester.tap(find.text('Se connecter')); // bouton du mur -> Login
-  await tester.pumpAndSettle();
-}
-
 void main() {
-  testWidgets(
-    'Mode invité : l\'app démarre sur le shell (pas de login forcé)',
-    (tester) async {
-      await tester.pumpWidget(const Sup2iFoodApp());
-      await tester.pump(
-        const Duration(seconds: 1),
-      ); // flush le chargement notifs
-      await tester.pumpAndSettle();
+  setUp(() {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+  });
 
-      expect(find.byType(NavigationBar), findsOneWidget);
-      expect(find.byKey(const Key('login_email')), findsNothing);
-    },
-  );
+  testWidgets('DÃ©marrage final : splash puis login obligatoire', (
+    tester,
+  ) async {
+    await _reachLogin(tester);
+
+    expect(find.byType(NavigationBar), findsNothing);
+    expect(find.byKey(const Key('login_email')), findsOneWidget);
+    expect(find.byKey(const Key('login_password')), findsOneWidget);
+    expect(find.text('Bon retour !'), findsOneWidget);
+  });
+
+  testWidgets('Aucune inscription ni connexion sociale', (tester) async {
+    await _reachLogin(tester);
+
+    expect(find.textContaining('Sign Up'), findsNothing);
+    expect(find.textContaining('Inscription'), findsNothing);
+    expect(find.textContaining('Google'), findsNothing);
+    expect(find.textContaining('Apple'), findsNothing);
+  });
 
   testWidgets('Soumission vide : validation, on reste sur Login', (
     tester,
   ) async {
-    await _openLogin(tester);
+    await _reachLogin(tester);
 
+    await tester.ensureVisible(find.byKey(const Key('login_submit')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('login_submit')));
     await tester.pump();
 
@@ -51,21 +64,23 @@ void main() {
   });
 
   testWidgets('E-mail invalide : message de format', (tester) async {
-    await _openLogin(tester);
+    await _reachLogin(tester);
 
     await _fill(tester, email: 'pasunemail', password: 'secret12');
+    await tester.ensureVisible(find.byKey(const Key('login_submit')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('login_submit')));
     await tester.pump();
 
     expect(find.text('Format d\'e-mail invalide.'), findsOneWidget);
   });
 
-  testWidgets('Mot de passe erroné → message UNAUTHORIZED, reste sur Login', (
-    tester,
-  ) async {
-    await _openLogin(tester);
+  testWidgets('Mot de passe erronÃ© : message UNAUTHORIZED', (tester) async {
+    await _reachLogin(tester);
 
     await _fill(tester, email: 'etudiant@sup2i.ma', password: 'wrong');
+    await tester.ensureVisible(find.byKey(const Key('login_submit')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('login_submit')));
     await tester.pumpAndSettle();
 
@@ -73,27 +88,33 @@ void main() {
     expect(find.byKey(const Key('login_submit')), findsOneWidget);
   });
 
-  testWidgets('Compte bloqué → message ACCOUNT_BLOCKED', (tester) async {
-    await _openLogin(tester);
+  testWidgets('Compte bloquÃ© : message ACCOUNT_BLOCKED', (tester) async {
+    await _reachLogin(tester);
 
     await _fill(tester, email: 'blocked@sup2i.ma', password: 'secret12');
+    await tester.ensureVisible(find.byKey(const Key('login_submit')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('login_submit')));
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('bloqué'), findsOneWidget);
+    expect(find.textContaining('compte est bloqu'), findsOneWidget);
   });
 
-  testWidgets('Identifiants valides : Login se ferme (retour au shell)', (
+  testWidgets('Identifiants valides : accÃ¨s shell authentifiÃ©', (
     tester,
   ) async {
-    await _openLogin(tester);
+    await _reachLogin(tester);
 
     await _fill(tester, email: 'etudiant@sup2i.ma', password: 'secret12');
+    await tester.ensureVisible(find.byKey(const Key('login_submit')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('login_submit')));
     await tester.pumpAndSettle();
 
-    // L'écran Login a été fermé (dépilé) ; on est de retour sur le shell.
     expect(find.byKey(const Key('login_submit')), findsNothing);
     expect(find.byType(NavigationBar), findsOneWidget);
+
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getString('sup2i_food_remembered_email'), 'etudiant@sup2i.ma');
   });
 }

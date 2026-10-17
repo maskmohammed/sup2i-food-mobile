@@ -14,7 +14,7 @@ import 'package:sup2i_food_mobile/features/orders/data/mock_order_repository.dar
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('Commander : paiement → commande créée → suivi, panier vidé', (
+  testWidgets('Commander : paiement -> confirmation -> suivi, panier vide', (
     tester,
   ) async {
     final cart = CartController()
@@ -22,11 +22,12 @@ void main() {
       ..selectSlot(
         const TimeSlot(id: 's1', label: '12h00', status: SlotStatus.available),
       );
+
     final repo = MockOrderRepository(latency: Duration.zero);
-    // Le passage de commande est protégé : utilisateur authentifié.
     final auth = AuthController(
       const MockAuthRepository(latency: Duration.zero),
     );
+
     await tester.runAsync(() => auth.login('etudiant@sup2i.ma', 'secret12'));
 
     await tester.pumpWidget(
@@ -47,17 +48,26 @@ void main() {
         ),
       ),
     );
+
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Commander'));
-    await tester.pumpAndSettle();
-    expect(find.text('Paiement'), findsOneWidget);
-
-    await tester.tap(find.text('Confirmer la commande'));
+    await tester.tap(find.byKey(const Key('cart_checkout')));
     await tester.pumpAndSettle();
 
-    // Écran de suivi : statut en attente de paiement.
-    expect(find.text('En attente de paiement'), findsOneWidget);
+    expect(find.byKey(const Key('payment_method_sheet')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('payment_confirm')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('order_confirmation_screen')), findsOneWidget);
+    expect(find.text('Commande confirmee !'), findsOneWidget);
     expect(cart.isEmpty, isTrue);
+
+    await tester.tap(find.byKey(const Key('confirmation_track')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('En attente de paiement'), findsOneWidget);
+
+    auth.dispose();
   });
 }

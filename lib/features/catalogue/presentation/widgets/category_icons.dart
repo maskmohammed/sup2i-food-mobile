@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 
 /// Icône Phosphor associée à une catégorie (affichage seul).
 ///
@@ -11,16 +11,16 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 IconData categoryIcon(String? categoryId) {
   switch (categoryId) {
     case 'tacos':
-      return PhosphorIcons.hamburger();
+      return PhosphorIconsRegular.hamburger;
     case 'pizza':
-      return PhosphorIcons.pizza();
+      return PhosphorIconsRegular.pizza;
     case 'pasticio':
-      return PhosphorIcons.bowlFood();
+      return PhosphorIconsRegular.bowlFood;
     case 'boisson':
-      return PhosphorIcons.coffee();
+      return PhosphorIconsRegular.coffee;
     case 'dessert':
-      return PhosphorIcons.iceCream();
+      return PhosphorIconsRegular.iceCream;
     default:
-      return PhosphorIcons.forkKnife();
+      return PhosphorIconsRegular.forkKnife;
   }
 }

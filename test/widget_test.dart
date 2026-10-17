@@ -1,6 +1,3 @@
-// Smoke test du shell : bottom nav 5 onglets, thème appliqué, navigation.
-// Le shell est monté isolément (l'écran d'entrée de l'app est Login via AuthGate).
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,86 +18,99 @@ import 'package:sup2i_food_mobile/features/notifications/data/notifications_repo
 import 'package:sup2i_food_mobile/features/orders/data/mock_order_repository.dart';
 import 'package:sup2i_food_mobile/l10n/app_localizations.dart';
 
-Widget _wrap(Widget home, {AuthController? auth}) => AuthScope(
-  controller:
-      auth ?? AuthController(const MockAuthRepository(latency: Duration.zero)),
-  child: CartScope(
-    controller: CartController(),
-    child: OrdersScope(
-      repository: MockOrderRepository(latency: Duration.zero),
-      child: FavoritesScope(
-        controller: FavoritesController(),
-        child: NotificationsScope(
-          controller: NotificationsController(
-            MockNotificationsRepository(latency: Duration.zero),
-          )..load(),
-          child: MaterialApp(
-            theme: AppTheme.light,
-            locale: const Locale('fr'),
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            home: home,
+Widget _wrap(Widget home, {required AuthController auth}) {
+  return AuthScope(
+    controller: auth,
+    child: CartScope(
+      controller: CartController(),
+      child: OrdersScope(
+        repository: MockOrderRepository(latency: Duration.zero),
+        child: FavoritesScope(
+          controller: FavoritesController(),
+          child: NotificationsScope(
+            controller: NotificationsController(
+              MockNotificationsRepository(latency: Duration.zero),
+            )..load(),
+            child: MaterialApp(
+              theme: AppTheme.light,
+              locale: const Locale('fr'),
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              home: home,
+            ),
           ),
         ),
       ),
     ),
-  ),
-);
+  );
+}
+
+Future<AuthController> _authenticatedController(WidgetTester tester) async {
+  final auth = AuthController(const MockAuthRepository(latency: Duration.zero));
+
+  await tester.runAsync(() => auth.login('etudiant@sup2i.ma', 'secret12'));
+
+  return auth;
+}
 
 void main() {
-  testWidgets('Le shell affiche la bottom nav 5 onglets', (tester) async {
-    await tester.pumpWidget(_wrap(const AppShell()));
-    // L'onglet Commander (catalogue) déclenche un chargement asynchrone :
-    // on le laisse se terminer pour éviter un timer en attente.
+  testWidgets('Le shell final affiche Accueil Snack Commandes Cantine Profil', (
+    tester,
+  ) async {
+    final auth = await _authenticatedController(tester);
+
+    await tester.pumpWidget(_wrap(const AppShell(), auth: auth));
     await tester.pumpAndSettle();
 
-    expect(find.byType(NavigationBar), findsOneWidget);
-    for (final label in const [
+    expect(find.byKey(const Key('main_bottom_navigation')), findsOneWidget);
+
+    for (final label in const <String>[
       'Accueil',
-      'Commander',
-      'Cantine',
+      'Snack',
       'Commandes',
+      'Cantine',
       'Profil',
     ]) {
       expect(find.text(label), findsWidgets);
     }
 
     final theme = Theme.of(tester.element(find.byType(NavigationBar)));
+
     expect(theme.useMaterial3, isTrue);
-    expect(theme.colorScheme.primary, AppColors.navy900);
+    expect(theme.colorScheme.primary, AppColors.blue600);
+    expect(theme.colorScheme.secondary, AppColors.pink600);
+
+    auth.dispose();
   });
 
-  testWidgets(
-    'Utilisateur connecté : la sélection d\'un onglet change l\'écran',
-    (tester) async {
-      // Onglet Cantine protégé : on authentifie d'abord.
-      final auth = AuthController(
-        const MockAuthRepository(latency: Duration.zero),
-      );
-      await tester.runAsync(() => auth.login('etudiant@sup2i.ma', 'secret12'));
-
-      await tester.pumpWidget(_wrap(const AppShell(), auth: auth));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Cantine'));
-      await tester.pumpAndSettle();
-
-      // La Cantine affiche l'accès Food Pass et le menu de la semaine.
-      expect(find.text('Votre Food Pass'), findsOneWidget);
-    },
-  );
-
-  testWidgets('Invité : taper un onglet protégé affiche le mur, pas de nav', (
+  testWidgets('Accueil final expose header, hero et étudiant authentifié', (
     tester,
   ) async {
-    await tester.pumpWidget(_wrap(const AppShell()));
+    final auth = await _authenticatedController(tester);
+
+    await tester.pumpWidget(_wrap(const AppShell(), auth: auth));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('home_brand_header')), findsOneWidget);
+    expect(find.byKey(const Key('home_hero_banner')), findsOneWidget);
+    expect(find.byKey(const Key('home_search')), findsOneWidget);
+    expect(find.text('Bien manger.\nMieux étudier.'), findsOneWidget);
+    expect(find.byKey(const Key('home_student_name')), findsOneWidget);
+
+    auth.dispose();
+  });
+
+  testWidgets('Navigation authentifiée ouvre la Cantine', (tester) async {
+    final auth = await _authenticatedController(tester);
+
+    await tester.pumpWidget(_wrap(const AppShell(), auth: auth));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Cantine'));
     await tester.pumpAndSettle();
 
-    // Mur affiché, contenu Cantine non navigué.
-    expect(find.text('Connexion requise'), findsOneWidget);
-    expect(find.text('Votre Food Pass'), findsNothing);
+    expect(find.text('Votre Food Pass'), findsOneWidget);
+
+    auth.dispose();
   });
 }

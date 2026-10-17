@@ -290,7 +290,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
   'fr': <String, String>{
     'appTitle': 'SUP2I FOOD',
     'navHome': 'Accueil',
-    'navOrder': 'Commander',
+    'navOrder': 'Snack',
     'navCanteen': 'Cantine',
     'navOrders': 'Commandes',
     'navProfile': 'Profil',
@@ -493,7 +493,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
     'navHome': 'Home',
-    'navOrder': 'Order',
+    'navOrder': 'Snack',
     'navCanteen': 'Canteen',
     'navOrders': 'Orders',
     'navProfile': 'Profile',
@@ -693,7 +693,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
     'navHome': 'الرئيسية',
-    'navOrder': 'اطلب',
+    'navOrder': 'السناك',
     'navCanteen': 'المقصف',
     'navOrders': 'طلباتي',
     'navProfile': 'حسابي',

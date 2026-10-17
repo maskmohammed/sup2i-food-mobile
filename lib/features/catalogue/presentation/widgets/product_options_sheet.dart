@@ -12,10 +12,6 @@ import '../../data/catalogue_repository.dart';
 import '../../data/mock_catalogue_repository.dart';
 import '../../domain/product_detail.dart';
 
-/// Feuille de personnalisation ouverte depuis le bouton « + » (ajout) ou depuis
-/// une ligne du panier ([editLine] non nul → **édition** : la ligne d'origine
-/// est remplacée, pas dupliquée). Réutilise [ProductDetailController] (prix
-/// indicatif ; total réel = autorité serveur).
 Future<void> showProductOptionsSheet(
   BuildContext context, {
   required String productId,
@@ -30,13 +26,15 @@ Future<void> showProductOptionsSheet(
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    showDragHandle: true,
+    useSafeArea: true,
+    backgroundColor: Colors.transparent,
     builder: (sheetContext) => _OptionsSheet(
       controller: controller,
       fallbackName: productName,
       editLine: editLine,
     ),
   );
+
   controller.dispose();
 }
 
@@ -60,19 +58,21 @@ class _OptionsSheetState extends State<_OptionsSheet> {
 
   ProductDetailController get controller => widget.controller;
 
-  /// Préremplit quantité + options depuis la ligne éditée (une seule fois,
-  /// dès que le détail est chargé).
   void _applyEditPrefill(ProductDetail detail) {
     if (_prefilled || widget.editLine == null) return;
+
     _prefilled = true;
     final line = widget.editLine!;
     final names = (line.optionsLabel ?? '')
         .split(', ')
-        .where((s) => s.isNotEmpty)
+        .where((value) => value.isNotEmpty)
         .toSet();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+
       controller.setQuantity(line.quantity);
+
       for (final group in detail.optionGroups) {
         for (final option in group.options) {
           if (names.contains(option.name) &&
@@ -88,8 +88,11 @@ class _OptionsSheetState extends State<_OptionsSheet> {
     final loc = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     final cart = CartScope.of(context, listen: false);
-    // Édition : on retire la ligne d'origine pour la remplacer (pas de doublon).
-    if (widget.editLine != null) cart.remove(widget.editLine!.id);
+
+    if (widget.editLine != null) {
+      cart.remove(widget.editLine!.id);
+    }
+
     cart.addItem(
       productId: detail.product.id,
       name: detail.product.name,
@@ -97,6 +100,7 @@ class _OptionsSheetState extends State<_OptionsSheet> {
       quantity: controller.quantity,
       optionsLabel: controller.selectedOptionsLabel,
     );
+
     AppHaptics.light();
     Navigator.of(context).pop();
     messenger.showSnackBar(SnackBar(content: Text(loc.addedToCart)));
@@ -104,75 +108,107 @@ class _OptionsSheetState extends State<_OptionsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc = AppLocalizations.of(context);
-    final TextTheme text = Theme.of(context).textTheme;
+    final loc = AppLocalizations.of(context);
 
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-        ),
-        child: ListenableBuilder(
-          listenable: controller,
-          builder: (context, _) {
-            final detail = controller.detail;
-            if (detail == null) {
-              return const SizedBox(
-                height: 160,
-                child: Center(
-                  child: CircularProgressIndicator(color: AppColors.pink600),
-                ),
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.84,
+      ),
+      decoration: BoxDecoration(
+        color: context.surfaces.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            20,
+            10,
+            20,
+            MediaQuery.viewInsetsOf(context).bottom + 16,
+          ),
+          child: ListenableBuilder(
+            listenable: controller,
+            builder: (context, _) {
+              final detail = controller.detail;
+
+              if (detail == null) {
+                return const SizedBox(
+                  height: 190,
+                  child: Center(
+                    child: CircularProgressIndicator(color: AppColors.pink600),
+                  ),
+                );
+              }
+
+              _applyEditPrefill(detail);
+
+              final indicativeTotal =
+                  controller.indicativeUnitPriceCents * controller.quantity;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: context.surfaces.border,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    detail.product.name,
+                    key: const Key('product_options_title'),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(fontSize: 20),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    loc.totalIndicativeNote,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: AppColors.muted),
+                  ),
+                  const SizedBox(height: 18),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          _QuantityRow(controller: controller, loc: loc),
+                          for (final group in detail.optionGroups)
+                            _OptionGroup(
+                              group: group,
+                              controller: controller,
+                              loc: loc,
+                            ),
+                          const SizedBox(height: 18),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 54,
+                    child: FilledButton(
+                      key: const Key('product_options_confirm'),
+                      onPressed: () => _confirm(context, detail),
+                      child: Text(
+                        '${loc.addToCart} · ${Money.format(indicativeTotal)}',
+                      ),
+                    ),
+                  ),
+                ],
               );
-            }
-            _applyEditPrefill(detail);
-            final indicativeTotal =
-                controller.indicativeUnitPriceCents * controller.quantity;
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(detail.product.name, style: text.titleLarge),
-                const SizedBox(height: 12),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _QuantityRow(controller: controller, loc: loc),
-                        for (final group in detail.optionGroups)
-                          _OptionGroup(
-                            group: group,
-                            controller: controller,
-                            loc: loc,
-                          ),
-                        const SizedBox(height: 12),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  loc.totalIndicativeNote,
-                  style: text.bodySmall?.copyWith(color: AppColors.muted),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: FilledButton(
-                    onPressed: () => _confirm(context, detail),
-                    child: Text(
-                      '${loc.addToCart} · ${Money.format(indicativeTotal)}',
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+            },
+          ),
         ),
       ),
     );
@@ -188,24 +224,44 @@ class _QuantityRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-        Text(loc.quantityLabel, style: Theme.of(context).textTheme.bodyLarge),
-        const Spacer(),
-        IconButton(
-          onPressed: controller.decrement,
-          icon: const Icon(Icons.remove_circle_outline),
-          color: AppColors.navy900,
-          tooltip: loc.decreaseQuantity,
+      children: <Widget>[
+        Expanded(
+          child: Text(
+            loc.quantityLabel,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontSize: 17),
+          ),
         ),
-        Text(
-          '${controller.quantity}',
-          semanticsLabel: '${loc.quantityLabel} : ${controller.quantity}',
-        ),
-        IconButton(
-          onPressed: controller.increment,
-          icon: const Icon(Icons.add_circle),
-          color: AppColors.pink600,
-          tooltip: loc.increaseQuantity,
+        Container(
+          decoration: BoxDecoration(
+            color: context.surfaces.background,
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              IconButton(
+                onPressed: controller.decrement,
+                tooltip: loc.decreaseQuantity,
+                icon: const Icon(Icons.remove_rounded),
+                color: AppColors.navy900,
+              ),
+              Text(
+                '${controller.quantity}',
+                semanticsLabel: '${loc.quantityLabel} : ${controller.quantity}',
+                style: Theme.of(
+                  context,
+                ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
+              ),
+              IconButton(
+                onPressed: controller.increment,
+                tooltip: loc.increaseQuantity,
+                icon: const Icon(Icons.add_rounded),
+                color: AppColors.pink600,
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -225,42 +281,66 @@ class _OptionGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme text = Theme.of(context).textTheme;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        Text(group.name, style: text.labelLarge),
-        const SizedBox(height: 4),
-        for (final option in group.options)
-          InkWell(
-            onTap: () => controller.toggleOption(option.id),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              child: Row(
-                children: [
-                  Icon(
-                    controller.isSelected(option.id)
-                        ? Icons.check_circle
-                        : Icons.add_circle_outline,
-                    color: AppColors.pink600,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(child: Text(option.name, style: text.bodyMedium)),
-                  Text(
-                    option.priceDeltaCents > 0
-                        ? '+ ${Money.format(option.priceDeltaCents)}'
-                        : loc.optionIncluded,
-                    style: text.bodySmall?.copyWith(
-                      color: context.surfaces.muted,
+    return Padding(
+      padding: const EdgeInsets.only(top: 22),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            group.name,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontSize: 17),
+          ),
+          const SizedBox(height: 10),
+          for (final option in group.options)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Material(
+                color: controller.isSelected(option.id)
+                    ? AppColors.softPink
+                    : context.surfaces.background,
+                borderRadius: BorderRadius.circular(15),
+                child: InkWell(
+                  onTap: () => controller.toggleOption(option.id),
+                  borderRadius: BorderRadius.circular(15),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 11,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          controller.isSelected(option.id)
+                              ? Icons.check_circle_rounded
+                              : Icons.circle_outlined,
+                          color: controller.isSelected(option.id)
+                              ? AppColors.pink600
+                              : AppColors.muted,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            option.name,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        Text(
+                          option.priceDeltaCents > 0
+                              ? '+ ${Money.format(option.priceDeltaCents)}'
+                              : loc.optionIncluded,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: context.surfaces.muted),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

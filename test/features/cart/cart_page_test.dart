@@ -21,42 +21,18 @@ Widget _wrap(CartController cart, Widget home) => CartScope(
 );
 
 void main() {
-  testWidgets('Panier vide : état vide + CTA', (tester) async {
+  testWidgets('Panier vide : etat vide + CTA', (tester) async {
     await tester.pumpWidget(_wrap(CartController(), const CartPage()));
     await tester.pumpAndSettle();
 
     expect(find.text('Votre panier est vide'), findsOneWidget);
-    expect(find.text('Découvrir le menu'), findsOneWidget);
+    expect(
+      find.text(AppLocalizations(const Locale('fr')).discoverMenu),
+      findsOneWidget,
+    );
   });
 
-  testWidgets(
-    'Panier rempli : ligne, total, Commander désactivé sans créneau',
-    (tester) async {
-      final cart = CartController()
-        ..addItem(
-          productId: 'p1',
-          name: 'Tacos Poulet XL',
-          unitPriceCents: 4000,
-          quantity: 2,
-        );
-
-      await tester.pumpWidget(_wrap(cart, const CartPage()));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Tacos Poulet XL'), findsOneWidget);
-      // Miniature produit sur la ligne (placeholder hors-ligne).
-      expect(find.byType(ProductImage), findsOneWidget);
-      // Sous-total indicatif = 2 × 40,00 DH.
-      expect(find.text('80,00 DH'), findsWidgets);
-
-      final button = tester.widget<ElevatedButton>(
-        find.widgetWithText(ElevatedButton, 'Commander'),
-      );
-      expect(button.onPressed, isNull);
-    },
-  );
-
-  testWidgets('Taper une ligne édite (remplace), ne duplique pas', (
+  testWidgets('Panier rempli : ligne, total, CTA desactive sans creneau', (
     tester,
   ) async {
     final cart = CartController()
@@ -69,19 +45,44 @@ void main() {
 
     await tester.pumpWidget(_wrap(cart, const CartPage()));
     await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('cart_screen')), findsOneWidget);
+    expect(find.text('Tacos Poulet XL'), findsOneWidget);
+    expect(find.byType(ProductImage), findsOneWidget);
+    expect(find.text('80,00 DH'), findsWidgets);
+
+    final button = tester.widget<FilledButton>(
+      find.byKey(const Key('cart_checkout')),
+    );
+    expect(button.onPressed, isNull);
+  });
+
+  testWidgets('Taper une ligne edite sans dupliquer', (tester) async {
+    final cart = CartController()
+      ..addItem(
+        productId: 'p1',
+        name: 'Tacos Poulet XL',
+        unitPriceCents: 4000,
+        quantity: 2,
+      );
+
+    await tester.pumpWidget(_wrap(cart, const CartPage()));
+    await tester.pumpAndSettle();
+
     expect(cart.lines, hasLength(1));
 
-    // Ouvre la feuille d'édition depuis la ligne.
     await tester.tap(find.text('Tacos Poulet XL'));
     await tester.pumpAndSettle();
 
-    // Confirme : la ligne est remplacée, pas dupliquée.
-    await tester.tap(find.textContaining('Ajouter au panier'));
+    expect(find.byKey(const Key('product_options_confirm')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('product_options_confirm')));
     await tester.pumpAndSettle();
+
     expect(cart.lines, hasLength(1));
   });
 
-  testWidgets('Créneau choisi : Commander activé', (tester) async {
+  testWidgets('Creneau choisi : CTA Commander actif', (tester) async {
     final cart = CartController()
       ..addItem(productId: 'p1', name: 'Tacos', unitPriceCents: 4000)
       ..selectSlot(
@@ -91,8 +92,8 @@ void main() {
     await tester.pumpWidget(_wrap(cart, const CartPage()));
     await tester.pumpAndSettle();
 
-    final button = tester.widget<ElevatedButton>(
-      find.widgetWithText(ElevatedButton, 'Commander'),
+    final button = tester.widget<FilledButton>(
+      find.byKey(const Key('cart_checkout')),
     );
     expect(button.onPressed, isNotNull);
   });

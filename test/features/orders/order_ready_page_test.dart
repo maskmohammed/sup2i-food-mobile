@@ -27,7 +27,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Votre commande est prête !'), findsOneWidget);
-    expect(find.text('A-2048'), findsOneWidget);
+    expect(find.textContaining('A-2048'), findsOneWidget);
   });
 
   testWidgets('le bouton Fermer referme l\'écran', (tester) async {

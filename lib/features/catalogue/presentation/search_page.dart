@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../../app/auth_guard.dart';
 import '../../../app/favorites_scope.dart';
 import '../../../core/error/api_codes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_motion.dart';
+import '../../../core/theme/app_surfaces.dart';
 import '../../../core/widgets/app_loading_view.dart';
 import '../../../core/widgets/app_state_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -18,17 +18,10 @@ import 'product_detail_page.dart';
 import 'widgets/product_card.dart';
 import 'widgets/product_options_sheet.dart';
 
-/// Écran de recherche dédié : champ éditable (autofocus), filtre les produits
-/// par nom (insensible à la casse) au fil de la saisie. État vide « Aucun
-/// résultat » réutilisé du design. Historique des 5 dernières recherches
-/// proposé quand le champ est vide.
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key, this.repository, this.historyStore});
 
-  /// Injectable pour les tests (défaut : mock).
   final CatalogueRepository? repository;
-
-  /// Historique local (défaut : shared_preferences).
   final SearchHistoryStore? historyStore;
 
   @override
@@ -44,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
   List<String> _recent = const <String>[];
   bool _loading = true;
   String? _errorCode;
-  String _query = ''; // terme filtrant (débounced)
+  String _query = '';
   Timer? _debounce;
 
   @override
@@ -63,6 +56,28 @@ class _SearchPageState extends State<SearchPage> {
     setState(() => _recent = terms);
   }
 
+  Future<void> _loadAll() async {
+    setState(() {
+      _loading = true;
+      _errorCode = null;
+    });
+
+    try {
+      final products = await _repository.products();
+      if (!mounted) return;
+      setState(() {
+        _all = products;
+        _loading = false;
+      });
+    } on Object {
+      if (!mounted) return;
+      setState(() {
+        _errorCode = ApiCodes.internalError;
+        _loading = false;
+      });
+    }
+  }
+
   void _record(String term) {
     final updated = mergeRecentSearch(_recent, term);
     if (updated == _recent) return;
@@ -70,13 +85,13 @@ class _SearchPageState extends State<SearchPage> {
     _historyStore.save(updated);
   }
 
-  /// Débounce : ne filtre qu'après une courte pause de frappe (charte).
   void _onChanged(String value) {
     _debounce?.cancel();
-    // Rebuild immédiat pour le bouton « effacer » (basé sur _field.text).
     setState(() {});
     _debounce = Timer(AppMotion.searchDebounce, () {
-      if (mounted) setState(() => _query = value);
+      if (mounted) {
+        setState(() => _query = value);
+      }
     });
   }
 
@@ -91,19 +106,6 @@ class _SearchPageState extends State<SearchPage> {
     _field.text = term;
     _field.selection = TextSelection.collapsed(offset: term.length);
     setState(() => _query = term);
-  }
-
-  /// Suggestions immédiates : noms de produits correspondant à la saisie brute.
-  List<String> _suggestionsFor(String raw) {
-    final q = raw.toLowerCase();
-    final names = <String>[];
-    for (final p in _all) {
-      if (p.name.toLowerCase().contains(q) && !names.contains(p.name)) {
-        names.add(p.name);
-        if (names.length >= 5) break;
-      }
-    }
-    return names;
   }
 
   void _applySuggestion(String name) {
@@ -125,38 +127,28 @@ class _SearchPageState extends State<SearchPage> {
     await _historyStore.save(const <String>[]);
   }
 
-  Future<void> _loadAll() async {
-    setState(() {
-      _loading = true;
-      _errorCode = null;
-    });
-    try {
-      final products = await _repository.products();
-      if (!mounted) return;
-      setState(() {
-        _all = products;
-        _loading = false;
-      });
-    } on Object {
-      if (!mounted) return;
-      setState(() {
-        _errorCode = ApiCodes.internalError;
-        _loading = false;
-      });
-    }
-  }
+  List<String> _suggestionsFor(String raw) {
+    final q = raw.toLowerCase();
+    final names = <String>[];
 
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    _field.dispose();
-    super.dispose();
+    for (final product in _all) {
+      if (product.name.toLowerCase().contains(q) &&
+          !names.contains(product.name)) {
+        names.add(product.name);
+        if (names.length >= 5) break;
+      }
+    }
+
+    return names;
   }
 
   List<Product> get _results {
     final q = _query.trim().toLowerCase();
     if (q.isEmpty) return const <Product>[];
-    return _all.where((p) => p.name.toLowerCase().contains(q)).toList();
+
+    return _all
+        .where((product) => product.name.toLowerCase().contains(q))
+        .toList();
   }
 
   void _openDetail(Product product) {
@@ -169,35 +161,67 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  void _addToCart(Product product) {
+    showProductOptionsSheet(
+      context,
+      productId: product.id,
+      productName: product.name,
+      repository: _repository,
+    );
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _field.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc = AppLocalizations.of(context);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
+      key: const Key('search_screen'),
+      backgroundColor: context.surfaces.background,
       appBar: AppBar(
-        title: Semantics(
-          textField: true,
-          label: loc.searchTitle,
+        toolbarHeight: 78,
+        titleSpacing: 4,
+        title: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: context.surfaces.background,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: context.surfaces.border),
+          ),
           child: TextField(
+            key: const Key('search_field'),
             controller: _field,
             autofocus: true,
             textInputAction: TextInputAction.search,
             onChanged: _onChanged,
             onSubmitted: _submit,
             decoration: InputDecoration(
-              border: InputBorder.none,
               hintText: loc.homeSearchHint,
+              prefixIcon: const Icon(
+                Icons.search_rounded,
+                color: AppColors.navy900,
+              ),
+              suffixIcon: _field.text.isEmpty
+                  ? null
+                  : IconButton(
+                      onPressed: _clearField,
+                      icon: const Icon(Icons.close_rounded),
+                      tooltip: loc.searchClear,
+                    ),
+              filled: false,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 13),
             ),
           ),
         ),
-        actions: [
-          if (_field.text.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.close),
-              tooltip: loc.searchClear,
-              onPressed: _clearField,
-            ),
-        ],
       ),
       body: _buildBody(loc),
     );
@@ -205,6 +229,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildBody(AppLocalizations loc) {
     if (_loading) return const AppLoadingView();
+
     if (_errorCode != null) {
       return AppStateView.error(
         title: loc.errorMessage(_errorCode ?? ApiCodes.internalError),
@@ -213,96 +238,93 @@ class _SearchPageState extends State<SearchPage> {
         onAction: _loadAll,
       );
     }
+
     final raw = _field.text.trim();
+
     if (raw.isEmpty) {
-      if (_recent.isEmpty) return _Prompt(text: loc.searchPrompt);
+      if (_recent.isEmpty) {
+        return _Prompt(text: loc.searchPrompt);
+      }
+
       return _RecentSearches(
         terms: _recent,
         onSelect: _applyRecent,
         onClear: _clearHistory,
       );
     }
-    // Auto-suggestions IMMÉDIATES (dès le 1er caractère), en plus du debounce :
-    // tant que le filtre débouncé n'a pas rattrapé la saisie, on propose des
-    // noms de produits correspondants (retour instantané sans re-render lourd).
+
     final pending = raw.toLowerCase() != _query.trim().toLowerCase();
+
     if (pending) {
       final suggestions = _suggestionsFor(raw);
-      if (suggestions.isEmpty) return const SizedBox.shrink();
+
+      if (suggestions.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
       return _Suggestions(terms: suggestions, onSelect: _applySuggestion);
     }
+
     final results = _results;
+
     if (results.isEmpty) {
       return AppStateView.empty(
-        icon: Icons.search_off,
+        icon: Icons.search_off_rounded,
         title: loc.searchNoResultsFor(_query.trim()),
         message: loc.searchNoResultsHint,
         actionLabel: loc.searchSeeAllCatalogue,
         onAction: _clearField,
       );
     }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Nombre de résultats — annoncé au lecteur d'écran (live region).
+      children: <Widget>[
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
           child: Semantics(
             liveRegion: true,
             child: Text(
               loc.searchResultsCount(results.length),
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: AppColors.muted),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.muted,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
-        Expanded(child: _resultsGrid(loc, results)),
+        Expanded(child: _resultsGrid(results)),
       ],
     );
   }
 
-  Widget _resultsGrid(AppLocalizations loc, List<Product> results) {
+  Widget _resultsGrid(List<Product> results) {
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      key: const Key('search_results_grid'),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        childAspectRatio: 0.72,
+        mainAxisSpacing: 14,
+        crossAxisSpacing: 14,
+        childAspectRatio: 0.70,
       ),
       itemCount: results.length,
       itemBuilder: (context, index) {
         final product = results[index];
         final favorites = FavoritesScope.of(context);
+
         return ProductCard(
           product: product,
           isFavorite: favorites.isFavorite(product.id),
           onFavoriteTap: () => favorites.toggle(product.id),
           onTap: () => _openDetail(product),
-          onAddToCart: product.available
-              ? () {
-                  if (!AuthGuard.require(
-                    context,
-                    message: loc.loginWallCartMessage,
-                  )) {
-                    return;
-                  }
-                  showProductOptionsSheet(
-                    context,
-                    productId: product.id,
-                    productName: product.name,
-                    repository: _repository,
-                  );
-                }
-              : null,
+          onAddToCart: product.available ? () => _addToCart(product) : null,
         );
       },
     );
   }
 }
 
-/// Suggestions immédiates (autocomplétion) affichées pendant la frappe.
 class _Suggestions extends StatelessWidget {
   const _Suggestions({required this.terms, required this.onSelect});
 
@@ -311,16 +333,31 @@ class _Suggestions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      children: [
-        for (final term in terms)
-          ListTile(
-            leading: const Icon(Icons.search, color: AppColors.muted),
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+      itemCount: terms.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        final term = terms[index];
+
+        return Material(
+          color: context.surfaces.surface,
+          borderRadius: BorderRadius.circular(16),
+          child: ListTile(
+            leading: const Icon(Icons.search_rounded, color: AppColors.pink600),
             title: Text(term),
+            trailing: const Icon(
+              Icons.north_west_rounded,
+              size: 18,
+              color: AppColors.muted,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             onTap: () => onSelect(term),
           ),
-      ],
+        );
+      },
     );
   }
 }
@@ -338,34 +375,44 @@ class _RecentSearches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc = AppLocalizations.of(context);
-    final TextTheme text = Theme.of(context).textTheme;
+    final loc = AppLocalizations.of(context);
 
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: Text(
                 loc.searchRecentTitle,
-                style: text.labelLarge?.copyWith(color: AppColors.muted),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontSize: 18),
               ),
-              TextButton(
-                onPressed: onClear,
-                child: Text(loc.searchClearHistory),
-              ),
-            ],
-          ),
+            ),
+            TextButton(onPressed: onClear, child: Text(loc.searchClearHistory)),
+          ],
         ),
-        for (final term in terms)
-          ListTile(
-            leading: const Icon(Icons.history, color: AppColors.muted),
-            title: Text(term),
-            onTap: () => onSelect(term),
-          ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: <Widget>[
+            for (final term in terms)
+              ActionChip(
+                avatar: const Icon(
+                  Icons.history_rounded,
+                  size: 17,
+                  color: AppColors.blue600,
+                ),
+                label: Text(term),
+                backgroundColor: context.surfaces.surface,
+                side: BorderSide(color: context.surfaces.border),
+                shape: const StadiumBorder(),
+                onPressed: () => onSelect(term),
+              ),
+          ],
+        ),
       ],
     );
   }
@@ -380,12 +427,24 @@ class _Prompt extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.search, size: 40, color: AppColors.muted),
-            const SizedBox(height: 12),
+          children: <Widget>[
+            Container(
+              width: 76,
+              height: 76,
+              decoration: const BoxDecoration(
+                color: AppColors.softPink,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.search_rounded,
+                size: 34,
+                color: AppColors.pink600,
+              ),
+            ),
+            const SizedBox(height: 18),
             Text(
               text,
               textAlign: TextAlign.center,

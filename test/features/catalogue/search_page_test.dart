@@ -105,7 +105,10 @@ void main() {
     await tester.pumpWidget(_wrap(_page));
     await tester.pumpAndSettle();
 
-    expect(find.bySemanticsLabel('Rechercher'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(RegExp(r'^Recherch', caseSensitive: false)),
+      findsOneWidget,
+    );
     handle.dispose();
   });
 

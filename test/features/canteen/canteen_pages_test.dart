@@ -31,57 +31,87 @@ Widget _wrap(Widget home) => CartScope(
 
 const _repo = MockCanteenRepository(latency: Duration.zero);
 
+Future<void> _dragUntilBuilt(WidgetTester tester, Finder target) async {
+  for (var index = 0; index < 10 && target.evaluate().isEmpty; index++) {
+    final scrollable = find.byType(Scrollable).last;
+    await tester.drag(scrollable, const Offset(0, -260));
+    await tester.pump();
+  }
+
+  expect(target, findsOneWidget);
+  await tester.ensureVisible(target);
+  await tester.pumpAndSettle();
+}
+
 void main() {
-  testWidgets('Cantine : menu de la semaine + accès Food Pass / abonnement', (
+  testWidgets('Cantine finale : hero, pass, abonnement et menu', (
     tester,
   ) async {
     await tester.pumpWidget(_wrap(const CanteenPage(repository: _repo)));
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('canteen_screen')), findsOneWidget);
+    expect(find.byKey(const Key('canteen_hero')), findsOneWidget);
+    expect(find.byKey(const Key('canteen_food_pass')), findsOneWidget);
+    expect(find.byKey(const Key('canteen_subscription')), findsOneWidget);
     expect(find.text('Plat Lundi'), findsOneWidget);
-    expect(find.text('Votre Food Pass'), findsOneWidget);
-    expect(find.text('Mon abonnement Cantine'), findsOneWidget);
   });
 
-  testWidgets('Food Pass : identité et statut Active', (tester) async {
+  testWidgets('Food Pass final : identite, statut et QR', (tester) async {
     await tester.pumpWidget(_wrap(const FoodPassPage(repository: _repo)));
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('food_pass_screen')), findsOneWidget);
+    expect(find.byKey(const Key('food_pass_card')), findsOneWidget);
+    expect(find.byKey(const Key('food_pass_qr')), findsOneWidget);
     expect(find.text('Chnaf Yahya'), findsOneWidget);
     expect(find.text('Active'), findsOneWidget);
     expect(find.text('ID : 12345678'), findsOneWidget);
   });
 
-  testWidgets('Abonnement : plan actif et quota 8/12', (tester) async {
+  testWidgets('Abonnement final : plan actif et quota serveur', (tester) async {
     await tester.pumpWidget(_wrap(const SubscriptionPage(repository: _repo)));
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('subscription_screen')), findsOneWidget);
+    expect(find.byKey(const Key('subscription_card')), findsOneWidget);
+    expect(find.byKey(const Key('subscription_quota')), findsOneWidget);
+    expect(find.text('Plan Etudiant Standard'), findsNothing);
     expect(find.text('Plan Étudiant Standard'), findsOneWidget);
     expect(find.text('Actif'), findsOneWidget);
     expect(find.text('8 / 12'), findsOneWidget);
   });
 
-  testWidgets('Réserver un plat → confirmation', (tester) async {
+  testWidgets('Reservation : confirmation finale', (tester) async {
     await tester.pumpWidget(_wrap(const CanteenPage(repository: _repo)));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Plat Lundi'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Réservation confirmée'), findsWidgets);
-    expect(find.text('Annuler la réservation'), findsOneWidget);
-    expect(find.text('Retour à la cantine'), findsOneWidget);
+    expect(
+      find.byKey(const Key('reservation_confirmed_screen')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('reservation_summary')), findsOneWidget);
+    expect(find.byKey(const Key('reservation_cancel')), findsOneWidget);
+    // V7 reservation scroll
+    await _dragUntilBuilt(tester, find.byKey(const Key('reservation_back')));
+    expect(find.byKey(const Key('reservation_back')), findsOneWidget);
   });
 
-  testWidgets('Food Pass → déclarer la perte', (tester) async {
+  testWidgets('Food Pass : declaration de perte', (tester) async {
     await tester.pumpWidget(_wrap(const FoodPassPage(repository: _repo)));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Déclarer la perte'));
+    // V7 loss scroll
+    await _dragUntilBuilt(tester, find.byKey(const Key('declare_loss')));
+    await tester.tap(find.byKey(const Key('declare_loss')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Action irréversible'), findsOneWidget);
+    expect(find.byKey(const Key('loss_screen')), findsOneWidget);
+    expect(find.byKey(const Key('loss_warning')), findsOneWidget);
+    expect(find.byKey(const Key('loss_confirm')), findsOneWidget);
     expect(find.text('Carte perdue'), findsOneWidget);
-    expect(find.text('Confirmer la perte'), findsOneWidget);
   });
 }

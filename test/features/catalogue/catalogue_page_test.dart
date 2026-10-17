@@ -94,7 +94,9 @@ void main() {
     await tester.pumpWidget(_wrap(_page));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Tacos Poulet XL'));
+    await tester.ensureVisible(find.text('Tacos Poulet XL').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Tacos Poulet XL').first);
     await tester.pumpAndSettle();
 
     expect(find.text('Allergènes'), findsOneWidget);

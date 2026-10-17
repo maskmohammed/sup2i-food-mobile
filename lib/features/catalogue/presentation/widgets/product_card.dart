@@ -7,9 +7,10 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/product.dart';
 import 'product_image.dart';
 
-/// Carte produit du catalogue (image, nom, prix DH, favori, ajout panier).
-/// Un produit indisponible est grisé + badge « Indisponible » (statut jamais
-/// signalé par la couleur seule).
+/// SUP2I FOOD food-first product card.
+///
+/// Large imagery, restrained information hierarchy and immediate add action,
+/// following the locked mobile visual reference.
 class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
@@ -28,84 +29,118 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc = AppLocalizations.of(context);
-    final TextTheme text = Theme.of(context).textTheme;
+    final loc = AppLocalizations.of(context);
 
     return Opacity(
-      opacity: product.available ? 1 : 0.6,
+      opacity: product.available ? 1 : 0.62,
       child: Material(
         color: context.surfaces.surface,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           side: BorderSide(color: context.surfaces.border),
         ),
         child: InkWell(
           onTap: onTap,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AspectRatio(
-                aspectRatio: 1.5,
+            children: <Widget>[
+              Expanded(
+                flex: 6,
                 child: Stack(
                   fit: StackFit.expand,
-                  children: [
+                  children: <Widget>[
                     ProductImage(query: product.name),
                     Positioned(
-                      top: 4,
-                      right: 4,
-                      child: GestureDetector(
-                        onTap: onFavoriteTap,
-                        child: Padding(
-                          padding: const EdgeInsets.all(4),
-                          child: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            size: 22,
-                            color: AppColors.pink500,
+                      top: 10,
+                      right: 10,
+                      child: Material(
+                        color: AppColors.neutral0,
+                        shape: const CircleBorder(),
+                        elevation: 0,
+                        child: InkWell(
+                          onTap: onFavoriteTap,
+                          customBorder: const CircleBorder(),
+                          child: SizedBox(
+                            width: 36,
+                            height: 36,
+                            child: Icon(
+                              isFavorite
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_border_rounded,
+                              size: 20,
+                              color: AppColors.pink600,
+                            ),
                           ),
                         ),
                       ),
                     ),
                     if (!product.available)
                       Positioned(
-                        left: 8,
-                        top: 8,
-                        child: _Badge(label: loc.productUnavailable),
+                        left: 10,
+                        top: 10,
+                        child: _UnavailableBadge(label: loc.productUnavailable),
                       ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: text.bodyMedium,
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 11, 10, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        product.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: context.surfaces.text,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const Spacer(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            child: Text(
+                              Money.format(product.priceCents),
+                              style: Theme.of(context).textTheme.labelLarge
+                                  ?.copyWith(
+                                    color: AppColors.pink600,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                            ),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            Money.format(product.priceCents),
-                            style: text.labelLarge?.copyWith(
-                              color: context.surfaces.text,
+                          Semantics(
+                            button: true,
+                            label: loc.addToCart,
+                            child: InkWell(
+                              onTap: product.available ? onAddToCart : null,
+                              customBorder: const CircleBorder(),
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: product.available
+                                      ? AppColors.pink600
+                                      : context.surfaces.border,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.add_rounded,
+                                  color: AppColors.neutral0,
+                                  size: 22,
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    IconButton(
-                      onPressed: product.available ? onAddToCart : null,
-                      icon: const Icon(Icons.add_circle),
-                      color: AppColors.pink600,
-                      tooltip: loc.addToCartComingSoon,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -116,24 +151,25 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-class _Badge extends StatelessWidget {
-  const _Badge({required this.label});
+class _UnavailableBadge extends StatelessWidget {
+  const _UnavailableBadge({required this.label});
 
   final String label;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
         color: AppColors.error,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
         label,
-        style: Theme.of(
-          context,
-        ).textTheme.labelSmall?.copyWith(color: AppColors.neutral0),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: AppColors.neutral0,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

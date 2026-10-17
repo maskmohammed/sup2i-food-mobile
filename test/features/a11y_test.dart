@@ -22,6 +22,21 @@ Widget _wrap(Widget home, {CartController? cart}) => CartScope(
   ),
 );
 
+Future<void> _dragUntilBuilt(
+  WidgetTester tester,
+  Finder scroll,
+  Finder target,
+) async {
+  for (var index = 0; index < 8 && target.evaluate().isEmpty; index++) {
+    await tester.drag(scroll, const Offset(0, -260));
+    await tester.pump();
+  }
+
+  expect(target, findsOneWidget);
+  await tester.ensureVisible(target);
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('Food Pass : QR annoncé au lecteur d\'écran', (tester) async {
     final handle = tester.ensureSemantics();
@@ -50,10 +65,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(
-      find.bySemanticsLabel('Code QR de retrait de la commande A1949'),
-      findsOneWidget,
+    await _dragUntilBuilt(
+      tester,
+      find.byType(ListView).last,
+      find.byKey(const Key('tracking_qr_card')),
     );
+
+    expect(find.bySemanticsLabel(RegExp(r'Code QR.*A1949')), findsOneWidget);
     handle.dispose();
   });
 

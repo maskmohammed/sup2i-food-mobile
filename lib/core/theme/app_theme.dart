@@ -4,32 +4,31 @@ import 'app_colors.dart';
 import 'app_surfaces.dart';
 import 'app_typography.dart';
 
-/// Thème applicatif SUP2I FOOD — Material 3, variantes claire et sombre.
-///
-/// Les tokens de marque ([AppColors]) restent constants ; les surfaces neutres
-/// basculent via [AppSurfaces]. Ne pas définir de couleur de surface en dur
-/// dans les écrans : passer par `context.surfaces` ou le thème.
 class AppTheme {
   AppTheme._();
 
-  static const double radiusSm = 8;
-  static const double radiusMd = 12;
-  static const double radiusLg = 16;
-  static const double radiusXl = 24;
+  static const double radiusSm = 10;
+  static const double radiusMd = 16;
+  static const double radiusLg = 20;
+  static const double radiusXl = 28;
 
   static const RoundedRectangleBorder _shapeMd = RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
   );
 
+  static const RoundedRectangleBorder _shapeLg = RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(radiusLg)),
+  );
+
   static const ColorScheme _lightColorScheme = ColorScheme(
     brightness: Brightness.light,
-    primary: AppColors.navy900,
+    primary: AppColors.blue600,
     onPrimary: AppColors.neutral0,
     secondary: AppColors.pink600,
     onSecondary: AppColors.neutral0,
-    secondaryContainer: AppColors.pink500,
-    onSecondaryContainer: AppColors.neutral0,
-    tertiary: AppColors.blue600,
+    secondaryContainer: AppColors.softPink,
+    onSecondaryContainer: AppColors.navy900,
+    tertiary: AppColors.navy900,
     onTertiary: AppColors.neutral0,
     error: AppColors.error,
     onError: AppColors.neutral0,
@@ -42,13 +41,13 @@ class AppTheme {
 
   static const ColorScheme _darkColorScheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: AppColors.pink600,
+    primary: AppColors.blue600,
     onPrimary: AppColors.neutral0,
-    secondary: AppColors.pink500,
+    secondary: AppColors.pink600,
     onSecondary: AppColors.neutral0,
-    secondaryContainer: AppColors.pink600,
+    secondaryContainer: AppColors.navy900,
     onSecondaryContainer: AppColors.neutral0,
-    tertiary: AppColors.blue600,
+    tertiary: AppColors.pink600,
     onTertiary: AppColors.neutral0,
     error: AppColors.error,
     onError: AppColors.neutral0,
@@ -63,7 +62,7 @@ class AppTheme {
   static ThemeData get dark => _build(_darkColorScheme, AppSurfaces.dark);
 
   static ThemeData _build(ColorScheme scheme, AppSurfaces surfaces) {
-    final TextTheme textTheme = AppTypography.textTheme.apply(
+    final textTheme = AppTypography.textTheme.apply(
       bodyColor: surfaces.text,
       displayColor: surfaces.text,
     );
@@ -75,14 +74,15 @@ class AppTheme {
       scaffoldBackgroundColor: surfaces.background,
       textTheme: textTheme,
       extensions: <ThemeExtension<dynamic>>[surfaces],
+      splashFactory: InkRipple.splashFactory,
 
       appBarTheme: AppBarTheme(
         backgroundColor: surfaces.surface,
-        foregroundColor: surfaces.text,
+        foregroundColor: AppColors.navy900,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: AppTypography.h3.copyWith(color: surfaces.text),
+        titleTextStyle: AppTypography.h3.copyWith(color: AppColors.navy900),
       ),
 
       cardTheme: CardThemeData(
@@ -90,44 +90,51 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         margin: EdgeInsets.zero,
-        shape: _shapeMd,
+        shape: _shapeLg,
       ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: scheme.primary,
-          foregroundColor: scheme.onPrimary,
+          backgroundColor: AppColors.pink600,
+          foregroundColor: AppColors.neutral0,
+          disabledBackgroundColor: AppColors.border,
+          disabledForegroundColor: AppColors.muted,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: AppTypography.label,
-          shape: _shapeMd,
+          minimumSize: const Size(48, 52),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          textStyle: AppTypography.button,
+          shape: const StadiumBorder(),
         ),
       ),
 
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: scheme.secondary,
-          foregroundColor: scheme.onSecondary,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: AppTypography.label,
-          shape: _shapeMd,
+          backgroundColor: AppColors.pink600,
+          foregroundColor: AppColors.neutral0,
+          disabledBackgroundColor: AppColors.border,
+          disabledForegroundColor: AppColors.muted,
+          minimumSize: const Size(48, 52),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          textStyle: AppTypography.button,
+          shape: const StadiumBorder(),
         ),
       ),
 
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: scheme.primary,
-          side: BorderSide(color: surfaces.border),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          textStyle: AppTypography.label,
-          shape: _shapeMd,
+          foregroundColor: AppColors.blue600,
+          side: const BorderSide(color: AppColors.blue600),
+          minimumSize: const Size(48, 52),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          textStyle: AppTypography.button.copyWith(color: AppColors.blue600),
+          shape: const StadiumBorder(),
         ),
       ),
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: scheme.primary,
-          textStyle: AppTypography.label,
+          foregroundColor: AppColors.pink600,
+          textStyle: AppTypography.label.copyWith(color: AppColors.pink600),
           shape: _shapeMd,
         ),
       ),
@@ -136,8 +143,8 @@ class AppTheme {
         filled: true,
         fillColor: surfaces.surface,
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
+          horizontal: 18,
+          vertical: 16,
         ),
         hintStyle: AppTypography.bodyM.copyWith(color: surfaces.muted),
         border: OutlineInputBorder(
@@ -154,7 +161,11 @@ class AppTheme {
         ),
         errorBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
-          borderSide: BorderSide(color: AppColors.error),
+          borderSide: BorderSide(color: AppColors.error, width: 1.5),
+        ),
+        focusedErrorBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(radiusMd)),
+          borderSide: BorderSide(color: AppColors.error, width: 1.5),
         ),
       ),
 
@@ -166,25 +177,25 @@ class AppTheme {
 
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: surfaces.surface,
-        indicatorColor: surfaces.background,
+        indicatorColor: Colors.transparent,
         elevation: 0,
-        height: 64,
+        height: 72,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         iconTheme: WidgetStateProperty.resolveWith(
           (states) => IconThemeData(
-            size: 24,
+            size: 25,
             color: states.contains(WidgetState.selected)
-                ? scheme.primary
-                : surfaces.muted,
+                ? AppColors.pink600
+                : AppColors.navy900,
           ),
         ),
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => AppTypography.caption.copyWith(
             color: states.contains(WidgetState.selected)
-                ? scheme.primary
-                : surfaces.muted,
+                ? AppColors.pink600
+                : AppColors.navy900,
             fontWeight: states.contains(WidgetState.selected)
-                ? FontWeight.w600
+                ? FontWeight.w700
                 : FontWeight.w400,
           ),
         ),

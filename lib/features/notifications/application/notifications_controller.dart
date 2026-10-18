@@ -19,6 +19,10 @@ class NotificationsController extends ChangeNotifier {
   String? get errorCode => _errorCode;
   List<AppNotification> get items => _items;
 
+  /// Nombre de notifications non lues (dérivé, jamais codé en dur) — alimente
+  /// le badge de la cloche.
+  int get unreadCount => _items.where((n) => !n.read).length;
+
   Future<void> load() async {
     _loading = true;
     _errorCode = null;

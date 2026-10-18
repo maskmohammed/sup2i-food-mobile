@@ -20,7 +20,7 @@ Widget _wrap(Widget home) => CartScope(
 );
 
 void main() {
-  testWidgets('Affiche les créneaux et leurs états', (tester) async {
+  testWidgets('Affiche les creneaux et leurs etats serveur', (tester) async {
     await tester.pumpWidget(
       _wrap(
         const SlotPage(repository: MockSlotRepository(latency: Duration.zero)),
@@ -28,6 +28,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.byKey(const Key('slot_screen')), findsOneWidget);
+    expect(find.byKey(const Key('slot_list')), findsOneWidget);
     expect(find.text('12h00 - 12h15'), findsOneWidget);
     expect(find.text('Disponible'), findsWidgets);
     expect(find.text('Presque complet'), findsOneWidget);

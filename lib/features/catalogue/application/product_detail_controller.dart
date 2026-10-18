@@ -61,6 +61,12 @@ class ProductDetailController extends ChangeNotifier {
     }
   }
 
+  /// Fixe la quantité (>= 1) — utilisé pour préremplir en mode édition.
+  void setQuantity(int quantity) {
+    _quantity = quantity < 1 ? 1 : quantity;
+    notifyListeners();
+  }
+
   void increment() {
     _quantity++;
     notifyListeners();

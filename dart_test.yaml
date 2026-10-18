@@ -1,0 +1,7 @@
+# Déclaration des tags de test.
+# Les golden tests dépendent de la plateforme de rendu : ils sont générés et
+# vérifiés en local (Windows) et exclus de la CI Linux (`--exclude-tags golden`)
+# pour éviter les faux négatifs dus au rendu inter-plateformes.
+tags:
+  golden:
+    description: Tests de comparaison d'images (rendu dépendant de la plateforme).

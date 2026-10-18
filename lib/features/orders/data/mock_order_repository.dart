@@ -28,7 +28,10 @@ class MockOrderRepository implements OrderRepository {
   final Map<String, int> _polls = <String, int>{};
 
   // Historique de démo (statuts variés).
-  final List<Order> _orders = <Order>[
+  final List<Order> _orders = _seedOrders();
+
+  /// Jeu de données initial, ré-appliqué par [reset] (outil de debug).
+  static List<Order> _seedOrders() => <Order>[
     Order(
       id: 'o_a1949',
       number: 'A1949',
@@ -64,6 +67,87 @@ class MockOrderRepository implements OrderRepository {
       createdAt: DateTime(2026, 8, 19, 13, 20),
       slotLabel: '13h00 - 13h15',
       paymentMethod: PaymentMethod.cardTpe,
+    ),
+    // Semaines précédentes — statuts variés (un seul COLLECTED / CANCELLED
+    // au-dessus ; ici les autres états terminaux pour la démo de l'historique).
+    Order(
+      id: 'o_c1900',
+      number: 'A1900',
+      status: OrderStatus.completed,
+      lines: const <CartLine>[
+        CartLine(
+          id: 'p2|',
+          productId: 'p2',
+          name: 'Pizza margherita',
+          unitPriceCents: 2500,
+          quantity: 2,
+        ),
+      ],
+      totalCents: 5000,
+      createdAt: DateTime(2026, 8, 12, 12, 30),
+      slotLabel: '12h30 - 12h45',
+      paymentMethod: PaymentMethod.cardTpe,
+    ),
+    Order(
+      id: 'o_d1885',
+      number: 'A1885',
+      status: OrderStatus.refunded,
+      lines: const <CartLine>[
+        CartLine(
+          id: 'p9|',
+          productId: 'p9',
+          name: 'Pizza 4 Fromages',
+          unitPriceCents: 3500,
+          quantity: 1,
+        ),
+      ],
+      totalCents: 3500,
+      createdAt: DateTime(2026, 8, 6, 13, 0),
+      slotLabel: '13h00 - 13h15',
+      paymentMethod: PaymentMethod.cardTpe,
+    ),
+    Order(
+      id: 'o_e1870',
+      number: 'A1870',
+      status: OrderStatus.noShow,
+      lines: const <CartLine>[
+        CartLine(
+          id: 'p7|',
+          productId: 'p7',
+          name: 'Tacos Mixte',
+          unitPriceCents: 4500,
+          quantity: 1,
+        ),
+      ],
+      totalCents: 4500,
+      createdAt: DateTime(2026, 7, 30, 12, 15),
+      slotLabel: '12h00 - 12h15',
+      paymentMethod: PaymentMethod.cash,
+    ),
+    Order(
+      id: 'o_f1855',
+      number: 'A1855',
+      status: OrderStatus.expired,
+      lines: const <CartLine>[
+        CartLine(
+          id: 'p16|',
+          productId: 'p16',
+          name: 'Tiramisu',
+          unitPriceCents: 2800,
+          quantity: 1,
+        ),
+        CartLine(
+          id: 'p13|',
+          productId: 'p13',
+          name: 'Coca 33cl',
+          unitPriceCents: 500,
+          quantity: 1,
+        ),
+      ],
+      totalCents: 3300,
+      createdAt: DateTime(2026, 7, 23, 13, 30),
+      slotLabel: '13h15 - 13h30',
+      paymentMethod: PaymentMethod.cash,
     ),
   ];
 
@@ -138,5 +222,16 @@ class MockOrderRepository implements OrderRepository {
   Future<List<Order>> listOrders() async {
     await Future<void>.delayed(latency);
     return List<Order>.unmodifiable(_orders);
+  }
+
+  /// Réinitialise l'état mock au jeu de données initial (outil de debug ;
+  /// aucun équivalent côté backend réel).
+  void reset() {
+    _orders
+      ..clear()
+      ..addAll(_seedOrders());
+    _liveOrders.clear();
+    _polls.clear();
+    _sequence = 1949;
   }
 }

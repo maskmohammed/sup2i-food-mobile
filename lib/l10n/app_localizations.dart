@@ -83,6 +83,12 @@ class AppLocalizations {
   String get loginPasswordRequired => _t('loginPasswordRequired');
   String get loginShowPassword => _t('loginShowPassword');
   String get loginHidePassword => _t('loginHidePassword');
+  // Mur de connexion contextuel (mode invité).
+  String get loginWallTitle => _t('loginWallTitle');
+  String get loginWallSignIn => _t('loginWallSignIn');
+  String get loginWallLater => _t('loginWallLater');
+  String get loginWallTabMessage => _t('loginWallTabMessage');
+  String get loginWallCartMessage => _t('loginWallCartMessage');
 
   // Profil.
   String get profileLogout => _t('profileLogout');
@@ -111,6 +117,15 @@ class AppLocalizations {
   String get checkout => _t('checkout');
   String get checkoutComingSoon => _t('checkoutComingSoon');
   String get addedToCart => _t('addedToCart');
+  // En-tête : icônes panier + notifications (tooltips + accessibilité).
+  String get cartTooltip => _t('cartTooltip');
+  String get notificationsTooltip => _t('notificationsTooltip');
+  String cartItemsA11y(int n) => n == 0
+      ? _t('cartEmptyA11y')
+      : _t('cartItemsA11y').replaceFirst('{n}', '$n');
+  String notificationsUnreadA11y(int n) => n == 0
+      ? _t('notificationsNoneA11y')
+      : _t('notificationsUnreadA11y').replaceFirst('{n}', '$n');
   String get pickupSlotLabel => _t('pickupSlotLabel');
   String get chooseSlot => _t('chooseSlot');
   String get noSlotSelected => _t('noSlotSelected');
@@ -155,6 +170,12 @@ class AppLocalizations {
   String get orderNumberLabel => _t('orderNumberLabel');
   String get presentAtCounter => _t('presentAtCounter');
   String get yourQr => _t('yourQr');
+  // Accessibilité (labels lecteur d'écran / tooltips).
+  String get qrOrderSemantics => _t('qrOrderSemantics');
+  String get qrFoodPassSemantics => _t('qrFoodPassSemantics');
+  String get decreaseQuantity => _t('decreaseQuantity');
+  String get increaseQuantity => _t('increaseQuantity');
+  String get quantityLabel => _t('quantityLabel');
   String get cancelOrder => _t('cancelOrder');
   String get tlPaymentConfirmed => _t('tlPaymentConfirmed');
   String get tlOrderReceived => _t('tlOrderReceived');
@@ -163,6 +184,8 @@ class AppLocalizations {
   String get ordersEmpty => _t('ordersEmpty');
   String get refresh => _t('refresh');
   String get orderReadyTitle => _t('orderReadyTitle');
+  String get orderReadySubtitle => _t('orderReadySubtitle');
+  String get orderReadyClose => _t('orderReadyClose');
   String get queueAheadSuffix => _t('queueAheadSuffix');
   String get etaLabel => _t('etaLabel');
 
@@ -172,6 +195,26 @@ class AppLocalizations {
   // Accueil.
   String get homeWelcome => _t('homeWelcome');
   String get homeSearchHint => _t('homeSearchHint');
+  // Recherche (écran dédié).
+  String get searchTitle => _t('searchTitle');
+  String get searchClear => _t('searchClear');
+  String get searchPrompt => _t('searchPrompt');
+  String get searchNoResultsTitle => _t('searchNoResultsTitle');
+
+  /// Titre d'état vide incluant le terme recherché (ex. « Aucun résultat pour
+  /// "tacos" »).
+  String searchNoResultsFor(String query) =>
+      _t('searchNoResultsFor').replaceFirst('{q}', query);
+  String get searchNoResultsHint => _t('searchNoResultsHint');
+  String get searchSeeAllCatalogue => _t('searchSeeAllCatalogue');
+  String get searchRecentTitle => _t('searchRecentTitle');
+  String get searchClearHistory => _t('searchClearHistory');
+
+  /// Nombre de résultats (singulier/pluriel) — sert aussi à l'annonce lecteur
+  /// d'écran (live region).
+  String searchResultsCount(int n) =>
+      (n <= 1 ? _t('searchResultsCountOne') : _t('searchResultsCountOther'))
+          .replaceFirst('{n}', '$n');
   String get homeFavorites => _t('homeFavorites');
   String get homeCategories => _t('homeCategories');
   String get homeProducts => _t('homeProducts');
@@ -208,6 +251,8 @@ class AppLocalizations {
   String get favoritesTitle => _t('favoritesTitle');
   String get favoritesEmpty => _t('favoritesEmpty');
   String get comingSoon => _t('comingSoon');
+  String get devResetMockData => _t('devResetMockData');
+  String get devMockDataReset => _t('devMockDataReset');
   String get profileAppearance => _t('profileAppearance');
   String get themeSystem => _t('themeSystem');
   String get themeLight => _t('themeLight');
@@ -245,7 +290,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
   'fr': <String, String>{
     'appTitle': 'SUP2I FOOD',
     'navHome': 'Accueil',
-    'navOrder': 'Commander',
+    'navOrder': 'Snack',
     'navCanteen': 'Cantine',
     'navOrders': 'Commandes',
     'navProfile': 'Profil',
@@ -269,6 +314,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'Entrez votre mot de passe.',
     'loginShowPassword': 'Afficher le mot de passe',
     'loginHidePassword': 'Masquer le mot de passe',
+    'loginWallTitle': 'Connexion requise',
+    'loginWallSignIn': 'Se connecter',
+    'loginWallLater': 'Plus tard',
+    'loginWallTabMessage': 'Connectez-vous pour accéder à cette section.',
+    'loginWallCartMessage':
+        'Connectez-vous pour ajouter des articles et commander.',
     'profileLogout': 'Se déconnecter',
     'errUnauthorized': 'E-mail ou mot de passe incorrect.',
     'errAccountBlocked':
@@ -297,6 +348,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'checkout': 'Commander',
     'checkoutComingSoon': 'Commande — à venir (M6).',
     'addedToCart': 'Ajouté au panier',
+    'cartTooltip': 'Panier',
+    'notificationsTooltip': 'Notifications',
+    'cartEmptyA11y': 'Panier, vide',
+    'cartItemsA11y': 'Panier, {n} articles',
+    'notificationsNoneA11y': 'Notifications, aucune non lue',
+    'notificationsUnreadA11y': '{n} notifications non lues',
     'pickupSlotLabel': 'Créneau de retrait',
     'chooseSlot': 'Choisir un créneau',
     'noSlotSelected': 'Aucun créneau sélectionné',
@@ -317,6 +374,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'orderNumberLabel': 'Numéro',
     'presentAtCounter': 'Présentez ce numéro au comptoir',
     'yourQr': 'Votre QR',
+    'qrOrderSemantics': 'Code QR de retrait de la commande',
+    'qrFoodPassSemantics': 'Code QR du Food Pass',
+    'decreaseQuantity': 'Diminuer la quantité',
+    'increaseQuantity': 'Augmenter la quantité',
+    'quantityLabel': 'Quantité',
     'cancelOrder': 'Annuler la commande',
     'tlPaymentConfirmed': 'Paiement confirmé',
     'tlOrderReceived': 'Commande reçue',
@@ -325,6 +387,9 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'ordersEmpty': 'Aucune commande pour le moment.',
     'refresh': 'Actualiser',
     'orderReadyTitle': 'Votre commande est prête !',
+    'orderReadySubtitle':
+        'Présentez ce QR au comptoir pour récupérer votre commande.',
+    'orderReadyClose': 'Fermer',
     'queueAheadSuffix': 'commandes avant la vôtre',
     'etaLabel': 'Temps d\'attente estimé',
     'status_draft': 'Brouillon',
@@ -342,6 +407,17 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_noShow': 'Non retirée',
     'homeWelcome': 'Bienvenue chez SUP2I FOOD',
     'homeSearchHint': 'Rechercher des produits',
+    'searchTitle': 'Rechercher',
+    'searchClear': 'Effacer la recherche',
+    'searchPrompt': 'Tapez pour rechercher un produit',
+    'searchNoResultsTitle': 'Aucun résultat',
+    'searchNoResultsFor': 'Aucun résultat pour « {q} »',
+    'searchNoResultsHint': 'Essayez un autre mot-clé ou une autre catégorie.',
+    'searchSeeAllCatalogue': 'Voir tout le catalogue',
+    'searchRecentTitle': 'Recherches récentes',
+    'searchClearHistory': 'Effacer l\'historique',
+    'searchResultsCountOne': '{n} résultat',
+    'searchResultsCountOther': '{n} résultats',
     'homeFavorites': 'Nos coups de cœur',
     'homeCategories': 'Nos catégories',
     'homeProducts': 'Nos produits',
@@ -381,6 +457,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'Marketing',
     'prefDesc_marketing': 'Actualités SUP2I FOOD',
     'comingSoon': 'Bientôt disponible',
+    'devResetMockData': 'Réinitialiser les données mock',
+    'devMockDataReset': 'Données mock réinitialisées',
     'profileFavorites': 'Mes favoris',
     'favoritesTitle': 'Mes favoris',
     'favoritesEmpty': 'Aucun favori pour le moment.',
@@ -415,7 +493,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
   'en': <String, String>{
     'appTitle': 'SUP2I FOOD',
     'navHome': 'Home',
-    'navOrder': 'Order',
+    'navOrder': 'Snack',
     'navCanteen': 'Canteen',
     'navOrders': 'Orders',
     'navProfile': 'Profile',
@@ -438,6 +516,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'Enter your password.',
     'loginShowPassword': 'Show password',
     'loginHidePassword': 'Hide password',
+    'loginWallTitle': 'Sign in required',
+    'loginWallSignIn': 'Sign in',
+    'loginWallLater': 'Not now',
+    'loginWallTabMessage': 'Sign in to access this section.',
+    'loginWallCartMessage': 'Sign in to add items and order.',
     'profileLogout': 'Log out',
     'errUnauthorized': 'Incorrect email or password.',
     'errAccountBlocked': 'Your account is blocked. Contact the administration.',
@@ -465,6 +548,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'checkout': 'Order',
     'checkoutComingSoon': 'Checkout — coming soon (M6).',
     'addedToCart': 'Added to cart',
+    'cartTooltip': 'Cart',
+    'notificationsTooltip': 'Notifications',
+    'cartEmptyA11y': 'Cart, empty',
+    'cartItemsA11y': 'Cart, {n} items',
+    'notificationsNoneA11y': 'Notifications, none unread',
+    'notificationsUnreadA11y': '{n} unread notifications',
     'pickupSlotLabel': 'Pickup slot',
     'chooseSlot': 'Choose a slot',
     'noSlotSelected': 'No slot selected',
@@ -485,6 +574,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'orderNumberLabel': 'Number',
     'presentAtCounter': 'Show this number at the counter',
     'yourQr': 'Your QR',
+    'qrOrderSemantics': 'Order pickup QR code',
+    'qrFoodPassSemantics': 'Food Pass QR code',
+    'decreaseQuantity': 'Decrease quantity',
+    'increaseQuantity': 'Increase quantity',
+    'quantityLabel': 'Quantity',
     'cancelOrder': 'Cancel order',
     'tlPaymentConfirmed': 'Payment confirmed',
     'tlOrderReceived': 'Order received',
@@ -493,6 +587,9 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'ordersEmpty': 'No orders yet.',
     'refresh': 'Refresh',
     'orderReadyTitle': 'Your order is ready!',
+    'orderReadySubtitle':
+        'Show this QR code at the counter to collect your order.',
+    'orderReadyClose': 'Close',
     'queueAheadSuffix': 'orders ahead of you',
     'etaLabel': 'Estimated wait',
     'status_draft': 'Draft',
@@ -510,6 +607,17 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_noShow': 'No-show',
     'homeWelcome': 'Welcome to SUP2I FOOD',
     'homeSearchHint': 'Search products',
+    'searchTitle': 'Search',
+    'searchClear': 'Clear search',
+    'searchPrompt': 'Type to search for a product',
+    'searchNoResultsTitle': 'No results',
+    'searchNoResultsFor': 'No results for “{q}”',
+    'searchNoResultsHint': 'Try another keyword or category.',
+    'searchSeeAllCatalogue': 'See all catalogue',
+    'searchRecentTitle': 'Recent searches',
+    'searchClearHistory': 'Clear history',
+    'searchResultsCountOne': '{n} result',
+    'searchResultsCountOther': '{n} results',
     'homeFavorites': 'Our favourites',
     'homeCategories': 'Categories',
     'homeProducts': 'Products',
@@ -549,6 +657,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'Marketing',
     'prefDesc_marketing': 'SUP2I FOOD news',
     'comingSoon': 'Coming soon',
+    'devResetMockData': 'Reset mock data',
+    'devMockDataReset': 'Mock data reset',
     'profileFavorites': 'My favourites',
     'favoritesTitle': 'My favourites',
     'favoritesEmpty': 'No favourites yet.',
@@ -583,7 +693,7 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
   'ar': <String, String>{
     'appTitle': 'SUP2I FOOD',
     'navHome': 'الرئيسية',
-    'navOrder': 'اطلب',
+    'navOrder': 'السناك',
     'navCanteen': 'المقصف',
     'navOrders': 'طلباتي',
     'navProfile': 'حسابي',
@@ -606,6 +716,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'loginPasswordRequired': 'أدخل كلمة المرور.',
     'loginShowPassword': 'إظهار كلمة المرور',
     'loginHidePassword': 'إخفاء كلمة المرور',
+    'loginWallTitle': 'يلزم تسجيل الدخول',
+    'loginWallSignIn': 'تسجيل الدخول',
+    'loginWallLater': 'لاحقًا',
+    'loginWallTabMessage': 'سجّل الدخول للوصول إلى هذا القسم.',
+    'loginWallCartMessage': 'سجّل الدخول لإضافة المنتجات وتقديم الطلب.',
     'profileLogout': 'تسجيل الخروج',
     'errUnauthorized': 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
     'errAccountBlocked': 'حسابك محظور. يرجى التواصل مع الإدارة.',
@@ -632,6 +747,12 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'checkout': 'اطلب',
     'checkoutComingSoon': 'الطلب — قريبًا (M6).',
     'addedToCart': 'أُضيف إلى السلة',
+    'cartTooltip': 'السلة',
+    'notificationsTooltip': 'الإشعارات',
+    'cartEmptyA11y': 'السلة، فارغة',
+    'cartItemsA11y': 'السلة، {n} عناصر',
+    'notificationsNoneA11y': 'الإشعارات، لا شيء غير مقروء',
+    'notificationsUnreadA11y': '{n} إشعارات غير مقروءة',
     'pickupSlotLabel': 'موعد الاستلام',
     'chooseSlot': 'اختر موعدًا',
     'noSlotSelected': 'لم يتم اختيار موعد',
@@ -651,6 +772,11 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'orderNumberLabel': 'الرقم',
     'presentAtCounter': 'اعرض هذا الرقم عند الكاونتر',
     'yourQr': 'رمز الاستلام',
+    'qrOrderSemantics': 'رمز QR لاستلام الطلب',
+    'qrFoodPassSemantics': 'رمز QR لبطاقة الطعام',
+    'decreaseQuantity': 'إنقاص الكمية',
+    'increaseQuantity': 'زيادة الكمية',
+    'quantityLabel': 'الكمية',
     'cancelOrder': 'إلغاء الطلب',
     'tlPaymentConfirmed': 'تم تأكيد الدفع',
     'tlOrderReceived': 'تم استلام الطلب',
@@ -659,6 +785,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'ordersEmpty': 'لا توجد طلبات بعد.',
     'refresh': 'تحديث',
     'orderReadyTitle': 'طلبك جاهز!',
+    'orderReadySubtitle': 'اعرض رمز QR هذا عند الكاونتر لاستلام طلبك.',
+    'orderReadyClose': 'إغلاق',
     'queueAheadSuffix': 'طلبات قبلك',
     'etaLabel': 'مدة الانتظار المقدّرة',
     'status_draft': 'مسودة',
@@ -676,6 +804,17 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'status_noShow': 'لم تُستلم',
     'homeWelcome': 'مرحبًا بك في SUP2I FOOD',
     'homeSearchHint': 'ابحث عن المنتجات',
+    'searchTitle': 'بحث',
+    'searchClear': 'مسح البحث',
+    'searchPrompt': 'اكتب للبحث عن منتج',
+    'searchNoResultsTitle': 'لا توجد نتائج',
+    'searchNoResultsFor': 'لا نتائج لـ «{q}»',
+    'searchNoResultsHint': 'جرّب كلمة مفتاحية أو فئة أخرى.',
+    'searchSeeAllCatalogue': 'عرض كل القائمة',
+    'searchRecentTitle': 'عمليات البحث الأخيرة',
+    'searchClearHistory': 'مسح السجل',
+    'searchResultsCountOne': '{n} نتيجة',
+    'searchResultsCountOther': '{n} نتيجة',
     'homeFavorites': 'مختاراتنا',
     'homeCategories': 'الفئات',
     'homeProducts': 'المنتجات',
@@ -715,6 +854,8 @@ const Map<String, Map<String, String>> _values = <String, Map<String, String>>{
     'prefLabel_marketing': 'التسويق',
     'prefDesc_marketing': 'أخبار SUP2I FOOD',
     'comingSoon': 'قريبًا',
+    'devResetMockData': 'إعادة تعيين البيانات التجريبية',
+    'devMockDataReset': 'تمت إعادة تعيين البيانات التجريبية',
     'profileFavorites': 'مفضّلاتي',
     'favoritesTitle': 'مفضّلاتي',
     'favoritesEmpty': 'لا توجد مفضّلات بعد.',

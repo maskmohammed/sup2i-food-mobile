@@ -34,6 +34,15 @@ void main() {
     expect(c.isFavorite('p1'), isFalse);
   });
 
+  test('FavoritesController : clear vide tout', () {
+    final c = FavoritesController()
+      ..toggle('p1')
+      ..toggle('p2');
+    expect(c.ids, hasLength(2));
+    c.clear();
+    expect(c.ids, isEmpty);
+  });
+
   testWidgets('Favoris vides : état vide', (tester) async {
     await tester.pumpWidget(
       _wrap(

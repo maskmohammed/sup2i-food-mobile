@@ -26,4 +26,6 @@ jobs:
         run: flutter analyze
 
       - name: Test
-        run: flutter test
+        # Les golden tests sont dépendants de la plateforme de rendu ; générés
+        # et vérifiés en local (Windows), exclus de la CI Linux.
+        run: flutter test --exclude-tags golden

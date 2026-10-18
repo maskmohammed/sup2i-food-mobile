@@ -10,7 +10,7 @@ import '../application/preferences_controller.dart';
 import '../data/notifications_repository.dart';
 import '../domain/app_notification.dart';
 
-/// Préférences de notifications par catégorie (persistées serveur).
+/// Server-persisted notification preferences.
 class PreferencesPage extends StatefulWidget {
   const PreferencesPage({super.key, this.repository});
 
@@ -39,9 +39,11 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations loc = AppLocalizations.of(context);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
+      key: const Key('preferences_screen'),
+      backgroundColor: context.surfaces.background,
       appBar: AppBar(title: Text(loc.preferencesTitle)),
       body: ListenableBuilder(
         listenable: _controller,
@@ -49,6 +51,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
           if (_controller.isLoading && _controller.prefs.isEmpty) {
             return const AppLoadingView();
           }
+
           if (_controller.errorCode != null && _controller.prefs.isEmpty) {
             return AppStateView.error(
               title: loc.errorMessage(
@@ -59,17 +62,59 @@ class _PreferencesPageState extends State<PreferencesPage> {
               onAction: _controller.load,
             );
           }
+
           return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              for (final category in NotificationCategory.values)
+            key: const Key('preferences_list'),
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.softBlue,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Icon(
+                      Icons.notifications_active_outlined,
+                      color: AppColors.blue600,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Choisissez les notifications utiles. '
+                        'Vos preferences sont enregistrees '
+                        'par le service de notifications.',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.navy900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              for (
+                var index = 0;
+                index < NotificationCategory.values.length;
+                index++
+              )
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: 10),
                   child: _PrefCard(
-                    title: loc.prefCategoryLabel(category),
-                    description: loc.prefCategoryDesc(category),
-                    value: _controller.isEnabled(category),
-                    onChanged: (_) => _controller.toggle(category),
+                    key: Key('notification_pref_$index'),
+                    title: loc.prefCategoryLabel(
+                      NotificationCategory.values[index],
+                    ),
+                    description: loc.prefCategoryDesc(
+                      NotificationCategory.values[index],
+                    ),
+                    value: _controller.isEnabled(
+                      NotificationCategory.values[index],
+                    ),
+                    onChanged: (_) =>
+                        _controller.toggle(NotificationCategory.values[index]),
                   ),
                 ),
             ],
@@ -82,6 +127,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
 class _PrefCard extends StatelessWidget {
   const _PrefCard({
+    super.key,
     required this.title,
     required this.description,
     required this.value,
@@ -95,26 +141,49 @@ class _PrefCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme text = Theme.of(context).textTheme;
-
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: context.surfaces.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.surfaces.border),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: value
+              ? AppColors.pink600.withValues(alpha: 0.34)
+              : context.surfaces.border,
+        ),
       ),
       child: Row(
-        children: [
+        children: <Widget>[
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: value ? AppColors.softPink : context.surfaces.background,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.notifications_none_rounded,
+              color: value ? AppColors.pink600 : AppColors.muted,
+            ),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: text.bodyLarge),
-                const SizedBox(height: 2),
+              children: <Widget>[
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: AppColors.navy900,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 3),
                 Text(
                   description,
-                  style: text.bodySmall?.copyWith(color: AppColors.muted),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: AppColors.muted),
                 ),
               ],
             ),

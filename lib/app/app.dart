@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/theme/app_theme.dart';
 import '../features/auth/application/auth_controller.dart';
+import '../features/auth/data/http_auth_repository.dart';
 import '../features/auth/data/mock_auth_repository.dart';
 import '../features/cart/application/cart_controller.dart';
 import '../features/favorites/application/favorites_controller.dart';
@@ -32,8 +33,16 @@ class Sup2iFoodApp extends StatefulWidget {
 }
 
 class _Sup2iFoodAppState extends State<Sup2iFoodApp> {
-  // Repository mock tant qu'aucun backend/OpenAPI n'est disponible (M2).
-  final AuthController _auth = AuthController(const MockAuthRepository());
+  // Opt-in for real API; default mock mode preserves offline F1 tests.
+  static const String _apiBaseUrl = String.fromEnvironment(
+    'SUP2I_API_BASE_URL',
+  );
+  late final HttpAuthRepository? _httpAuth = _apiBaseUrl.isEmpty
+      ? null
+      : HttpAuthRepository(baseUri: Uri.parse(_apiBaseUrl));
+  late final AuthController _auth = AuthController(
+    _httpAuth ?? const MockAuthRepository(),
+  );
   final CartController _cart = CartController();
   final OrderRepository _orders = MockOrderRepository();
   final FavoritesController _favorites = FavoritesController();
@@ -46,6 +55,7 @@ class _Sup2iFoodAppState extends State<Sup2iFoodApp> {
   @override
   void dispose() {
     _auth.dispose();
+    _httpAuth?.close();
     _cart.dispose();
     _favorites.dispose();
     _notifications.dispose();
